@@ -15,7 +15,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@dhruv-m-patel/express-app": "^1.2.6"
+    "@dhruv-m-patel/express-app": "workspace:*"
   },
   "devDependencies": {
     "@apidevtools/swagger-cli": "^4.0.4",

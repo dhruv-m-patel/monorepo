@@ -3,6 +3,7 @@ const baseConfig = require('./jest.config');
 module.exports = {
   clearMocks: true,
   collectCoverageFrom: [
+    'packages/**/*.{js,jsx,ts,tsx}',
     'service/**/*.{js,jsx,ts,tsx}',
     'web-app/**/*.{js,jsx,ts,tsx}',
   ],
@@ -10,6 +11,7 @@ module.exports = {
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
   projects: [
+    '<rootDir>/packages/express-app/jest.config.js',
     '<rootDir>/service/jest.config.js',
     '<rootDir>/web-app/jest.config.js',
   ],
