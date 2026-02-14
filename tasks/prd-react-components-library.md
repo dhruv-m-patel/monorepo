@@ -193,18 +193,18 @@ As a developer, I want a theme engine with CSS variables, a ThemeProvider, and a
 
 **Acceptance Criteria**:
 
-- [ ] `src/styles/theme.css` defines the full default theme (see **Default Theme Specification** below)
-- [ ] `.dark` selector overrides all color tokens for dark mode (see spec below)
-- [ ] `src/theme/types.ts` exports `ThemeConfig` type (theme mode + overrides), `ColorPalette` type (all token names as optional string fields)
-- [ ] `src/theme/ThemeProvider.tsx` accepts `defaultTheme?: 'light' | 'dark' | 'system'`, `overrides?: Partial<ColorPalette>`, persists to localStorage, toggles `.dark` class, injects CSS variable overrides as inline styles
-- [ ] `src/theme/useTheme.ts` exports `useTheme()` hook returning `{ theme, setTheme, toggleTheme }`
-- [ ] `src/theme/create-theme.ts` exports `createTheme(palette: Partial<ColorPalette>): Record<string, string>` that maps palette keys to CSS variable names (e.g., `{ primary: 'oklch(...)' }` → `{ '--color-primary': 'oklch(...)' }`)
-- [ ] ThemeProvider story demonstrates light/dark toggle and custom override
-- [ ] ThemeProvider test verifies: default theme applied, toggle works, custom overrides injected as CSS vars, system preference detection
-- [ ] `src/index.ts` exports ThemeProvider, useTheme, createTheme, and all theme types
-- [ ] `yarn build` passes
-- [ ] `yarn test` passes
-- [ ] `yarn typecheck` passes
+- [x] `src/styles/theme.css` defines the full default theme (see **Default Theme Specification** below)
+- [x] `.dark` selector overrides all color tokens for dark mode (see spec below)
+- [x] `src/theme/types.ts` exports `ThemeConfig` type (theme mode + overrides), `ColorPalette` type (all token names as optional string fields)
+- [x] `src/theme/ThemeProvider.tsx` accepts `defaultTheme?: 'light' | 'dark' | 'system'`, `overrides?: Partial<ColorPalette>`, persists to localStorage, toggles `.dark` class, injects CSS variable overrides as inline styles
+- [x] `src/theme/useTheme.ts` exports `useTheme()` hook returning `{ theme, setTheme, toggleTheme }`
+- [x] `src/theme/create-theme.ts` exports `createTheme(palette: Partial<ColorPalette>): Record<string, string>` that maps palette keys to CSS variable names (e.g., `{ primary: 'oklch(...)' }` → `{ '--color-primary': 'oklch(...)' }`)
+- [x] ThemeProvider story demonstrates light/dark toggle and custom override
+- [x] ThemeProvider test verifies: default theme applied, toggle works, custom overrides injected as CSS vars, system preference detection
+- [x] `src/index.ts` exports ThemeProvider, useTheme, createTheme, and all theme types
+- [x] `yarn build` passes
+- [x] `yarn test` passes
+- [x] `yarn typecheck` passes
 
 #### Default Theme Specification
 
