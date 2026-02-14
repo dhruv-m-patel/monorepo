@@ -58,6 +58,7 @@
     "storybook": "lerna run storybook --stream",
     "build-storybook": "lerna run build-storybook --stream",
     "test:e2e": "playwright test",
+    "test:perf": "yarn workspace service run bundle:api && yarn workspace service run test:perf",
     "typecheck": "lerna run typecheck --stream",
     "version": "lerna version --yes"
   },

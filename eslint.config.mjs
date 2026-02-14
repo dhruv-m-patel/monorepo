@@ -30,6 +30,7 @@ export default tseslint.config(
       '**/storybook-static/',
       'playwright-report/',
       'test-results/',
+      'perf-results/',
     ],
   },
 
@@ -87,6 +88,7 @@ export default tseslint.config(
     files: [
       '**/*.test.ts',
       '**/*.test.tsx',
+      '**/*.perf.test.ts',
       '**/tests/**/*.ts',
       '**/*.spec.ts',
       'e2e/**/*.ts',
@@ -170,6 +172,7 @@ export default tseslint.config(
   {
     files: [
       'service/vitest.config.ts',
+      'service/vitest.perf.config.ts',
       'packages/express-app/vitest.config.ts',
       'vitest.workspace.ts',
       'playwright.config.ts',

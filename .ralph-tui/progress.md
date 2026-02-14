@@ -29,6 +29,8 @@ after each iteration and it's included in prompts for context.
 - **Vitest workspace for monorepos**: Create `vitest.workspace.ts` at root using `defineWorkspace()` from `vitest/config` pointing to each package's `vitest.config.ts`. Each package still runs tests independently via `vitest run` in its own scripts.
 - **Playwright E2E in monorepos**: Install `@playwright/test` at root level. Use `webServer` array in `playwright.config.ts` to start both frontend (Vite) and backend (Express) before tests. Service needs `bundle:api &&` prefix if it depends on bundled API spec. Use `-- --no-open` flag for Vite to prevent browser auto-open during E2E runs.
 - **Vite proxy for API calls**: When web-app fetches `/api/*` and the service runs on a different port, add `server.proxy` in `vite.config.ts` to forward requests: `'/api': { target: 'http://localhost:4000', changeOrigin: true }`.
+- **Autocannon percentiles**: Autocannon provides p50, p75, p90, p97_5, p99 (no p95). Use `p97_5` as the closest approximation when testing against p95 thresholds. The `@types/autocannon` Histogram interface defines `p97_5` not `p95`.
+- **Vitest perf test isolation**: Use a separate `vitest.perf.config.ts` with `include: ['tests/performance/**/*.perf.test.ts']` and add `exclude: ['tests/performance/**']` to the main `vitest.config.ts` so performance tests don't run during `yarn test`. Run them via `yarn test:perf` which references the separate config.
 
 ---
 
@@ -400,4 +402,40 @@ after each iteration and it's included in prompts for context.
   - When a `<main>` element has no content (e.g., no matched route), Playwright's `toBeVisible()` fails because the element has no dimensions. Use `toBeAttached()` instead to verify DOM presence without requiring visual visibility.
   - Playwright in Yarn 3 workspaces: install `@playwright/test` at root level (not in a workspace package), and run `npx playwright install chromium` to download the browser binary. The `playwright test` command reads `playwright.config.ts` from the current directory.
   - The `reuseExistingServer: !process.env.CI` pattern allows reusing already-running dev servers locally (faster iteration) while always starting fresh in CI.
+---
+
+## 2026-02-14 - US-012
+- What was implemented:
+  - Added API performance testing using autocannon + Vitest for the service package
+  - Created performance test infrastructure: helpers (server start/stop, load test runner, metrics extraction, threshold validation), reporter (JSON and markdown output)
+  - Performance tests for all 3 API endpoints: `GET /health`, `GET /api/health`, `GET /api/message`
+  - Metrics captured: p50, p97.5 (mapped as p95 - autocannon's closest percentile), p99 response times, average RPS, error rate
+  - Per-endpoint baseline thresholds established and documented in test file
+  - Tests fail if response times exceed thresholds or error rate is non-zero
+  - Separate `vitest.perf.config.ts` ensures perf tests don't run during `yarn test`
+  - `yarn test:perf` script at both service and root level
+  - CI-parseable output: JSON report (`perf-results/perf-report.json`) with summary, per-endpoint results, and threshold violations
+  - Vitest JSON reporter output (`perf-results/vitest-report.json`) for CI integration
+  - Markdown summary generator (`generateMarkdownSummary`) for PR comment reporting
+  - Updated ESLint config with `perf-results/` ignores and `vitest.perf.config.ts` in node globals
+  - Updated `.gitignore` and `.prettierignore` with `perf-results/`
+  - All quality checks pass: `yarn build`, `yarn lint`, `yarn test`, `yarn typecheck`
+- Files changed:
+  - `service/package.json` - added `autocannon`, `@types/autocannon` devDependencies, `test:perf` script
+  - `service/vitest.config.ts` - added `exclude: ['tests/performance/**']` to avoid running perf tests in regular test suite
+  - `service/vitest.perf.config.ts` (new) - separate Vitest config for performance tests with longer timeouts, serial execution, JSON reporter
+  - `service/tests/performance/helpers.ts` (new) - server lifecycle, autocannon load test runner, metrics extraction, threshold validation, result formatting
+  - `service/tests/performance/reporter.ts` (new) - JSON report generation, file writer, markdown summary for PRs
+  - `service/tests/performance/api-endpoints.perf.test.ts` (new) - performance tests for all 3 API endpoints with per-endpoint thresholds
+  - `package.json` - added `test:perf` root script
+  - `eslint.config.mjs` - added `perf-results/` to ignores, `*.perf.test.ts` to test files, `vitest.perf.config.ts` to node globals
+  - `.gitignore` - added `perf-results/`
+  - `.prettierignore` - added `perf-results`
+- **Learnings:**
+  - Autocannon's Histogram interface does NOT include `p95` - it provides `p97_5` instead. The available percentiles are: p50, p75, p90, p97_5, p99, p99_9, p99_99, p99_999. Accessing `result.latency.p95` returns `undefined`.
+  - Performance tests must be isolated from the regular test suite. Using `exclude` in the main vitest.config.ts and a separate `vitest.perf.config.ts` with `--config` flag is the clean approach. Without exclusion, `tests/**/*.test.ts` glob matches `tests/performance/*.perf.test.ts`.
+  - Autocannon's programmatic API (`await autocannon({...})`) returns a `Result` object directly. No need for a callback or stream - the Promise-based API is clean and works well with Vitest's async test functions.
+  - For performance tests, `pool: 'forks'` with `singleFork: true` ensures tests run serially in a single process. Load tests should not compete for CPU/network resources with each other.
+  - The Express `app.listen(0)` pattern (port 0) lets the OS assign a random available port, which is ideal for test isolation. Extract the actual port from `server.address()` after listening.
+  - Autocannon with 10 connections and 5-second duration produces ~38K-40K requests against a local Express server, with p50 latency of ~1ms. These are good baseline numbers for simple JSON endpoints.
 ---

@@ -15,6 +15,7 @@
     "dev": "tsx watch --clear-screen=false -r dotenv/config src/index.ts",
     "test": "vitest run",
     "test:ci": "vitest run --coverage --reporter=default --reporter=verbose",
+    "test:perf": "vitest run --config vitest.perf.config.ts",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
   },
@@ -23,6 +24,8 @@
   },
   "devDependencies": {
     "@apidevtools/swagger-cli": "^4.0.4",
+    "@types/autocannon": "^7.12.7",
+    "autocannon": "^8.0.0",
     "rimraf": "^5.0.10",
     "supertest": "^7.0.0",
     "tsx": "^4.19.0",
