@@ -18,6 +18,10 @@ after each iteration and it's included in prompts for context.
 - **@testing-library/react + Vitest cleanup**: With `globals: false` in Vitest, `@testing-library/react` doesn't auto-detect the framework for cleanup. Add explicit `afterEach(() => { cleanup(); })` in setupTests.ts.
 - **React 19 + ESLint**: React 19 with `jsx: "react-jsx"` doesn't require `import React` - add `'react/react-in-jsx-scope': 'off'` to ESLint config for React files.
 - **@testing-library/dom in Yarn workspaces**: `@testing-library/react` depends on `@testing-library/dom` as a peer dep. With Yarn 3 strict hoisting, it must be explicitly added to devDependencies or TypeScript can't resolve `screen` export.
+- **Tailwind CSS v4 + Vite**: Use `@tailwindcss/vite` plugin instead of PostCSS config. Theme is configured in CSS via `@theme {}` block (no `tailwind.config.js`). Dark mode uses `@custom-variant dark (&:is(.dark *))` with a `.dark` class on the root element.
+- **shadcn/ui with Tailwind v4**: No `tailwind.config.js` needed. Define CSS custom properties (e.g., `--color-primary`, `--color-border`) in `@theme {}` and override in `.dark {}` selector. Components use `cn()` utility from `clsx` + `tailwind-merge`.
+- **jsx-a11y/heading-has-content + forwardRef**: When using `forwardRef` with spread props on heading elements (`<h3 {...props} />`), `jsx-a11y/heading-has-content` can't detect that children are passed via spread. Fix by explicitly destructuring and rendering `{children}`.
+- **Path aliases in Vite + Vitest**: When using `@/` path alias, configure it in BOTH `vite.config.ts` (via `resolve.alias`) AND `vitest.config.ts` (separate alias config) AND `tsconfig.json` (via `baseUrl` + `paths`). Vitest uses its own config, not the main Vite config.
 
 ---
 
@@ -205,4 +209,51 @@ after each iteration and it's included in prompts for context.
   - Vitest 3.x bundles its own Vite version (7.x) which can differ from the installed `vite` package (6.x). The `@vitejs/plugin-react` types may conflict. Use `defineConfig` from `vitest/config` with a type cast for the plugin.
   - `moduleResolution: "bundler"` is the correct setting for Vite projects - it allows extensionless imports and handles both ESM and CJS, unlike "nodenext" which requires `.js` extensions.
   - When converting from `useReducer` replacing Redux, the `useCallback` wrapper for async dispatch functions prevents unnecessary re-renders in consumers.
+---
+
+## 2026-02-13 - US-007
+- What was implemented:
+  - Migrated web-app styling from plain CSS to Tailwind CSS v4 + shadcn/ui
+  - Installed `tailwindcss` v4.1.18, `@tailwindcss/vite` plugin, `class-variance-authority`, `clsx`, `tailwind-merge`, `lucide-react`
+  - Created `src/index.css` with Tailwind v4 `@theme {}` config for colors, typography, spacing, border radius
+  - Full dark mode support via `.dark` class toggle with `@custom-variant dark` and `ThemeContext` provider
+  - Created shadcn/ui-style components: `Card`, `CardHeader`, `CardTitle`, `CardContent`, `CardDescription`, `CardFooter`, `Button` (with variants via CVA)
+  - Created `cn()` utility (`clsx` + `tailwind-merge`) at `src/lib/utils.ts`
+  - Created `Layout` component with sticky header (navbar with app title + dark mode toggle) and footer
+  - Created `ThemeContext` with `useTheme` hook, persists preference to localStorage, respects system `prefers-color-scheme`
+  - Restyled `HomePage` using Tailwind utility classes and shadcn `Card` components, with responsive 1/2/3 column grid
+  - Added `@/` path alias in `vite.config.ts`, `vitest.config.ts`, and `tsconfig.json`
+  - Removed old `HomePage.css` (replaced by Tailwind utilities)
+  - Updated `index.html` to use Inter font instead of Roboto
+  - Replaced Storybook card with Tailwind CSS card in features list
+  - Added `dist` to `.prettierignore` (build artifacts)
+  - All quality checks pass: `yarn build`, `yarn lint`, `yarn test`, `yarn typecheck`
+- Files changed:
+  - `web-app/package.json` - added tailwindcss, @tailwindcss/vite, class-variance-authority, clsx, tailwind-merge, lucide-react
+  - `web-app/vite.config.ts` - added @tailwindcss/vite plugin and @/ path alias
+  - `web-app/vitest.config.ts` - added @/ path alias and css: true
+  - `web-app/tsconfig.json` - added baseUrl and paths for @/ alias
+  - `web-app/index.html` - switched from Roboto to Inter font
+  - `web-app/src/index.css` (new) - Tailwind v4 theme config with light/dark mode colors
+  - `web-app/src/main.tsx` - added index.css import
+  - `web-app/src/App.tsx` - added ThemeProvider and Layout wrapper
+  - `web-app/src/lib/utils.ts` (new) - cn() utility function
+  - `web-app/src/components/ui/card.tsx` (new) - shadcn/ui Card component
+  - `web-app/src/components/ui/button.tsx` (new) - shadcn/ui Button component with CVA variants
+  - `web-app/src/components/Layout.tsx` (new) - layout with header, dark mode toggle, footer
+  - `web-app/src/context/ThemeContext.tsx` (new) - dark mode context and useTheme hook
+  - `web-app/src/pages/HomePage.tsx` - restyled with Tailwind + shadcn Card, data-driven feature list
+  - `web-app/src/pages/HomePage.test.tsx` - updated to test new feature cards including Tailwind CSS
+  - `web-app/src/pages/HomePage.css` (deleted) - replaced by Tailwind utilities
+  - `.prettierignore` - added dist directory
+  - `jest.config.js` - formatted with prettier (pre-existing issue)
+- **Learnings:**
+  - Tailwind CSS v4 eliminates `tailwind.config.js` entirely. All theme configuration goes in CSS via `@theme {}` blocks. This is a major shift from v3 where JS config was the norm.
+  - The `@tailwindcss/vite` plugin replaces the PostCSS plugin for Vite projects. Just add it to the Vite plugins array alongside `@vitejs/plugin-react`.
+  - Dark mode in Tailwind v4 with class-based toggle requires `@custom-variant dark (&:is(.dark *))` in the CSS file. Color overrides go in a plain `.dark {}` selector that reassigns the CSS custom properties.
+  - shadcn/ui components work with Tailwind v4 by using CSS custom properties (e.g., `bg-card`, `text-primary`). The semantic color names map to `--color-*` variables defined in `@theme {}`.
+  - The `jsx-a11y/heading-has-content` ESLint rule doesn't understand `{...props}` spreading children on heading elements in `forwardRef` components. Must explicitly destructure `children` and render it as a child node.
+  - When using path aliases like `@/` in a Vite + Vitest setup, you need to configure the alias in three places: `vite.config.ts`, `vitest.config.ts`, and `tsconfig.json`. Vitest does NOT inherit the Vite config's resolve aliases when using a separate `vitest.config.ts`.
+  - `lucide-react` is a lightweight, tree-shakeable icon library that pairs well with shadcn/ui. Icons like `Moon`, `Sun`, `ExternalLink` are imported individually.
+  - Tailwind v4 uses oklch color space by default for its generated colors. Custom theme colors should also use oklch for consistency.
 ---

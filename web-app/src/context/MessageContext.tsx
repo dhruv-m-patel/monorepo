@@ -30,7 +30,7 @@ const initialState: MessageState = {
 
 function messageReducer(
   state: MessageState,
-  action: MessageAction,
+  action: MessageAction
 ): MessageState {
   switch (action.type) {
     case 'FETCH_PENDING':
@@ -44,7 +44,9 @@ function messageReducer(
   }
 }
 
-const MessageContext = createContext<MessageContextValue | undefined>(undefined);
+const MessageContext = createContext<MessageContextValue | undefined>(
+  undefined
+);
 
 export function MessageProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(messageReducer, initialState);

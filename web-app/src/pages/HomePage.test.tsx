@@ -8,7 +8,7 @@ describe('HomePage', () => {
     render(
       <MemoryRouter>
         <HomePage />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(screen.getByText(/Welcome to Lerna Monorepo/)).toBeInTheDocument();
   });
@@ -17,11 +17,26 @@ describe('HomePage', () => {
     render(
       <MemoryRouter>
         <HomePage />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
     expect(screen.getByText('Express')).toBeInTheDocument();
     expect(screen.getByText('Vite')).toBeInTheDocument();
     expect(screen.getByText('Vitest')).toBeInTheDocument();
     expect(screen.getByText('TypeScript')).toBeInTheDocument();
+    expect(screen.getByText('Tailwind CSS')).toBeInTheDocument();
+  });
+
+  it('should render all feature cards as links', () => {
+    render(
+      <MemoryRouter>
+        <HomePage />
+      </MemoryRouter>
+    );
+    const links = screen.getAllByRole('link');
+    expect(links.length).toBe(10);
+    links.forEach((link) => {
+      expect(link).toHaveAttribute('target', '_blank');
+      expect(link).toHaveAttribute('rel', 'noreferrer noopener');
+    });
   });
 });
