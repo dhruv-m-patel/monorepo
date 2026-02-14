@@ -27,6 +27,8 @@ after each iteration and it's included in prompts for context.
 - **window.matchMedia in jsdom/Vitest**: jsdom doesn't implement `window.matchMedia`. When components use `prefers-color-scheme` media queries (e.g., theme detection), add a mock in `setupTests.ts` using `Object.defineProperty(window, 'matchMedia', { writable: true, value: vi.fn().mockImplementation(...) })`.
 - **Jest to Vitest migration checklist**: Replace `jest.fn()` with `vi.fn()`, `jest.spyOn` with `vi.spyOn`, `jest.restoreAllMocks()` with `vi.restoreAllMocks()`, add explicit imports from `vitest`, replace `done` callback pattern with `return new Promise<void>()`, and remove `@types/jest`, `ts-jest`, `jest` deps.
 - **Vitest workspace for monorepos**: Create `vitest.workspace.ts` at root using `defineWorkspace()` from `vitest/config` pointing to each package's `vitest.config.ts`. Each package still runs tests independently via `vitest run` in its own scripts.
+- **Playwright E2E in monorepos**: Install `@playwright/test` at root level. Use `webServer` array in `playwright.config.ts` to start both frontend (Vite) and backend (Express) before tests. Service needs `bundle:api &&` prefix if it depends on bundled API spec. Use `-- --no-open` flag for Vite to prevent browser auto-open during E2E runs.
+- **Vite proxy for API calls**: When web-app fetches `/api/*` and the service runs on a different port, add `server.proxy` in `vite.config.ts` to forward requests: `'/api': { target: 'http://localhost:4000', changeOrigin: true }`.
 
 ---
 
@@ -360,4 +362,42 @@ after each iteration and it's included in prompts for context.
   - `vitest.workspace.ts` at the monorepo root enables running all workspace tests with a single `vitest run` command, but individual packages can still run tests independently with their own `vitest.config.ts`.
   - `@testing-library/user-event` v14 needs to be explicitly installed - it's not bundled with `@testing-library/react`. The `userEvent.setup()` pattern is required for v14+ (replaces direct `userEvent.click()` calls).
   - The `no-constant-binary-expression` ESLint rule catches `false && 'bar'` in tests as a constant truthiness issue. Use a variable (`const show = false; show && 'bar'`) to avoid the lint error while testing conditional class behavior.
+---
+
+## 2026-02-14 - US-011
+- What was implemented:
+  - Added Playwright E2E testing at root level with `@playwright/test` v1.58.2
+  - Created `playwright.config.ts` at root with dual `webServer` config (Vite on port 3000, Express on port 4000)
+  - Configured Chromium-only project for fast CI runs with headless mode
+  - HTML report generated on failure (`playwright-report/`), traces on first retry
+  - Added Vite proxy config (`server.proxy`) for `/api` requests forwarding to service on port 4000
+  - E2E test: home page loads correctly (5 tests) - title, heading, feature cards, header with dark mode toggle, footer
+  - E2E test: navigation (4 tests) - external links, unknown route handling, root path, layout structure persistence
+  - E2E test: API health check (3 tests) - `/health` text endpoint, `/api/health` JSON endpoint, `/api/message` JSON endpoint
+  - E2E test: web-app ↔ service communication (2 tests) - fetch message via Vite proxy, health check via proxy
+  - Total: 14 E2E tests across 4 spec files, all passing
+  - Added `yarn test:e2e` script to root `package.json` running `playwright test`
+  - Updated `eslint.config.mjs`: added `playwright-report/` and `test-results/` to ignores, added `e2e/**/*.ts` and `**/*.spec.ts` to test files config, added `playwright.config.ts` to node globals, added E2E test files node globals section
+  - Updated `.gitignore` and `.prettierignore` to exclude `playwright-report/` and `test-results/`
+  - All quality checks pass: `yarn build`, `yarn lint`, `yarn test`, `yarn test:e2e`
+- Files changed:
+  - `package.json` - added `@playwright/test` devDependency, `test:e2e` script
+  - `playwright.config.ts` (new) - Playwright configuration with dual webServer
+  - `e2e/home-page.spec.ts` (new) - home page E2E tests (5 tests)
+  - `e2e/navigation.spec.ts` (new) - navigation E2E tests (4 tests)
+  - `e2e/api-health.spec.ts` (new) - API health check E2E tests (3 tests)
+  - `e2e/web-app-service.spec.ts` (new) - web-app ↔ service communication E2E tests (2 tests)
+  - `web-app/vite.config.ts` - added `server.proxy` for `/api` -> `http://localhost:4000`
+  - `eslint.config.mjs` - added Playwright ignores, E2E test file configs, playwright.config.ts to node globals
+  - `.gitignore` - added `playwright-report/`, `test-results/`
+  - `.prettierignore` - added `playwright-report`, `test-results`
+- **Learnings:**
+  - Playwright's `webServer` config supports an array of servers, making it ideal for monorepos with separate frontend and backend. Each entry can have its own `command`, `url`, and `timeout`.
+  - The service requires `bundle:api` to be run before `dev` because it references `build/api/api-spec.yaml` at runtime. Chain the commands with `&&` in the `webServer.command`.
+  - Vite's `open: true` config tries to open a browser during E2E runs. Pass `-- --no-open` via the Playwright webServer command to prevent this.
+  - When the web-app makes relative API calls (e.g., `fetch('/api/message')`), Vite's `server.proxy` is needed to forward these to the Express service running on a different port. Without this, the calls go to Vite's own server and return 404.
+  - Playwright's `getByText()` with short strings like `'React'` can match multiple elements (headings, descriptions, footer). Use `getByRole('link', { name: /specific text/ })` for more precise matching in pages with rich content.
+  - When a `<main>` element has no content (e.g., no matched route), Playwright's `toBeVisible()` fails because the element has no dimensions. Use `toBeAttached()` instead to verify DOM presence without requiring visual visibility.
+  - Playwright in Yarn 3 workspaces: install `@playwright/test` at root level (not in a workspace package), and run `npx playwright install chromium` to download the browser binary. The `playwright test` command reads `playwright.config.ts` from the current directory.
+  - The `reuseExistingServer: !process.env.CI` pattern allows reusing already-running dev servers locally (faster iteration) while always starting fresh in CI.
 ---

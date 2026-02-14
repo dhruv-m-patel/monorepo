@@ -28,6 +28,8 @@ export default tseslint.config(
       'tasks/',
       'lerna.json',
       '**/storybook-static/',
+      'playwright-report/',
+      'test-results/',
     ],
   },
 
@@ -82,7 +84,13 @@ export default tseslint.config(
 
   // Test files - relax strict rules
   {
-    files: ['**/*.test.ts', '**/*.test.tsx', '**/tests/**/*.ts'],
+    files: [
+      '**/*.test.ts',
+      '**/*.test.tsx',
+      '**/tests/**/*.ts',
+      '**/*.spec.ts',
+      'e2e/**/*.ts',
+    ],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
     },
@@ -158,13 +166,24 @@ export default tseslint.config(
     },
   },
 
-  // Vitest config files
+  // Vitest and Playwright config files
   {
     files: [
       'service/vitest.config.ts',
       'packages/express-app/vitest.config.ts',
       'vitest.workspace.ts',
+      'playwright.config.ts',
     ],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+
+  // E2E test files
+  {
+    files: ['e2e/**/*.ts'],
     languageOptions: {
       globals: {
         ...globals.node,

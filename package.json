@@ -12,6 +12,7 @@
   "devDependencies": {
     "@apidevtools/swagger-cli": "^4.0.4",
     "@eslint/js": "^9",
+    "@playwright/test": "^1.58.2",
     "@types/node": "^22.13.0",
     "cli-glob": "^0.1.0",
     "dotenv": "^16.0.3",
@@ -56,6 +57,7 @@
     "prettier:verify": "prettier --check .",
     "storybook": "lerna run storybook --stream",
     "build-storybook": "lerna run build-storybook --stream",
+    "test:e2e": "playwright test",
     "typecheck": "lerna run typecheck --stream",
     "version": "lerna version --yes"
   },

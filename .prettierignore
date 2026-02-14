@@ -11,3 +11,5 @@ readme.md
 .turbo
 tasks
 storybook-static
+playwright-report
+test-results
