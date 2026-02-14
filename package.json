@@ -26,6 +26,7 @@
     "lerna": "^6.5.1",
     "lint-staged": "^13.1.2",
     "prettier": "^2.8.4",
+    "turbo": "^2.8.8",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8"
   },
@@ -38,18 +39,16 @@
     ]
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "build": "lerna run build --stream",
-    "bundle:api": "lerna run bundle:api",
-    "ci:build": "lerna run build --stream",
-    "ci:test": "lerna run test:ci --stream",
+    "build": "turbo run build",
+    "bundle:api": "turbo run bundle:api",
+    "ci:build": "turbo run build",
+    "ci:test": "turbo run test:ci",
     "ci:lint": "eslint . && yarn run lint:spec && yarn prettier:verify",
-    "clean": "lerna clean -y",
-    "diff": "lerna diff",
+    "clean": "turbo run clean",
     "start": "lerna run start --stream",
     "start:prod": "lerna run start --stream -- -- dotenv_config_path=../../.env",
     "dev": "lerna run dev --stream -- -- dotenv_config_path=../../.env",
-    "test": "lerna run test --stream",
+    "test": "turbo run test",
     "lint": "eslint . && yarn run lint:spec && yarn prettier:verify",
     "lint:spec": "glob '**/src/**/api-spec.yaml' | xargs -n1 npx swagger-cli validate",
     "lint:fix": "lerna run lint:fix --stream",
@@ -60,7 +59,7 @@
     "test:e2e": "playwright test",
     "test:perf": "yarn workspace service run bundle:api && yarn workspace service run test:perf",
     "test:size": "yarn workspace web-app run build && yarn workspace web-app run test:size",
-    "typecheck": "lerna run typecheck --stream",
+    "typecheck": "turbo run typecheck",
     "version": "lerna version --yes"
   },
   "packageManager": "yarn@3.2.3"

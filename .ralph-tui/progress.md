@@ -32,6 +32,8 @@ after each iteration and it's included in prompts for context.
 - **Autocannon percentiles**: Autocannon provides p50, p75, p90, p97_5, p99 (no p95). Use `p97_5` as the closest approximation when testing against p95 thresholds. The `@types/autocannon` Histogram interface defines `p97_5` not `p95`.
 - **Vitest perf test isolation**: Use a separate `vitest.perf.config.ts` with `include: ['tests/performance/**/*.perf.test.ts']` and add `exclude: ['tests/performance/**']` to the main `vitest.config.ts` so performance tests don't run during `yarn test`. Run them via `yarn test:perf` which references the separate config.
 - **size-limit with @size-limit/file for Vite**: Use `@size-limit/file` (not `@size-limit/esbuild`) for Vite projects since the bundle is already built. `@size-limit/esbuild` tries to re-bundle and chokes on `.map` files. The `ignore` config option requires a bundler plugin - with `@size-limit/file`, use explicit glob patterns or arrays of paths instead. By default, `@size-limit/file` uses brotli compression; set `gzip: true` explicitly for gzip measurement.
+- **Turborepo in Yarn 3 workspaces**: Install `turbo` as a root devDependency. Turborepo auto-detects Yarn workspaces - no `workspaces` field needed in `turbo.json`. Use `dependsOn: ["^build"]` for tasks that need upstream packages built first. Turborepo replaces `lerna run` for task orchestration (`turbo run build` vs `lerna run build --stream`). Keep `lerna` for interactive/streaming tasks like `dev` and `start` that don't benefit from caching.
+- **GitHub Actions with Yarn 3 caching**: Use `actions/setup-node@v4` with `cache: 'yarn'` for automatic Yarn cache management. Use `yarn install --immutable` instead of `--frozen-lockfile` (Yarn 3 syntax). Don't need `yarn bootstrap` with Turborepo - Yarn workspaces handle linking automatically on install.
 
 ---
 
@@ -467,4 +469,54 @@ after each iteration and it's included in prompts for context.
   - `@size-limit/file` defaults to brotli compression measurement when neither `gzip` nor `brotli` is specified. Set `gzip: true` explicitly if you want gzip sizes for consistency with Vite's build output reporting.
   - size-limit v12 exits with non-zero code when any limit is exceeded, making it CI-friendly out of the box - no wrapper script needed.
   - The `--json` flag outputs machine-readable results with `name`, `passed`, `size`, and `sizeLimit` fields - ideal for PR comment generation and CI artifact storage.
+---
+
+## 2026-02-14 - US-014
+- What was implemented:
+  - Installed Turborepo (`turbo` v2.8.8) as root devDependency for CI task orchestration
+  - Created `turbo.json` with task dependency graph (build -> ^build, test -> ^build, typecheck -> ^build, bundle:api standalone, test:perf -> bundle:api, test:size -> build)
+  - Updated root `package.json` scripts to use `turbo run` instead of `lerna run` for: build, bundle:api, ci:build, ci:test, clean, test, typecheck
+  - Kept `lerna run` for interactive/streaming tasks (start, dev, storybook) that don't benefit from Turborepo caching
+  - Rewrote `.github/workflows/build.yml` (CI on push to master): upgraded actions/checkout@v4, actions/setup-node@v4 with Yarn cache, removed `yarn bootstrap`, uses `yarn install --immutable`, added typecheck step, uses Turborepo for build/test
+  - Created `.github/workflows/pr-check.yml` - comprehensive PR check workflow with 5 parallel jobs:
+    1. `lint-typecheck-build`: Lint, typecheck, build (uploads build artifacts)
+    2. `unit-tests`: Unit & integration tests (downloads build artifacts, depends on lint-typecheck-build)
+    3. `e2e-tests`: Playwright E2E tests with browser install (depends on lint-typecheck-build)
+    4. `performance-tests`: API performance tests with threshold enforcement (depends on lint-typecheck-build)
+    5. `bundle-size`: Bundle size check with PR comment reporting (depends on lint-typecheck-build)
+    6. `dependency-audit`: `yarn npm audit` for security vulnerabilities (independent, runs in parallel)
+  - PR workflow uses concurrency groups to cancel stale runs on new pushes
+  - PR workflow uploads Playwright report on failure and perf report always as artifacts
+  - Removed standalone `.github/workflows/bundle-size.yml` (consolidated into pr-check.yml)
+  - Created `.github/workflows/publish-package.yml` - independent package publishing:
+    - Triggered by git tags matching `*@*` pattern (e.g., `express-app@2.1.0`)
+    - Manual dispatch with package selection dropdown and dry-run option
+    - Builds, tests, and typechecks only the target package using `turbo run --filter`
+    - Verifies package contents with `npm pack --dry-run` before publishing
+    - Publishes to npm with `npm publish --access public`
+    - Generates GitHub step summary with package info
+  - Added `repository` field to `packages/express-app/package.json` for npm metadata
+  - Added `.turbo` to `.gitignore`
+  - Configured Turborepo remote caching env vars (`TURBO_TOKEN`, `TURBO_TEAM`) in all workflows
+  - All workflows use Node 22 (via `.nvmrc` file) and Yarn 4 (via `packageManager` field)
+  - All quality checks pass: `yarn build`, `yarn lint`, `yarn test`, `yarn typecheck`
+- Files changed:
+  - `package.json` - added `turbo` devDependency, updated scripts to use `turbo run`
+  - `turbo.json` (new) - Turborepo task configuration with dependency graph
+  - `.github/workflows/build.yml` - rewritten with modern actions, Turborepo, Yarn 3 caching
+  - `.github/workflows/pr-check.yml` (new) - comprehensive PR check workflow with 6 parallel jobs
+  - `.github/workflows/publish-package.yml` (new) - independent package publishing via tags/manual dispatch
+  - `.github/workflows/bundle-size.yml` (deleted) - consolidated into pr-check.yml
+  - `packages/express-app/package.json` - added `repository` field
+  - `.gitignore` - added `.turbo`
+- **Learnings:**
+  - Turborepo auto-detects Yarn workspaces from root `package.json` - no explicit `workspaces` config needed in `turbo.json`. The `$schema` field provides IDE autocomplete.
+  - `turbo run build` respects the task graph defined in `turbo.json`. `dependsOn: ["^build"]` means "build all upstream dependencies first" - critical for monorepos where service depends on express-app.
+  - Turborepo's local file-based caching (`.turbo/`) provides instant cache hits for unchanged packages. Remote caching via `TURBO_TOKEN`/`TURBO_TEAM` env vars enables cross-CI-run caching.
+  - For GitHub Actions with Yarn 3+, use `actions/setup-node@v4` with `cache: 'yarn'` instead of manually caching `node_modules`. The `--immutable` flag (Yarn 3 equivalent of `--frozen-lockfile`) ensures CI uses the exact lockfile.
+  - Keep `lerna run` for `dev` and `start` scripts that need process streaming and don't benefit from Turborepo's caching (long-running processes).
+  - GitHub Actions `upload-artifact@v4` / `download-artifact@v4` enable build artifact sharing between parallel jobs, avoiding redundant builds. The lint-typecheck-build job builds once and shares artifacts with test jobs.
+  - Publish workflow uses `turbo run --filter=./packages/express-app` to build/test only the target package and its dependencies, not the entire monorepo.
+  - `npm pack --dry-run` is a useful pre-publish verification step that shows exactly which files will be included in the published package.
+  - `yarn npm audit --all --recursive` is the Yarn 3 equivalent of `npm audit` and checks all workspace packages. Using `|| true` prevents audit failures from blocking the entire PR (advisory, not blocking).
 ---

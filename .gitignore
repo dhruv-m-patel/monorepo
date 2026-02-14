@@ -6,6 +6,7 @@ coverage/
 .env
 .DS_Store
 *.log
+.turbo
 storybook-static/
 playwright-report/
 test-results/
