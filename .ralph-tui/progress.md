@@ -24,6 +24,9 @@ after each iteration and it's included in prompts for context.
 - **Path aliases in Vite + Vitest**: When using `@/` path alias, configure it in BOTH `vite.config.ts` (via `resolve.alias`) AND `vitest.config.ts` (separate alias config) AND `tsconfig.json` (via `baseUrl` + `paths`). Vitest uses its own config, not the main Vite config.
 - **Storybook v8 + Vite + Tailwind CSS v4**: Use `@storybook/react-vite` framework. Import the app's CSS (with `@import 'tailwindcss'` and `@theme {}`) in `preview.ts` so Tailwind styles apply to stories. Configure `@/` path alias in `viteFinal` within `.storybook/main.ts`. Storybook's Vite builder picks up `@tailwindcss/vite` automatically if it's in the app's Vite config dependencies.
 - **Storybook v8 in monorepos with Yarn workspaces**: When old `.storybook/main.js` exists alongside new `main.ts`, Storybook loads `.js` first and ignores `.ts`. Always remove legacy config files when upgrading.
+- **window.matchMedia in jsdom/Vitest**: jsdom doesn't implement `window.matchMedia`. When components use `prefers-color-scheme` media queries (e.g., theme detection), add a mock in `setupTests.ts` using `Object.defineProperty(window, 'matchMedia', { writable: true, value: vi.fn().mockImplementation(...) })`.
+- **Jest to Vitest migration checklist**: Replace `jest.fn()` with `vi.fn()`, `jest.spyOn` with `vi.spyOn`, `jest.restoreAllMocks()` with `vi.restoreAllMocks()`, add explicit imports from `vitest`, replace `done` callback pattern with `return new Promise<void>()`, and remove `@types/jest`, `ts-jest`, `jest` deps.
+- **Vitest workspace for monorepos**: Create `vitest.workspace.ts` at root using `defineWorkspace()` from `vitest/config` pointing to each package's `vitest.config.ts`. Each package still runs tests independently via `vitest run` in its own scripts.
 
 ---
 
@@ -302,4 +305,59 @@ after each iteration and it's included in prompts for context.
   - Components using React Context (like `Layout` using `ThemeContext`) need decorators in their story meta to wrap stories with the required providers.
   - `@storybook/addon-a11y` was referenced in old v6 config but was never installed. v8 doesn't include it by default - it's a separate optional addon.
   - In Yarn 3 monorepos with Storybook, pinning to `^8` is important because the default `latest` tag may resolve to a newer major version (e.g., v10) causing peer dependency mismatches with v8 addons.
+---
+
+## 2026-02-13 - US-010
+- What was implemented:
+  - Migrated `packages/express-app` from Jest 29 to Vitest 3.x (last remaining Jest package)
+  - Removed all Jest dependencies: `jest`, `ts-jest`, `ts-node`, `@types/jest` from express-app
+  - Removed root `jest.config.js` and stale `jest.mock.js`
+  - Removed `pretest: "jest --clearCache"` script from root package.json
+  - Created `vitest.config.ts` for express-app with node environment and v8 coverage
+  - Migrated 3 express-app test files (19 tests) from Jest to Vitest API (`vi.fn`, `vi.spyOn`, explicit imports)
+  - Converted Jest `done` callback pattern to Vitest `return new Promise<void>()` pattern in runApp tests
+  - Updated `packages/express-app/tsconfig.json` to remove `"jest"` from types array
+  - Created `vitest.workspace.ts` at root with workspace support for all 3 packages
+  - Added unit tests for service routes: `health.test.ts` (2 tests), `message.test.ts` (3 tests)
+  - Added web-app unit tests: `ThemeContext.test.tsx` (7 tests), `MessageContext.test.tsx` (6 tests), `Layout.test.tsx` (5 tests), `button.test.tsx` (11 tests), `card.test.tsx` (14 tests), `utils.test.ts` (7 tests), `App.test.tsx` (3 tests)
+  - Added `window.matchMedia` mock to web-app `setupTests.ts` for jsdom compatibility
+  - Added `@testing-library/user-event` v14 to web-app devDependencies
+  - Added `test:ci` script to web-app package.json
+  - Configured consistent coverage reporting (text + text-summary + lcov) across all 3 packages
+  - Updated `eslint.config.mjs`: removed `globals.jest` from all configs, added express-app test files, added vitest config files to node globals section
+  - Total: 81 tests across 14 test files (19 express-app + 56 web-app + 6 service)
+  - All quality checks pass: `yarn build`, `yarn lint`, `yarn test`, `yarn typecheck`
+- Files changed:
+  - `package.json` - removed `pretest` script
+  - `jest.config.js` (deleted) - replaced by vitest workspace
+  - `jest.mock.js` (deleted) - stale file
+  - `vitest.workspace.ts` (new) - root Vitest workspace config
+  - `eslint.config.mjs` - removed Jest globals, added express-app test files glob, added vitest config files
+  - `packages/express-app/package.json` - replaced Jest with Vitest deps and scripts
+  - `packages/express-app/jest.config.js` (deleted) - replaced by vitest.config.ts
+  - `packages/express-app/vitest.config.ts` (new) - Vitest configuration
+  - `packages/express-app/tsconfig.json` - removed "jest" from types
+  - `packages/express-app/tests/configureApp.test.ts` - migrated to Vitest API
+  - `packages/express-app/tests/middleware.test.ts` - migrated to Vitest API
+  - `packages/express-app/tests/runApp.test.ts` - migrated to Vitest API (Promise pattern)
+  - `service/vitest.config.ts` - updated coverage reporters
+  - `service/tests/unit/routes/health.test.ts` (new) - health route unit test
+  - `service/tests/unit/routes/message.test.ts` (new) - message route unit test
+  - `web-app/package.json` - added @testing-library/user-event, test:ci script
+  - `web-app/vitest.config.ts` - added coverage configuration
+  - `web-app/src/setupTests.ts` - added window.matchMedia mock
+  - `web-app/src/App.test.tsx` (new) - App component tests
+  - `web-app/src/lib/utils.test.ts` (new) - cn() utility tests
+  - `web-app/src/context/ThemeContext.test.tsx` (new) - theme context and hook tests
+  - `web-app/src/context/MessageContext.test.tsx` (new) - message context and hook tests
+  - `web-app/src/components/Layout.test.tsx` (new) - Layout component tests
+  - `web-app/src/components/ui/button.test.tsx` (new) - Button component tests
+  - `web-app/src/components/ui/card.test.tsx` (new) - Card component tests
+- **Learnings:**
+  - jsdom does not implement `window.matchMedia`. Components using `prefers-color-scheme` (like ThemeContext) need a mock in setupTests.ts. The mock must return an object with `matches`, `media`, and all MediaQueryList event methods.
+  - When migrating Jest `done` callbacks to Vitest, return a `new Promise<void>()` from the test function instead. Vitest supports both patterns but the Promise approach is cleaner.
+  - Vitest's `vi.spyOn(console, 'log').mockImplementation()` requires a function argument (e.g., `() => {}`) unlike Jest which accepts no arguments.
+  - `vitest.workspace.ts` at the monorepo root enables running all workspace tests with a single `vitest run` command, but individual packages can still run tests independently with their own `vitest.config.ts`.
+  - `@testing-library/user-event` v14 needs to be explicitly installed - it's not bundled with `@testing-library/react`. The `userEvent.setup()` pattern is required for v14+ (replaces direct `userEvent.click()` calls).
+  - The `no-constant-binary-expression` ESLint rule catches `false && 'bar'` in tests as a constant truthiness issue. Use a variable (`const show = false; show && 'bar'`) to avoid the lint error while testing conditional class behavior.
 ---

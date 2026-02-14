@@ -16,5 +16,16 @@ export default defineConfig({
     globals: false,
     exclude: ['build/**', 'dist/**', 'node_modules/**'],
     css: true,
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/main.tsx',
+        'src/setupTests.ts',
+        'src/**/*.stories.tsx',
+        'src/**/*.test.{ts,tsx}',
+      ],
+      reporter: ['text', 'text-summary', 'lcov'],
+    },
   },
 });

@@ -40,7 +40,7 @@ export default tseslint.config(
   // Prettier must be last to override formatting rules
   eslintConfigPrettier,
 
-  // CommonJS config files (jest.config.js, storybook, etc.)
+  // CommonJS config files (storybook, etc.)
   {
     files: ['**/*.js'],
     languageOptions: {
@@ -68,7 +68,6 @@ export default tseslint.config(
       },
       globals: {
         ...globals.node,
-        ...globals.jest,
       },
     },
     rules: {
@@ -148,11 +147,27 @@ export default tseslint.config(
 
   // Express-app package config
   {
-    files: ['packages/express-app/src/**/*.ts'],
+    files: [
+      'packages/express-app/src/**/*.ts',
+      'packages/express-app/tests/**/*.ts',
+    ],
     languageOptions: {
       globals: {
         ...globals.node,
-        ...globals.jest,
+      },
+    },
+  },
+
+  // Vitest config files
+  {
+    files: [
+      'service/vitest.config.ts',
+      'packages/express-app/vitest.config.ts',
+      'vitest.workspace.ts',
+    ],
+    languageOptions: {
+      globals: {
+        ...globals.node,
       },
     },
   }

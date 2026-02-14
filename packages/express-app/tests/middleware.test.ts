@@ -1,3 +1,4 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import express from 'express';
 import request from 'supertest';
 import {
@@ -57,7 +58,9 @@ describe('middleware', () => {
     });
 
     it('should log the error to console', async () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
 
       app.get('/logged-error', (req, res, next) => {
         next(new Error('logged'));

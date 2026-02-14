@@ -1,3 +1,4 @@
+import { describe, it, expect, vi } from 'vitest';
 import { Request, Response } from 'express';
 import request from 'supertest';
 import { configureApp } from '../src/index';
@@ -52,7 +53,7 @@ describe('configureApp', () => {
   });
 
   it('should call the setup function with the app', async () => {
-    const setupFn = jest.fn((expressApp) => {
+    const setupFn = vi.fn((expressApp) => {
       expressApp.get('/custom', (req: Request, res: Response) => {
         res.json({ custom: true });
       });

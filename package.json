@@ -52,7 +52,6 @@
     "lint": "eslint . && yarn run lint:spec && yarn prettier:verify",
     "lint:spec": "glob '**/src/**/api-spec.yaml' | xargs -n1 npx swagger-cli validate",
     "lint:fix": "lerna run lint:fix --stream",
-    "pretest": "jest --clearCache",
     "prettier:format": "prettier --write .",
     "prettier:verify": "prettier --check .",
     "storybook": "lerna run storybook --stream",
