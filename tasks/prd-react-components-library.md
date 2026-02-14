@@ -18,17 +18,17 @@ The library integrates into the existing Yarn 3 + Lerna + Turborepo monorepo alo
 - Package is independently publishable to npm
 - Integrate with existing monorepo tooling (Turborepo, Vitest workspace, ESLint, CI)
 - Achieve >80% test coverage on all component source files
+- Full SSR and React Server Components compatibility (`'use client'` directives, SSR-safe defaults, hydration safety)
+- web-app fully migrated to use library components as a practical adoption showcase
 - Comprehensive MDX documentation with getting-started guide, theming guide, component catalog, and adoption strategy
 - Full AI-assisted development support: component-library-agent skill, slash commands, CLAUDE.md integration
 - After completion, a future developer can add a new component using AI tools without reading the PRD
 
 ## Non-Goals
 
-- No SSR/RSC support (client components only)
 - No built-in data fetching or state management beyond theming
 - No complex composite patterns (DataTable, Sidebar, DatePicker are deferred to a future phase)
 - No animation library dependency (CSS transitions only)
-- No change to existing `web-app` components until Phase 7 (integration)
 
 ## Quality Gates
 
@@ -51,11 +51,11 @@ This PRD is designed for execution by a **team of parallel agents** using the ex
 
 | Agent / Skill | Role in This PRD | Used In |
 |--------------|-----------------|---------|
-| **feature-implementer** (`.claude/agents/feature-implementer.md`) | Primary agent — takes a user story, implements it end-to-end (code + stories + tests), runs quality gates, updates progress log | US-001 through US-013 |
+| **feature-implementer** (`.claude/agents/feature-implementer.md`) | Primary agent — takes a user story, implements it end-to-end (code + stories + tests), runs quality gates, updates progress log | US-001 through US-013, US-016 |
 | **test-writer** (`.claude/skills/test-writer/SKILL.md`) | Delegated by feature-implementer to generate comprehensive Vitest tests with >80% coverage for each component | US-003 through US-012 |
 | **component-generator** (`.claude/skills/component-generator/SKILL.md`) | Delegated by feature-implementer to scaffold component file structure (component + story + test + index) | US-003 through US-012 |
 | **code-reviewer** (`.claude/skills/code-reviewer/SKILL.md`) | Run after each phase completes to review all changes against monorepo conventions before committing | After each phase |
-| **pr-creator** (`.claude/agents/pr-creator.md`) | Creates the final PR after all stories are complete | After US-015 |
+| **pr-creator** (`.claude/agents/pr-creator.md`) | Creates the final PR after all stories are complete | After US-016 |
 
 ### Agent Execution Plan
 
@@ -84,11 +84,15 @@ PHASE 4 — Parallel (4 agents, after Phase 1 — only needs theme)
   ↓ code-reviewer skill validates all 4 → commit each
 
 PHASE 5 — Sequential (1 agent, after all component phases)
-  Agent A: US-013 (barrel exports, integration, verification)
+  Agent A: US-013 (barrel exports, full web-app adoption, verification)
   ↓ commit
 
-PHASE 6 — Parallel (2 agents, after Phase 5)
-  Agent A: US-014 (component-library-agent skill)
+PHASE 6 — Sequential (1 agent, after Phase 5)
+  Agent A: US-016 (SSR/RSC compatibility, 'use client' directives, SSR tests)
+  ↓ commit
+
+PHASE 7 — Parallel (2 agents, after Phase 6)
+  Agent A: US-014 (AI-assisted development framework)
   Agent B: US-015 (documentation, MDX docs, adoption guide)
   ↓ code-reviewer validates → commit each
 
@@ -513,9 +517,9 @@ As a developer, I want data display components for tabular data and command pale
 
 ---
 
-### US-013: Barrel exports, web-app integration, and full verification
+### US-013: Barrel exports, full web-app adoption, and verification
 
-As a developer, I want the library fully exported, integrated into web-app as a proof-of-concept, and all quality gates passing.
+As a developer, I want the library fully exported and the existing web-app fully migrated to use library components — demonstrating a practical, real-world adoption use case.
 
 **Priority**: 2
 
@@ -525,17 +529,28 @@ As a developer, I want the library fully exported, integrated into web-app as a 
 
 - [ ] `src/index.ts` exports ALL components, theme provider, hooks, types, and utilities
 - [ ] Package builds successfully with Vite library mode (ESM output in `dist/`)
+- [ ] No circular dependencies in the barrel export
+- [ ] Package `exports` field in `package.json` correctly maps to built artifacts
 - [ ] `web-app/package.json` adds `@dhruv-m-patel/react-components: "workspace:*"` as dependency
-- [ ] `web-app` imports `Button` and `Card` from `@dhruv-m-patel/react-components` in at least one page to prove integration works (does NOT need to replace all existing components — proof of concept only)
+- [ ] **Full web-app migration** — replace ALL local UI components with library imports:
+  - `web-app/src/components/ui/button.tsx` replaced by `Button` from `@dhruv-m-patel/react-components`
+  - `web-app/src/components/ui/card.tsx` replaced by `Card`, `CardHeader`, `CardTitle`, `CardContent`, `CardFooter` from `@dhruv-m-patel/react-components`
+  - Local `web-app/src/components/ui/` directory removed (or emptied) — all UI primitives come from the library
+- [ ] **ThemeProvider migration** — `web-app/src/context/ThemeContext.tsx` replaced by the library's `ThemeProvider` and `useTheme` hook:
+  - `App.tsx` wraps with library's `<ThemeProvider>` instead of local `<ThemeProvider>`
+  - Dark mode toggle in `Layout` uses library's `useTheme()` hook
+  - Existing theme CSS variables in `web-app/src/index.css` remain (or merge with library's theme CSS)
+- [ ] **HomePage migration** — `web-app/src/pages/HomePage.tsx` uses library components exclusively (Card, Button, Typography, FlexGrid where applicable)
+- [ ] **Layout migration** — `web-app/src/components/Layout.tsx` uses library components where applicable (Button for theme toggle, Typography for headings)
+- [ ] web-app renders identically before and after migration (visual parity — no regressions)
+- [ ] web-app existing tests still pass after migration
 - [ ] `packages/react-components` Storybook builds: `yarn workspace @dhruv-m-patel/react-components run build-storybook`
 - [ ] All tests pass: `yarn test`
 - [ ] Full build passes: `yarn build`
 - [ ] Typecheck passes: `yarn typecheck`
 - [ ] Lint passes: `yarn lint`
-- [ ] No circular dependencies in the barrel export
-- [ ] Package `exports` field in `package.json` correctly maps to built artifacts
 
-**Notes**: Integration is intentionally light — just prove the workspace link works and components render. Full migration of web-app to use the library is out of scope for this PRD.
+**Notes**: This is the flagship adoption demonstration. The web-app should look and behave identically after migration — proving the library is a drop-in replacement. Remove local UI component files after migration to avoid confusion. The ThemeProvider migration is key — it proves the library's theming system works as a complete replacement for custom theme implementations.
 
 ---
 
@@ -601,6 +616,51 @@ As a developer adopting the library, I want comprehensive documentation linked t
 
 ---
 
+### US-016: SSR and React Server Components compatibility
+
+As a developer using Next.js or another SSR framework, I want every component in the library to work correctly in server-side rendering and React Server Component environments so that I can adopt the library in any React application regardless of rendering strategy.
+
+**Priority**: 2
+
+**Dependencies**: US-013 (all components must exist and pass quality gates first)
+
+**Acceptance Criteria**:
+
+- [ ] **`'use client'` directive**: Every component file that uses React hooks, event handlers, `useRef`, `useEffect`, `useState`, `useContext`, or browser APIs has `'use client'` at the top of the file. This includes:
+  - All Radix-based components (Dialog, Select, Tooltip, Popover, etc.)
+  - ThemeProvider, useTheme
+  - Toast system (ToastProvider, useToast, Toaster)
+  - InputOTP (uses internal state)
+  - Toggle, ToggleGroup (uses Radix state)
+  - Components with `forwardRef` that also use hooks internally
+- [ ] **Pure presentational components** that do NOT need `'use client'` (they can render on the server):
+  - Badge, Separator, Skeleton, Typography (H1-H4, P, Lead, etc.), Card sub-components, Table sub-components, Breadcrumb, Pagination, FlexGrid, FlexGrid.Column
+  - Verify these render correctly without `'use client'` directive
+- [ ] **Barrel export compatibility**: `src/index.ts` re-exports both client and server-safe components — consumers can import any component and the bundler (Next.js, Remix, etc.) handles the client boundary correctly
+- [ ] **No `window`/`document` access at module scope**: All browser API access (localStorage, matchMedia, document.documentElement) is guarded behind `useEffect`, event handlers, or `typeof window !== 'undefined'` checks
+  - ThemeProvider: localStorage access only in useEffect, not during SSR render
+  - Toast: portal rendering only in useEffect
+  - System theme detection (matchMedia) only in useEffect
+- [ ] **SSR-safe defaults**: Components that depend on client state (theme, toast) render a sensible default on the server (e.g., light theme, no toasts) without hydration mismatch warnings
+- [ ] **Hydration safety**: No React hydration mismatches — server-rendered HTML matches initial client render for all components
+- [ ] **SSR test suite**: `packages/react-components/tests/ssr/` directory with tests that:
+  - Use `renderToString` from `react-dom/server` to render each component
+  - Verify no errors or warnings during server render
+  - Verify ThemeProvider renders with default theme on server
+  - Verify components with Radix primitives render their closed/default state on server
+  - Verify no `window is not defined` or `document is not defined` errors
+- [ ] **Package.json exports** updated to support both ESM and SSR bundlers:
+  - `"type": "module"` in package.json
+  - `exports` field with proper conditions (`import`, `types`)
+- [ ] `yarn build` passes
+- [ ] `yarn test` passes (including new SSR tests)
+- [ ] `yarn typecheck` passes
+- [ ] `yarn lint` passes
+
+**Notes**: The key principle is **progressive enhancement** — the library works in SSR environments by default, and components that need client-side interactivity declare themselves with `'use client'`. This does NOT require the library to be a Next.js-specific package — `'use client'` is a React convention that bundlers understand. The SSR test suite using `renderToString` is lightweight and runs in Node.js (no browser needed). Radix primitives generally handle SSR well since they render in their closed/default state on the server and hydrate on the client.
+
+---
+
 ## Execution Order
 
 Respecting dependencies and maximizing parallelism (aligned with Agent Execution Plan above):
@@ -631,10 +691,14 @@ Phase 4 — Parallel (4 agents, after Phase 1 — only needs theme):
   ↓ code-reviewer validates → commit each
 
 Phase 5 — Sequential (1 agent, after all component phases):
-  └── US-013: Barrel exports, web-app integration, full verification
+  └── US-013: Barrel exports, full web-app adoption, verification
   ↓ commit
 
-Phase 6 — Parallel (2 agents, after Phase 5):
+Phase 6 — Sequential (1 agent, after Phase 5):
+  └── US-016: SSR and React Server Components compatibility
+  ↓ commit
+
+Phase 7 — Parallel (2 agents, after Phase 6):
   ├── Agent A: US-014 (AI-assisted development framework)
   └── Agent B: US-015 (documentation, MDX docs, adoption guide)
   ↓ code-reviewer validates → commit each
@@ -643,7 +707,7 @@ FINAL — Sequential (1 agent):
   └── pr-creator agent: Creates PR from all commits
 ```
 
-**Note**: Phases 2-4 can overlap if dependencies allow. Phase 3 depends on Phase 2 (US-003 provides Label for US-007). Phase 4 only depends on Phase 1 (theme engine). The orchestrator should schedule phases to maximize agent utilization.
+**Note**: Phases 2-4 can overlap if dependencies allow. Phase 3 depends on Phase 2 (US-003 provides Label for US-007). Phase 4 only depends on Phase 1 (theme engine). US-016 runs after US-013 because it adds `'use client'` directives and SSR tests across all existing components. The orchestrator should schedule phases to maximize agent utilization.
 
 ## Commit Strategy
 
@@ -663,9 +727,10 @@ Each user story produces a conventional commit upon completion:
 | US-010 | `feat(react-components): add Card, AspectRatio, ScrollArea, Resizable, FlexGrid` |
 | US-011 | `feat(react-components): add DropdownMenu, ContextMenu, Menubar` |
 | US-012 | `feat(react-components): add Table, Command` |
-| US-013 | `feat(react-components): barrel exports, web-app integration, verification` |
+| US-013 | `feat(react-components): barrel exports, full web-app adoption, verification` |
 | US-014 | `feat(ai-framework): add component-library-agent skill, slash commands, CLAUDE.md` |
 | US-015 | `docs(react-components): add MDX documentation, adoption guide, component catalog` |
+| US-016 | `feat(react-components): add SSR/RSC compatibility with 'use client' directives` |
 
 **Update this plan document** before each commit to reflect completed checkboxes.
 
@@ -686,9 +751,15 @@ Each user story produces a conventional commit upon completion:
 - **Risk**: Storybook v8 + Vitest + composeStories integration may require specific setup
   - **Mitigation**: Research `@storybook/experimental-addon-test` or `@storybook/react/portable-stories-vitest` early in US-001.
 
+- **Risk**: SSR compatibility may break Radix-based components that access browser APIs at render time
+  - **Mitigation**: All browser API access (localStorage, matchMedia, document) must be in `useEffect` or guarded by `typeof window !== 'undefined'`. Radix primitives are generally SSR-safe. Validate early with Dialog + ThemeProvider `renderToString` test.
+
+- **Risk**: Full web-app migration may introduce visual regressions
+  - **Mitigation**: Run web-app dev server before and after migration to verify visual parity. Run existing web-app tests and E2E tests to catch regressions. Component API should be a superset of web-app's current usage.
+
 ## Success Metrics
 
-- All 15 user stories completed with acceptance criteria checked off
+- All 16 user stories completed with acceptance criteria checked off
 - ~50+ components built with consistent patterns (including FlexGrid layout system)
 - Every component has a story and a test
 - **>80% test coverage** on all component source files (statements, branches, functions, lines)
@@ -696,7 +767,8 @@ Each user story produces a conventional commit upon completion:
 - Storybook builds and renders all components with autodocs
 - MDX documentation covers getting started, theming, patterns, testing, and adoption
 - Component catalog organizes all components by category with Storybook links
-- web-app successfully imports from the library (proof-of-concept integration)
+- **web-app fully migrated** to use library components — no local UI primitives remain, visual parity preserved
+- **SSR/RSC compatible** — all components render without errors via `renderToString`, proper `'use client'` directives, no hydration mismatches
 - AI-assisted development framework complete: component-library-agent skill, slash commands, CLAUDE.md updates
 - Every exported component/type has JSDoc with `@example` tags
 - Zero TypeScript errors under strict mode
