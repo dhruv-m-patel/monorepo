@@ -193,8 +193,8 @@ As a developer, I want a theme engine with CSS variables, a ThemeProvider, and a
 
 **Acceptance Criteria**:
 
-- [ ] `src/styles/theme.css` defines full OKLCH color token set in `@theme {}` block: background, foreground, card, popover, primary, secondary, muted, accent, destructive, border, input, ring (each with `-foreground` counterpart), plus radius-sm/md/lg/xl, font-sans
-- [ ] `.dark` selector overrides all color tokens for dark mode
+- [ ] `src/styles/theme.css` defines the full default theme (see **Default Theme Specification** below)
+- [ ] `.dark` selector overrides all color tokens for dark mode (see spec below)
 - [ ] `src/theme/types.ts` exports `ThemeConfig` type (theme mode + overrides), `ColorPalette` type (all token names as optional string fields)
 - [ ] `src/theme/ThemeProvider.tsx` accepts `defaultTheme?: 'light' | 'dark' | 'system'`, `overrides?: Partial<ColorPalette>`, persists to localStorage, toggles `.dark` class, injects CSS variable overrides as inline styles
 - [ ] `src/theme/useTheme.ts` exports `useTheme()` hook returning `{ theme, setTheme, toggleTheme }`
@@ -206,7 +206,188 @@ As a developer, I want a theme engine with CSS variables, a ThemeProvider, and a
 - [ ] `yarn test` passes
 - [ ] `yarn typecheck` passes
 
-**Notes**: The theme CSS is the foundation. Components reference tokens like `bg-primary`, `text-muted-foreground` etc. The `createTheme` utility is the primary consumer API for customization — keep it simple (object in, CSS var map out).
+#### Default Theme Specification
+
+The default theme is inspired by the [Cruip Mosaic](https://cruip.com/demos/mosaic/) dashboard template — a clean, professional SaaS aesthetic with a violet primary accent, warm-neutral gray scale, and polished light/dark variants. All color values use OKLCH for perceptual uniformity.
+
+**Design principles:**
+- Warm-neutral gray scale (not blue-tinted slate) for backgrounds and text
+- Violet primary accent — rich and saturated, works for buttons, links, focus rings, and data visualization
+- Sky blue secondary accent — for informational elements and chart complements
+- Minimal shadows, generous spacing, rounded corners
+- Dark mode uses deep gray backgrounds (not pure black) with slightly elevated card surfaces
+- Form accent colors (checkboxes, toggles, focus rings) always use the violet primary
+
+**Font:**
+```css
+--font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+```
+
+**Typography scale** (matches Mosaic's tight letter-spacing for larger sizes):
+```css
+--text-xs: 0.75rem;     /* line-height: 1.5 */
+--text-sm: 0.875rem;    /* line-height: 1.5715 */
+--text-base: 1rem;      /* line-height: 1.5, letter-spacing: -0.01em */
+--text-lg: 1.125rem;    /* line-height: 1.5, letter-spacing: -0.01em */
+--text-xl: 1.25rem;     /* line-height: 1.5, letter-spacing: -0.01em */
+--text-2xl: 1.5rem;     /* line-height: 1.33, letter-spacing: -0.01em */
+--text-3xl: 1.88rem;    /* line-height: 1.33, letter-spacing: -0.01em */
+--text-4xl: 2.25rem;    /* line-height: 1.25, letter-spacing: -0.02em */
+```
+
+**Border radius:**
+```css
+--radius-sm: 0.25rem;   /* small elements: badges, tags */
+--radius-md: 0.375rem;  /* inputs, buttons */
+--radius-lg: 0.5rem;    /* cards, dialogs */
+--radius-xl: 0.75rem;   /* large containers, sheets */
+```
+
+**Shadow:**
+```css
+--shadow-sm: 0 1px 1px 0 rgb(0 0 0 / 0.05), 0 1px 2px 0 rgb(0 0 0 / 0.02);
+```
+
+##### Light Mode Tokens (default)
+
+```css
+@theme {
+  /* Semantic surface colors */
+  --color-background: oklch(0.985 0.002 247);     /* #f9fafb — warm off-white page bg */
+  --color-foreground: oklch(0.175 0.015 250);      /* #111827 — near-black text */
+
+  --color-card: oklch(1 0 0);                      /* #ffffff — white card surface */
+  --color-card-foreground: oklch(0.175 0.015 250); /* #111827 — dark text on cards */
+
+  --color-popover: oklch(1 0 0);                   /* #ffffff — white popover surface */
+  --color-popover-foreground: oklch(0.175 0.015 250);
+
+  /* Primary — Violet (Mosaic violet-500 #8470ff) */
+  --color-primary: oklch(0.592 0.19 292);          /* #8470ff — rich violet */
+  --color-primary-foreground: oklch(0.985 0 0);    /* #ffffff — white text on primary */
+
+  /* Secondary — Sky blue (Mosaic sky-500 #67bfff) */
+  --color-secondary: oklch(0.78 0.12 230);         /* #67bfff — informational blue */
+  --color-secondary-foreground: oklch(0.175 0.015 250);
+
+  /* Muted — Light gray for subdued backgrounds and text */
+  --color-muted: oklch(0.965 0.002 247);           /* #f3f4f6 — gray-100 */
+  --color-muted-foreground: oklch(0.506 0.015 250); /* #6b7280 — gray-500 */
+
+  /* Accent — Violet-tinted highlight for hover states */
+  --color-accent: oklch(0.955 0.03 292);           /* #f1eeff — violet-50 tint */
+  --color-accent-foreground: oklch(0.175 0.015 250);
+
+  /* Destructive — Red (Mosaic red-500 #ff5656) */
+  --color-destructive: oklch(0.592 0.22 25);       /* #ff5656 — attention red */
+  --color-destructive-foreground: oklch(0.985 0 0);
+
+  /* Success — Green (Mosaic green-500 #3ec972) */
+  --color-success: oklch(0.70 0.18 155);           /* #3ec972 — positive green */
+  --color-success-foreground: oklch(0.985 0 0);
+
+  /* Warning — Yellow (Mosaic yellow-500 #f0bb33) */
+  --color-warning: oklch(0.82 0.15 85);            /* #f0bb33 — caution yellow */
+  --color-warning-foreground: oklch(0.175 0.015 250);
+
+  /* Borders and inputs */
+  --color-border: oklch(0.905 0.005 250);          /* #e5e7eb — gray-200 */
+  --color-input: oklch(0.905 0.005 250);           /* #e5e7eb — gray-200 */
+  --color-ring: oklch(0.592 0.19 292);             /* violet primary — focus rings */
+
+  /* Extended palette for direct use in charts, data viz, status badges */
+  --color-violet-50: oklch(0.955 0.03 292);        /* #f1eeff */
+  --color-violet-100: oklch(0.93 0.045 292);       /* #e6e1ff */
+  --color-violet-200: oklch(0.87 0.07 292);        /* #d2cbff */
+  --color-violet-300: oklch(0.80 0.10 292);        /* #b7acff */
+  --color-violet-400: oklch(0.70 0.15 292);        /* #9c8cff */
+  --color-violet-500: oklch(0.592 0.19 292);       /* #8470ff */
+  --color-violet-600: oklch(0.545 0.19 292);       /* #755ff8 */
+  --color-violet-700: oklch(0.46 0.18 292);        /* #5d47de */
+  --color-violet-800: oklch(0.38 0.15 292);        /* #4634b1 */
+  --color-violet-900: oklch(0.30 0.12 292);        /* #2f227c */
+
+  --color-sky-50: oklch(0.94 0.04 230);            /* #e3f3ff */
+  --color-sky-500: oklch(0.78 0.12 230);           /* #67bfff */
+  --color-sky-700: oklch(0.55 0.12 230);           /* #3193da */
+
+  --color-green-500: oklch(0.70 0.18 155);         /* #3ec972 */
+  --color-red-500: oklch(0.592 0.22 25);           /* #ff5656 */
+  --color-yellow-500: oklch(0.82 0.15 85);         /* #f0bb33 */
+
+  /* Gray scale (warm neutral — Mosaic custom) */
+  --color-gray-50: oklch(0.985 0.002 247);         /* #f9fafb */
+  --color-gray-100: oklch(0.965 0.002 247);        /* #f3f4f6 */
+  --color-gray-200: oklch(0.905 0.005 250);        /* #e5e7eb */
+  --color-gray-300: oklch(0.82 0.01 250);          /* #bfc4cd */
+  --color-gray-400: oklch(0.70 0.015 250);         /* #9ca3af */
+  --color-gray-500: oklch(0.506 0.015 250);        /* #6b7280 */
+  --color-gray-600: oklch(0.42 0.015 250);         /* #4b5563 */
+  --color-gray-700: oklch(0.35 0.015 250);         /* #374151 */
+  --color-gray-800: oklch(0.26 0.015 250);         /* #1f2937 */
+  --color-gray-900: oklch(0.175 0.015 250);        /* #111827 */
+  --color-gray-950: oklch(0.10 0.01 250);          /* #030712 */
+}
+```
+
+##### Dark Mode Tokens
+
+```css
+.dark {
+  --color-background: oklch(0.175 0.015 250);     /* #111827 — gray-900 deep bg */
+  --color-foreground: oklch(0.965 0.002 247);      /* #f3f4f6 — near-white text */
+
+  --color-card: oklch(0.26 0.015 250);             /* #1f2937 — gray-800 elevated surface */
+  --color-card-foreground: oklch(0.965 0.002 247);
+
+  --color-popover: oklch(0.26 0.015 250);          /* #1f2937 — gray-800 */
+  --color-popover-foreground: oklch(0.965 0.002 247);
+
+  --color-primary: oklch(0.592 0.19 292);          /* #8470ff — violet stays vivid */
+  --color-primary-foreground: oklch(0.985 0 0);
+
+  --color-secondary: oklch(0.78 0.12 230);         /* #67bfff — sky stays vivid */
+  --color-secondary-foreground: oklch(0.175 0.015 250);
+
+  --color-muted: oklch(0.35 0.015 250);            /* #374151 — gray-700 */
+  --color-muted-foreground: oklch(0.70 0.015 250); /* #9ca3af — gray-400 */
+
+  --color-accent: oklch(0.30 0.04 292);            /* dark violet-tinted surface */
+  --color-accent-foreground: oklch(0.965 0.002 247);
+
+  --color-destructive: oklch(0.592 0.22 25);       /* #ff5656 — red stays vivid */
+  --color-destructive-foreground: oklch(0.985 0 0);
+
+  --color-success: oklch(0.70 0.18 155);           /* #3ec972 — green stays vivid */
+  --color-success-foreground: oklch(0.985 0 0);
+
+  --color-warning: oklch(0.82 0.15 85);            /* #f0bb33 — yellow stays vivid */
+  --color-warning-foreground: oklch(0.175 0.015 250);
+
+  --color-border: oklch(0.35 0.01 250);            /* #374151 with 60% opacity feel — gray-700/60 */
+  --color-input: oklch(0.35 0.01 250);
+  --color-ring: oklch(0.592 0.19 292);             /* violet focus ring */
+}
+```
+
+##### Design Token Mapping Reference
+
+| Semantic Token | Light Value | Dark Value | Usage |
+|---------------|-------------|------------|-------|
+| `background` | Off-white `#f9fafb` | Deep gray `#111827` | Page background |
+| `foreground` | Near-black `#111827` | Near-white `#f3f4f6` | Default body text |
+| `card` | White `#ffffff` | Elevated gray `#1f2937` | Cards, panels |
+| `primary` | Violet `#8470ff` | Violet `#8470ff` | Buttons, links, active states |
+| `secondary` | Sky `#67bfff` | Sky `#67bfff` | Info badges, chart accents |
+| `muted` | Light gray `#f3f4f6` | Dark gray `#374151` | Subdued backgrounds |
+| `accent` | Violet tint `#f1eeff` | Dark violet `~` | Hover highlights |
+| `destructive` | Red `#ff5656` | Red `#ff5656` | Error states, delete actions |
+| `success` | Green `#3ec972` | Green `#3ec972` | Positive indicators |
+| `warning` | Yellow `#f0bb33` | Yellow `#f0bb33` | Caution states |
+| `border` | Gray-200 `#e5e7eb` | Gray-700 `#374151` | Borders, dividers |
+| `ring` | Violet `#8470ff` | Violet `#8470ff` | Focus indicators |
+
+**Notes**: The theme CSS is the foundation. Components reference semantic tokens like `bg-primary`, `text-muted-foreground`, `border-border`, etc. The Mosaic-inspired default provides a professional SaaS look out of the box. The `createTheme` utility is the primary consumer API for customization — keep it simple (object in, CSS var map out). Note: `success` and `warning` tokens are additions beyond the standard shadcn/ui set — they're essential for a full dashboard component library. The extended violet/sky/green/red/yellow palette scales are available for charts, data visualization, and status badges. OKLCH values are approximate conversions of the Mosaic hex values — fine-tune during implementation to ensure perceptual accuracy.
 
 ---
 
