@@ -122,11 +122,10 @@ export default tseslint.config(
 
   // Service-specific config
   {
-    files: ['service/src/**/*.ts'],
+    files: ['service/src/**/*.ts', 'service/tests/**/*.ts'],
     languageOptions: {
       globals: {
         ...globals.node,
-        ...globals.jest,
       },
     },
   },

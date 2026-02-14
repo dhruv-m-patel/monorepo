@@ -10,7 +10,6 @@ module.exports = {
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
   projects: [
     '<rootDir>/packages/express-app/jest.config.js',
-    '<rootDir>/service/jest.config.js',
     '<rootDir>/web-app/jest.config.js',
   ],
   rootDir: __dirname,

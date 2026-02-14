@@ -11,6 +11,8 @@ after each iteration and it's included in prompts for context.
 - **express-openapi-validator v5**: Expects `apiSpec` to be a file path or parsed object, NOT a YAML string content. Passing file content as string causes "spec could not be read" errors.
 - **ESLint v9 flat config in monorepos**: Use a single root `eslint.config.mjs` with file-pattern-based config objects instead of per-package `.eslintrc` files. CommonJS config files (jest.config.js, etc.) need `globals.node` + `globals.commonjs` to avoid `no-undef` errors for `module`, `require`, `__dirname`.
 - **ESLint v9 + lint-staged**: In lint-staged, use `eslint --no-warn-ignored` flag and match only lintable file extensions (`**/*.{ts,tsx,js,mjs}`) instead of running `eslint .` on all files.
+- **Vitest + nodenext**: Vitest natively handles `.js` -> `.ts` module resolution via Vite, unlike Jest/ts-jest which needs `moduleNameMapper`. Use explicit imports (`import { describe, it, expect } from 'vitest'`) instead of globals for cleaner type safety.
+- **tsx watch for dev mode**: `tsx watch --clear-screen=false -r dotenv/config src/index.ts` replaces nodemon + ts-node with zero config (no nodemon.json needed).
 
 ---
 
@@ -105,5 +107,37 @@ after each iteration and it's included in prompts for context.
   - `eslint-plugin-react-hooks` in v5+ includes a new `immutability` rule that flags mutations of external variables (like `delete window.__PRELOADED_STATE__`). This is a legitimate SSR cleanup pattern that needs an inline disable.
   - lint-staged with ESLint v9 should use `eslint --no-warn-ignored` and match specific file extensions rather than running `eslint .` which tries to lint non-JS files.
   - Old plugins like `eslint-plugin-node`, `eslint-plugin-standard`, `eslint-plugin-promise` are no longer needed - their useful rules are covered by `@eslint/js` recommended config.
+---
+
+## 2026-02-13 - US-005
+- What was implemented:
+  - Migrated service package from Jest to Vitest for testing
+  - Replaced nodemon with tsx watch for dev mode (faster TypeScript execution)
+  - Upgraded dependencies: supertest 6.x -> 7.x, rimraf 3.x -> 5.x, removed ts-node, ts-jest, @types/jest, @types/supertest
+  - Added tsx as dev dependency for fast TS execution
+  - Added vitest as dev dependency (v3.x) with vitest.config.ts
+  - Added engines field (`>= 22`) to service package.json
+  - Removed service/jest.config.js (replaced by vitest.config.ts)
+  - Removed service/nodemon.json (replaced by tsx watch in dev script)
+  - Updated root jest.config.js to remove service project reference
+  - Updated eslint.config.mjs to remove `globals.jest` from service-specific config and include test files
+  - Migrated test file to use explicit Vitest imports (`import { describe, it, expect } from 'vitest'`)
+  - Added `.js` extension to test import path for nodenext compatibility
+  - Service already used local `@dhruv-m-patel/express-app` workspace dependency (from US-003)
+  - Service already used shared tsconfig.base.json (from US-002)
+- Files changed:
+  - `service/package.json` - upgraded deps, removed Jest/nodemon/ts-node, added vitest/tsx, updated scripts
+  - `service/vitest.config.ts` (new) - Vitest configuration with node environment
+  - `service/jest.config.js` (deleted) - replaced by vitest.config.ts
+  - `service/nodemon.json` (deleted) - replaced by tsx watch script
+  - `service/tests/integration/routes/health.test.ts` - migrated to Vitest imports
+  - `jest.config.js` - removed service project reference
+  - `eslint.config.mjs` - removed jest globals from service config, added test files glob
+- **Learnings:**
+  - Vitest works seamlessly with `module: "nodenext"` TypeScript configs - no special `moduleNameMapper` needed unlike Jest/ts-jest. Vitest handles `.js` -> `.ts` resolution natively via Vite's module resolution.
+  - When migrating from Jest to Vitest, explicit imports (`import { describe, it, expect } from 'vitest'`) are cleaner than `globals: true` because they don't require type augmentation in tsconfig and make dependencies explicit.
+  - tsx watch mode (`tsx watch --clear-screen=false -r dotenv/config src/index.ts`) is a drop-in replacement for nodemon + ts-node that's significantly faster and requires zero configuration (no nodemon.json needed).
+  - When a package in a monorepo switches from Jest to Vitest, remember to update the root jest.config.js to remove the package's project reference, and clean up `globals.jest` from the ESLint config for that package.
+  - Vitest v3.x pulls in Vite as a dependency - this is expected and doesn't conflict with the rest of the monorepo.
 ---
 

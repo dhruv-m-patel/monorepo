@@ -1,4 +1,5 @@
-import app from '../../../src/app';
+import { describe, it, expect } from 'vitest';
+import app from '../../../src/app.js';
 import request from 'supertest';
 
 describe('Integration: /health', () => {

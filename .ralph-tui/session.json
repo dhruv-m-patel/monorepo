@@ -3,10 +3,10 @@
   "sessionId": "a1932d88-9932-4be6-9dc1-0e39f5c3bda5",
   "status": "running",
   "startedAt": "2026-02-14T01:23:11.870Z",
-  "updatedAt": "2026-02-14T01:54:11.884Z",
-  "currentIteration": 1,
+  "updatedAt": "2026-02-14T02:01:46.751Z",
+  "currentIteration": 2,
   "maxIterations": 0,
-  "tasksCompleted": 1,
+  "tasksCompleted": 2,
   "isPaused": false,
   "agentPlugin": "claude",
   "trackerState": {
@@ -24,6 +24,16 @@
       "durationMs": 1270632,
       "startedAt": "2026-02-14T01:23:27.062Z",
       "endedAt": "2026-02-14T01:44:37.694Z"
+    },
+    {
+      "iteration": 2,
+      "status": "completed",
+      "taskId": "US-008",
+      "taskTitle": "Upgrade ESLint to v9 with flat config",
+      "taskCompleted": true,
+      "durationMs": 573537,
+      "startedAt": "2026-02-14T01:44:38.344Z",
+      "endedAt": "2026-02-14T01:54:11.881Z"
     }
   ],
   "skippedTaskIds": [],
