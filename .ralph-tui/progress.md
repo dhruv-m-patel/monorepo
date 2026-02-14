@@ -34,6 +34,7 @@ after each iteration and it's included in prompts for context.
 - **size-limit with @size-limit/file for Vite**: Use `@size-limit/file` (not `@size-limit/esbuild`) for Vite projects since the bundle is already built. `@size-limit/esbuild` tries to re-bundle and chokes on `.map` files. The `ignore` config option requires a bundler plugin - with `@size-limit/file`, use explicit glob patterns or arrays of paths instead. By default, `@size-limit/file` uses brotli compression; set `gzip: true` explicitly for gzip measurement.
 - **Turborepo in Yarn 3 workspaces**: Install `turbo` as a root devDependency. Turborepo auto-detects Yarn workspaces - no `workspaces` field needed in `turbo.json`. Use `dependsOn: ["^build"]` for tasks that need upstream packages built first. Turborepo replaces `lerna run` for task orchestration (`turbo run build` vs `lerna run build --stream`). Keep `lerna` for interactive/streaming tasks like `dev` and `start` that don't benefit from caching.
 - **GitHub Actions with Yarn 3 caching**: Use `actions/setup-node@v4` with `cache: 'yarn'` for automatic Yarn cache management. Use `yarn install --immutable` instead of `--frozen-lockfile` (Yarn 3 syntax). Don't need `yarn bootstrap` with Turborepo - Yarn workspaces handle linking automatically on install.
+- **Claude Code skills format**: Skills are `SKILL.md` files in subdirectories under `.claude/skills/<name>/`. Require YAML frontmatter with `name` and `description`. Use `allowed-tools` to restrict tool access per skill. Skills are auto-discovered (no registration needed). Run `prettier:format` after creating skill markdown files to pass lint checks.
 
 ---
 
@@ -545,4 +546,27 @@ after each iteration and it's included in prompts for context.
   - When creating new files in a monorepo, always run `prettier:format` before verifying lint - Prettier catches formatting issues in Markdown and JSON files that ESLint doesn't cover.
   - The `/new-package` command must include `tsconfig.cjs.json` and `tsconfig.esm.json` in addition to the main `tsconfig.json` to match the dual CJS/ESM build pattern used by express-app. The ESM config uses `module: "nodenext"` while CJS uses `module: "commonjs"`.
   - Post-scaffolding integration steps are critical: new packages need to be added to `vitest.workspace.ts`, `eslint.config.mjs`, and registered via `yarn install` before they're fully functional in the monorepo.
+---
+
+## 2026-02-14 - US-016
+- What was implemented:
+  - Created `.claude/skills/` directory with 4 custom Claude Code skills
+  - **code-reviewer**: Reviews code changes against monorepo conventions (TypeScript nodenext imports, Vitest patterns, Tailwind v4/shadcn, ESLint v9 flat config, Turborepo usage). Includes comprehensive review checklist and common gotchas section. Outputs structured review with file:line references.
+  - **test-writer**: Generates Vitest tests for any module in the monorepo. Handles package-specific conventions (node vs jsdom environment, supertest vs RTL, .js extensions for nodenext). Includes templates for Node.js modules, React components, and context-dependent components.
+  - **perf-analyzer**: Analyzes API performance test results from autocannon/Vitest. Understands the perf test infrastructure (helpers.ts, reporter.ts, vitest.perf.config.ts). Provides latency analysis, throughput analysis, identifies bottlenecks, and suggests specific optimizations with threshold adjustment recommendations.
+  - **component-generator**: Scaffolds new React components in web-app with full file set (component + test + story). Follows shadcn/ui patterns (forwardRef, CVA variants, cn() utility), generates CSF3 Storybook stories, and produces comprehensive Vitest tests with @testing-library/react.
+  - Each skill has YAML frontmatter with name, description, and allowed-tools
+  - All skills follow consistent structure: trigger conditions, detailed instructions, templates, critical rules/conventions, output format
+  - All quality checks pass: `yarn build`, `yarn lint`, `yarn test`
+- Files changed:
+  - `.claude/skills/code-reviewer/SKILL.md` (new) - Code review skill
+  - `.claude/skills/test-writer/SKILL.md` (new) - Test generation skill
+  - `.claude/skills/perf-analyzer/SKILL.md` (new) - Performance analysis skill
+  - `.claude/skills/component-generator/SKILL.md` (new) - Component scaffolding skill
+- **Learnings:**
+  - Claude Code skills use `SKILL.md` files in subdirectories under `.claude/skills/`. The file requires YAML frontmatter (`---` delimiters) with `name`, `description`, and optional fields like `allowed-tools`, `disable-model-invocation`, `user-invocable`, and `context`.
+  - The `allowed-tools` frontmatter field restricts which tools a skill can use, which is important for security (e.g., code-reviewer only needs read access, component-generator needs write access).
+  - Skills are automatically discovered by Claude Code from the `.claude/skills/` directory - no registration step needed unlike slash commands which are in `.claude/commands/`.
+  - Skill markdown files are processed by Prettier during `yarn lint` (prettier check). Always run `yarn prettier:format` after creating skill files to avoid lint failures from markdown formatting differences.
+  - Skills differ from slash commands: commands are user-invoked with `/$name`, while skills can be automatically loaded by Claude when their description matches the user's intent. Use `disable-model-invocation: true` to make a skill manual-only.
 ---
