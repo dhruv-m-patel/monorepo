@@ -401,21 +401,21 @@ As a developer, I want foundational form and display primitives so that consumer
 
 **Acceptance Criteria**:
 
-- [ ] **Button**: 6 variants (default, destructive, outline, secondary, ghost, link), 4 sizes (default, sm, lg, icon), loading state with inline spinner, `asChild` support via Radix Slot, disabled styling. CVA-based.
-- [ ] **Badge**: 4 variants (default, secondary, destructive, outline). Simple span with CVA.
-- [ ] **Input**: Standard text input with `type` support, error state (red border + aria-invalid), disabled state, className merge. Uses forwardRef on `<input>`.
-- [ ] **Label**: Accessible `<label>` element, peer-disabled styling, htmlFor binding. Based on `@radix-ui/react-label`.
-- [ ] **Textarea**: Multi-line input, rows prop, error state, disabled state, auto-resize option via CSS.
-- [ ] Each component in `src/components/{name}/` with `{name}.tsx`, `{name}.stories.tsx`, `{name}.test.tsx`, `index.ts`
-- [ ] Stories use CSF3 format with `satisfies Meta`, `tags: ['autodocs']`, argTypes for all variants/sizes
-- [ ] Tests import stories via `composeStories()` from `@storybook/react`, render each composed story, assert it renders without error, verify key variant classes, verify accessibility attributes
-- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
-- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
-- [ ] All components exported from `src/index.ts`
-- [ ] `yarn build` passes
-- [ ] `yarn test` passes (all new tests green)
-- [ ] `yarn typecheck` passes
-- [ ] `yarn lint` passes
+- [x] **Button**: 6 variants (default, destructive, outline, secondary, ghost, link), 4 sizes (default, sm, lg, icon), loading state with inline spinner, `asChild` support via Radix Slot, disabled styling. CVA-based.
+- [x] **Badge**: 4 variants (default, secondary, destructive, outline). Simple span with CVA.
+- [x] **Input**: Standard text input with `type` support, error state (red border + aria-invalid), disabled state, className merge. Uses forwardRef on `<input>`.
+- [x] **Label**: Accessible `<label>` element, peer-disabled styling, htmlFor binding. Based on `@radix-ui/react-label`.
+- [x] **Textarea**: Multi-line input, rows prop, error state, disabled state, auto-resize option via CSS.
+- [x] Each component in `src/components/{name}/` with `{name}.tsx`, `{name}.stories.tsx`, `{name}.test.tsx`, `index.ts`
+- [x] Stories use CSF3 format with `satisfies Meta`, `tags: ['autodocs']`, argTypes for all variants/sizes
+- [x] Tests import stories via `composeStories()` from `@storybook/react`, render each composed story, assert it renders without error, verify key variant classes, verify accessibility attributes
+- [x] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [x] Each component has JSDoc on exported interface/props with `@example` usage snippet
+- [x] All components exported from `src/index.ts`
+- [x] `yarn build` passes
+- [x] `yarn test` passes (all new tests green)
+- [x] `yarn typecheck` passes
+- [x] `yarn lint` passes
 
 **Notes**: Button is the most complex. Use `@radix-ui/react-slot` for `asChild` pattern. Input/Textarea share error state pattern (border-destructive + aria-invalid). Tests should use `composeStories` to render the Default story then assert, render each variant story and assert class presence.
 
@@ -431,20 +431,20 @@ As a developer, I want additional display primitives for loading states, content
 
 **Acceptance Criteria**:
 
-- [ ] **Separator**: Horizontal/vertical orientations using `@radix-ui/react-separator`, decorative prop, themed border color
-- [ ] **Skeleton**: Animated pulse placeholder, supports `className` for custom width/height/rounded
-- [ ] **Avatar**: Image with fallback (initials or icon), 3 sizes (sm, default, lg), uses `@radix-ui/react-avatar` for image loading states
-- [ ] **Spinner**: CSS-only animated loading indicator, 3 sizes (sm, default, lg), inherits text color, `aria-label="Loading"`
-- [ ] **Typography**: Semantic prose helpers — `H1`, `H2`, `H3`, `H4`, `P`, `Lead`, `Large`, `Small`, `Muted`, `InlineCode`, `Blockquote`. Each renders the appropriate HTML element with pre-styled Tailwind classes and accepts `className` override.
-- [ ] Each component in `src/components/{name}/` directory with full file set
-- [ ] CSF3 stories with autodocs for each
-- [ ] Tests use `composeStories()` pattern
-- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
-- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
-- [ ] All components exported from `src/index.ts`
-- [ ] `yarn build` passes
-- [ ] `yarn test` passes
-- [ ] `yarn typecheck` passes
+- [x] **Separator**: Horizontal/vertical orientations using `@radix-ui/react-separator`, decorative prop, themed border color
+- [x] **Skeleton**: Animated pulse placeholder, supports `className` for custom width/height/rounded
+- [x] **Avatar**: Image with fallback (initials or icon), 3 sizes (sm, default, lg), uses `@radix-ui/react-avatar` for image loading states
+- [x] **Spinner**: CSS-only animated loading indicator, 3 sizes (sm, default, lg), inherits text color, `aria-label="Loading"`
+- [x] **Typography**: Semantic prose helpers — `H1`, `H2`, `H3`, `H4`, `P`, `Lead`, `Large`, `Small`, `Muted`, `InlineCode`, `Blockquote`. Each renders the appropriate HTML element with pre-styled Tailwind classes and accepts `className` override.
+- [x] Each component in `src/components/{name}/` directory with full file set
+- [x] CSF3 stories with autodocs for each
+- [x] Tests use `composeStories()` pattern
+- [x] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [x] Each component has JSDoc on exported interface/props with `@example` usage snippet
+- [x] All components exported from `src/index.ts`
+- [x] `yarn build` passes
+- [x] `yarn test` passes
+- [x] `yarn typecheck` passes
 
 **Notes**: Typography components are simple — no CVA needed, just styled HTML elements with className merge. Skeleton is a single div with `animate-pulse`. Spinner uses CSS `@keyframes` or Tailwind's `animate-spin`.
 
@@ -460,18 +460,18 @@ As a developer, I want feedback components for user notifications and status ind
 
 **Acceptance Criteria**:
 
-- [ ] **Alert**: 2 variants (default, destructive), icon slot, `AlertTitle` + `AlertDescription` sub-components, `role="alert"` for accessibility
-- [ ] **Progress**: Determinate progress bar (0-100), animated fill transition, uses `@radix-ui/react-progress`, `aria-valuenow`/`aria-valuemax`
-- [ ] **Toast**: Toast notification system — `ToastProvider` context, `useToast()` hook returning `{ toast, dismiss, toasts }`, auto-dismiss with configurable duration, variants (default, destructive, success), stacking, `Toast` + `ToastTitle` + `ToastDescription` + `ToastClose` + `ToastAction` sub-components, `Toaster` render component
-- [ ] Each with full file set (component, stories, tests, index)
-- [ ] Toast story demonstrates programmatic toast via `useToast` hook with play function
-- [ ] Tests use `composeStories()` pattern; Toast tests verify toast appears and auto-dismisses
-- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
-- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
-- [ ] All exported from `src/index.ts`
-- [ ] `yarn build` passes
-- [ ] `yarn test` passes
-- [ ] `yarn typecheck` passes
+- [x] **Alert**: 2 variants (default, destructive), icon slot, `AlertTitle` + `AlertDescription` sub-components, `role="alert"` for accessibility
+- [x] **Progress**: Determinate progress bar (0-100), animated fill transition, uses `@radix-ui/react-progress`, `aria-valuenow`/`aria-valuemax`
+- [x] **Toast**: Toast notification system — `ToastProvider` context, `useToast()` hook returning `{ toast, dismiss, toasts }`, auto-dismiss with configurable duration, variants (default, destructive, success), stacking, `Toast` + `ToastTitle` + `ToastDescription` + `ToastClose` + `ToastAction` sub-components, `Toaster` render component
+- [x] Each with full file set (component, stories, tests, index)
+- [x] Toast story demonstrates programmatic toast via `useToast` hook with play function
+- [x] Tests use `composeStories()` pattern; Toast tests verify toast appears and auto-dismisses
+- [x] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [x] Each component has JSDoc on exported interface/props with `@example` usage snippet
+- [x] All exported from `src/index.ts`
+- [x] `yarn build` passes
+- [x] `yarn test` passes
+- [x] `yarn typecheck` passes
 
 **Notes**: Toast is the most complex here — needs a provider/context pattern. Consider a simple custom implementation using React state + portal rather than pulling in Sonner, to keep the library dependency-light.
 
