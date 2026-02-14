@@ -29,7 +29,9 @@ describe('Checkbox', () => {
 
   it('renders disabled story', () => {
     render(<composed.Disabled />);
-    const checkbox = screen.getByRole('checkbox', { name: /disabled checkbox/i });
+    const checkbox = screen.getByRole('checkbox', {
+      name: /disabled checkbox/i,
+    });
     expect(checkbox).toBeInTheDocument();
     expect(checkbox).toBeDisabled();
     expect(checkbox).not.toBeChecked();

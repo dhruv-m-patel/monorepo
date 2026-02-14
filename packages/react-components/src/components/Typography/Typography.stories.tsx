@@ -86,8 +86,8 @@ export const Code: Story = {
 export const Quote: Story = {
   render: () => (
     <Blockquote>
-      &quot;After all,&quot; he said, &quot;everyone enjoys a good joke, so it&apos;s only fair that
-      they should pay for the privilege.&quot;
+      &quot;After all,&quot; he said, &quot;everyone enjoys a good joke, so
+      it&apos;s only fair that they should pay for the privilege.&quot;
     </Blockquote>
   ),
 };
@@ -110,9 +110,7 @@ export const AllTypography: Story = {
       <P>
         This paragraph includes <InlineCode>inline code</InlineCode> styling.
       </P>
-      <Blockquote>
-        This is a blockquote for quoted text or callouts.
-      </Blockquote>
+      <Blockquote>This is a blockquote for quoted text or callouts.</Blockquote>
     </div>
   ),
 };

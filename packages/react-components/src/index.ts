@@ -5,10 +5,7 @@
 export { cn } from './lib/utils';
 
 // Theme
-export {
-  ThemeProvider,
-  type ThemeProviderProps,
-} from './theme/ThemeProvider';
+export { ThemeProvider, type ThemeProviderProps } from './theme/ThemeProvider';
 export { useTheme } from './theme/useTheme';
 export { createTheme } from './theme/create-theme';
 export type {
@@ -72,10 +69,7 @@ export {
   type AlertDescriptionProps,
 } from './components/Alert';
 
-export {
-  Progress,
-  type ProgressProps,
-} from './components/Progress';
+export { Progress, type ProgressProps } from './components/Progress';
 
 export {
   Toast,

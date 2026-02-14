@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Layout from './Layout';
-import { ThemeProvider } from '@/context/ThemeContext';
+import { ThemeProvider } from '@dhruv-m-patel/react-components';
 
 const meta = {
   title: 'Components/Layout',

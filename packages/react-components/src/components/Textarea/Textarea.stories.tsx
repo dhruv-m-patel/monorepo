@@ -36,7 +36,8 @@ export const Default: Story = {
 
 export const WithValue: Story = {
   args: {
-    value: 'This is a sample text that has been entered into the textarea.\n\nIt supports multiple lines.',
+    value:
+      'This is a sample text that has been entered into the textarea.\n\nIt supports multiple lines.',
   },
 };
 

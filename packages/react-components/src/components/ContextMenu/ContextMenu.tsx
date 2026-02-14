@@ -18,8 +18,8 @@ const ContextMenuRadioGroup = ContextMenuPrimitive.RadioGroup;
  * Props for ContextMenuSubTrigger component
  */
 export type ContextMenuSubTriggerProps = React.ComponentPropsWithoutRef<
-    typeof ContextMenuPrimitive.SubTrigger
-  > & {
+  typeof ContextMenuPrimitive.SubTrigger
+> & {
   /** Whether to show chevron icon */
   inset?: boolean;
 };
@@ -47,8 +47,8 @@ ContextMenuSubTrigger.displayName = ContextMenuPrimitive.SubTrigger.displayName;
  * Props for ContextMenuSubContent component
  */
 export type ContextMenuSubContentProps = React.ComponentPropsWithoutRef<
-    typeof ContextMenuPrimitive.SubContent
-  >;
+  typeof ContextMenuPrimitive.SubContent
+>;
 
 const ContextMenuSubContent = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.SubContent>,
@@ -68,7 +68,9 @@ ContextMenuSubContent.displayName = ContextMenuPrimitive.SubContent.displayName;
 /**
  * Props for ContextMenuContent component
  */
-export type ContextMenuContentProps = React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Content>;
+export type ContextMenuContentProps = React.ComponentPropsWithoutRef<
+  typeof ContextMenuPrimitive.Content
+>;
 
 const ContextMenuContent = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.Content>,
@@ -90,7 +92,9 @@ ContextMenuContent.displayName = ContextMenuPrimitive.Content.displayName;
 /**
  * Props for ContextMenuItem component
  */
-export type ContextMenuItemProps = React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Item> & {
+export type ContextMenuItemProps = React.ComponentPropsWithoutRef<
+  typeof ContextMenuPrimitive.Item
+> & {
   /** Whether to add left inset padding */
   inset?: boolean;
 };
@@ -115,8 +119,8 @@ ContextMenuItem.displayName = ContextMenuPrimitive.Item.displayName;
  * Props for ContextMenuCheckboxItem component
  */
 export type ContextMenuCheckboxItemProps = React.ComponentPropsWithoutRef<
-    typeof ContextMenuPrimitive.CheckboxItem
-  >;
+  typeof ContextMenuPrimitive.CheckboxItem
+>;
 
 const ContextMenuCheckboxItem = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.CheckboxItem>,
@@ -145,7 +149,9 @@ ContextMenuCheckboxItem.displayName =
 /**
  * Props for ContextMenuRadioItem component
  */
-export type ContextMenuRadioItemProps = React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.RadioItem>;
+export type ContextMenuRadioItemProps = React.ComponentPropsWithoutRef<
+  typeof ContextMenuPrimitive.RadioItem
+>;
 
 const ContextMenuRadioItem = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.RadioItem>,
@@ -172,10 +178,12 @@ ContextMenuRadioItem.displayName = ContextMenuPrimitive.RadioItem.displayName;
 /**
  * Props for ContextMenuLabel component
  */
-export type ContextMenuLabelProps = React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Label> & {
+export type ContextMenuLabelProps = React.ComponentPropsWithoutRef<
+  typeof ContextMenuPrimitive.Label
+> & {
   /** Whether to add left inset padding */
   inset?: boolean;
-}
+};
 
 const ContextMenuLabel = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.Label>,
@@ -196,7 +204,9 @@ ContextMenuLabel.displayName = ContextMenuPrimitive.Label.displayName;
 /**
  * Props for ContextMenuSeparator component
  */
-export type ContextMenuSeparatorProps = React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Separator>;
+export type ContextMenuSeparatorProps = React.ComponentPropsWithoutRef<
+  typeof ContextMenuPrimitive.Separator
+>;
 
 const ContextMenuSeparator = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.Separator>,

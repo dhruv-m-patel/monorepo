@@ -24,7 +24,9 @@ const HoverCardTrigger = HoverCardPrimitive.Trigger;
  * </HoverCard>
  * ```
  */
-export type HoverCardContentProps = React.ComponentPropsWithoutRef<typeof HoverCardPrimitive.Content>;
+export type HoverCardContentProps = React.ComponentPropsWithoutRef<
+  typeof HoverCardPrimitive.Content
+>;
 
 /**
  * Hover card content component - floating card that appears on hover

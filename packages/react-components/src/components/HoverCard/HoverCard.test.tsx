@@ -72,7 +72,13 @@ describe('HoverCard', () => {
     expect(content).toBeInTheDocument();
 
     const hoverCardContent = title.parentElement?.parentElement;
-    expect(hoverCardContent).toHaveClass('bg-popover', 'rounded-md', 'border', 'shadow-md', 'w-64');
+    expect(hoverCardContent).toHaveClass(
+      'bg-popover',
+      'rounded-md',
+      'border',
+      'shadow-md',
+      'w-64'
+    );
   });
 
   it('renders with custom side offset', () => {

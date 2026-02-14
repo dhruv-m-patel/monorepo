@@ -2,7 +2,12 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { composeStories } from '@storybook/react';
 import * as stories from './Tooltip.stories';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './Tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './Tooltip';
 
 const composed = composeStories(stories);
 

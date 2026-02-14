@@ -47,13 +47,7 @@ export interface FlexGridProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Flex justify-content value
    */
-  justifyContent?:
-    | 'start'
-    | 'center'
-    | 'end'
-    | 'between'
-    | 'around'
-    | 'evenly';
+  justifyContent?: 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly';
   /**
    * Whether to wrap flex items
    * @default true
@@ -151,7 +145,10 @@ export interface FlexGridColumnProps
 }
 
 const FlexGridColumn = React.forwardRef<HTMLDivElement, FlexGridColumnProps>(
-  ({ xs, sm, md, lg, xl, offset, order, className, children, ...props }, ref) => {
+  (
+    { xs, sm, md, lg, xl, offset, order, className, children, ...props },
+    ref
+  ) => {
     // Build width classes
     const widthClasses: string[] = [];
 

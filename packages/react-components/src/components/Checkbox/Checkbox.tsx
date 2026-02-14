@@ -12,7 +12,9 @@ import { cn } from '@ui/lib/utils';
  * <Checkbox id="newsletter" disabled />
  * ```
  */
-export type CheckboxProps = React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>;
+export type CheckboxProps = React.ComponentPropsWithoutRef<
+  typeof CheckboxPrimitive.Root
+>;
 
 /**
  * Production-grade Checkbox component based on Radix UI Checkbox primitive.

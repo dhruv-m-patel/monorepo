@@ -27,7 +27,9 @@ describe('RadioGroup', () => {
     render(<composed.WithDisabled />);
     const defaultOption = screen.getByRole('radio', { name: /default/i });
     const disabledOption = screen.getByRole('radio', { name: /disabled/i });
-    const comfortableOption = screen.getByRole('radio', { name: /comfortable/i });
+    const comfortableOption = screen.getByRole('radio', {
+      name: /comfortable/i,
+    });
 
     expect(defaultOption).toBeInTheDocument();
     expect(disabledOption).toBeInTheDocument();

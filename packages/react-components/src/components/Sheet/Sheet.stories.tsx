@@ -38,8 +38,8 @@ export const Right: Story = {
         <SheetHeader>
           <SheetTitle>Sheet Title</SheetTitle>
           <SheetDescription>
-            This sheet slides in from the right side. Click the close button or press Escape to
-            dismiss.
+            This sheet slides in from the right side. Click the close button or
+            press Escape to dismiss.
           </SheetDescription>
         </SheetHeader>
       </SheetContent>
@@ -57,7 +57,8 @@ export const Left: Story = {
         <SheetHeader>
           <SheetTitle>Navigation</SheetTitle>
           <SheetDescription>
-            This sheet slides in from the left side, commonly used for navigation menus.
+            This sheet slides in from the left side, commonly used for
+            navigation menus.
           </SheetDescription>
         </SheetHeader>
         <div className="py-4 space-y-2">
@@ -127,7 +128,9 @@ export const WithFooter: Story = {
         </SheetHeader>
         <div className="py-4 space-y-4">
           <div className="space-y-2">
-            <label htmlFor="name-input" className="text-sm font-medium">Name</label>
+            <label htmlFor="name-input" className="text-sm font-medium">
+              Name
+            </label>
             <input
               id="name-input"
               type="text"
@@ -136,7 +139,9 @@ export const WithFooter: Story = {
             />
           </div>
           <div className="space-y-2">
-            <label htmlFor="email-input" className="text-sm font-medium">Email</label>
+            <label htmlFor="email-input" className="text-sm font-medium">
+              Email
+            </label>
             <input
               id="email-input"
               type="email"

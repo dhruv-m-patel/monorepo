@@ -8,16 +8,12 @@ const composed = composeStories(stories);
 describe('Typography', () => {
   it('renders heading1 story', () => {
     render(<composed.Heading1 />);
-    expect(
-      screen.getByText('The Joke Tax Chronicles')
-    ).toBeInTheDocument();
+    expect(screen.getByText('The Joke Tax Chronicles')).toBeInTheDocument();
   });
 
   it('renders heading2 story', () => {
     render(<composed.Heading2 />);
-    expect(
-      screen.getByText('The People of the Kingdom')
-    ).toBeInTheDocument();
+    expect(screen.getByText('The People of the Kingdom')).toBeInTheDocument();
   });
 
   it('renders heading3 story', () => {

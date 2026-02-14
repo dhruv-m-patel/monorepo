@@ -15,7 +15,9 @@ import { cn } from '@ui/lib/utils';
  * </Accordion>
  * ```
  */
-export type AccordionProps = React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Root>;
+export type AccordionProps = React.ComponentPropsWithoutRef<
+  typeof AccordionPrimitive.Root
+>;
 
 /**
  * AccordionItem component props
@@ -27,7 +29,9 @@ export type AccordionProps = React.ComponentPropsWithoutRef<typeof AccordionPrim
  * </AccordionItem>
  * ```
  */
-export type AccordionItemProps = React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>;
+export type AccordionItemProps = React.ComponentPropsWithoutRef<
+  typeof AccordionPrimitive.Item
+>;
 
 /**
  * AccordionTrigger component props
@@ -36,7 +40,9 @@ export type AccordionItemProps = React.ComponentPropsWithoutRef<typeof Accordion
  * <AccordionTrigger>Click to expand</AccordionTrigger>
  * ```
  */
-export type AccordionTriggerProps = React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>;
+export type AccordionTriggerProps = React.ComponentPropsWithoutRef<
+  typeof AccordionPrimitive.Trigger
+>;
 
 /**
  * AccordionContent component props
@@ -47,7 +53,9 @@ export type AccordionTriggerProps = React.ComponentPropsWithoutRef<typeof Accord
  * </AccordionContent>
  * ```
  */
-export type AccordionContentProps = React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>;
+export type AccordionContentProps = React.ComponentPropsWithoutRef<
+  typeof AccordionPrimitive.Content
+>;
 
 const Accordion = AccordionPrimitive.Root;
 

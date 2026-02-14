@@ -35,7 +35,8 @@ export const Single: Story = {
       <AccordionItem value="item-3">
         <AccordionTrigger>Is it animated?</AccordionTrigger>
         <AccordionContent>
-          Yes. It&apos;s animated by default, but you can disable it if you prefer.
+          Yes. It&apos;s animated by default, but you can disable it if you
+          prefer.
         </AccordionContent>
       </AccordionItem>
     </Accordion>
@@ -69,14 +70,21 @@ export const Multiple: Story = {
 
 export const WithDefaultValue: Story = {
   render: () => (
-    <Accordion type="single" defaultValue="item-2" collapsible className="w-[400px]">
+    <Accordion
+      type="single"
+      defaultValue="item-2"
+      collapsible
+      className="w-[400px]"
+    >
       <AccordionItem value="item-1">
         <AccordionTrigger>Question 1</AccordionTrigger>
         <AccordionContent>Answer to question 1</AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-2">
         <AccordionTrigger>Question 2 (Open by default)</AccordionTrigger>
-        <AccordionContent>Answer to question 2 - this is open by default</AccordionContent>
+        <AccordionContent>
+          Answer to question 2 - this is open by default
+        </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-3">
         <AccordionTrigger>Question 3</AccordionTrigger>

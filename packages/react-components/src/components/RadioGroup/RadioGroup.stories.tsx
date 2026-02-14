@@ -88,9 +88,7 @@ export const WithDescription: Story = {
         <RadioGroupItem value="apple" id="apple" className="mt-1" />
         <div className="grid gap-1.5 leading-none">
           <Label htmlFor="apple">Apple Pay</Label>
-          <p className="text-sm text-muted-foreground">
-            Pay with Apple Pay
-          </p>
+          <p className="text-sm text-muted-foreground">Pay with Apple Pay</p>
         </div>
       </div>
     </RadioGroup>

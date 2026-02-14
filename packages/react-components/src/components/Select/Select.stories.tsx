@@ -203,7 +203,9 @@ export const LongList: Story = {
             <SelectItem value="aest">
               Australian Eastern Standard Time (AEST)
             </SelectItem>
-            <SelectItem value="nzst">New Zealand Standard Time (NZST)</SelectItem>
+            <SelectItem value="nzst">
+              New Zealand Standard Time (NZST)
+            </SelectItem>
             <SelectItem value="fjt">Fiji Time (FJT)</SelectItem>
           </SelectGroup>
         </SelectContent>

@@ -3,12 +3,7 @@ import { render, screen, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { composeStories } from '@storybook/react';
 import * as stories from './Toast.stories';
-import {
-  Toast,
-  ToastTitle,
-  ToastDescription,
-  ToastClose,
-} from './Toast';
+import { Toast, ToastTitle, ToastDescription, ToastClose } from './Toast';
 import { ToastProvider, useToast } from './useToast';
 import { Toaster } from './Toaster';
 import * as React from 'react';
@@ -303,7 +298,8 @@ describe('Toast', () => {
       // Wait for toast to appear
       await screen.findByText('Success');
 
-      const successToast = screen.getByText('Success').parentElement?.parentElement;
+      const successToast =
+        screen.getByText('Success').parentElement?.parentElement;
       expect(successToast).toHaveClass('border-green-500');
     });
 
@@ -353,7 +349,9 @@ describe('Toast', () => {
       }
 
       // Suppress console.error for this test
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
 
       expect(() => render(<TestComponent />)).toThrow(
         'useToast must be used within a ToastProvider'

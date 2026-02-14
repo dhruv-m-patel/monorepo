@@ -15,7 +15,9 @@ const composed = composeStories(stories);
 describe('Sheet', () => {
   it('renders right side story with trigger button', () => {
     render(<composed.Right />);
-    const button = screen.getByRole('button', { name: /open sheet \(right\)/i });
+    const button = screen.getByRole('button', {
+      name: /open sheet \(right\)/i,
+    });
     expect(button).toBeInTheDocument();
   });
 
@@ -33,7 +35,9 @@ describe('Sheet', () => {
 
   it('renders bottom side story', () => {
     render(<composed.Bottom />);
-    const button = screen.getByRole('button', { name: /open sheet \(bottom\)/i });
+    const button = screen.getByRole('button', {
+      name: /open sheet \(bottom\)/i,
+    });
     expect(button).toBeInTheDocument();
   });
 

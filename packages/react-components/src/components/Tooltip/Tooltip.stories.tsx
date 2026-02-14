@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './Tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './Tooltip';
 import { Button } from '../Button/Button';
 
 const meta = {
@@ -101,8 +106,8 @@ export const WithLongText: Story = {
       </TooltipTrigger>
       <TooltipContent className="max-w-xs">
         <p>
-          This is a longer tooltip that demonstrates how the component handles multiple lines of
-          text. The content will wrap naturally.
+          This is a longer tooltip that demonstrates how the component handles
+          multiple lines of text. The content will wrap naturally.
         </p>
       </TooltipContent>
     </Tooltip>

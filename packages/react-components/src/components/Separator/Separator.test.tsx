@@ -8,14 +8,18 @@ const composed = composeStories(stories);
 describe('Separator', () => {
   it('renders default story', () => {
     const { container } = render(<composed.Default />);
-    const separator = container.querySelector('[data-orientation="horizontal"]');
+    const separator = container.querySelector(
+      '[data-orientation="horizontal"]'
+    );
     expect(separator).toBeInTheDocument();
     expect(separator).toHaveAttribute('data-orientation', 'horizontal');
   });
 
   it('renders horizontal story', () => {
     const { container } = render(<composed.Horizontal />);
-    const separator = container.querySelector('[data-orientation="horizontal"]');
+    const separator = container.querySelector(
+      '[data-orientation="horizontal"]'
+    );
     expect(separator).toBeInTheDocument();
     expect(separator).toHaveAttribute('data-orientation', 'horizontal');
   });

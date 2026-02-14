@@ -10,7 +10,8 @@ const toastVariants = cva(
         default: 'border bg-background text-foreground',
         destructive:
           'destructive group border-destructive bg-destructive text-destructive-foreground',
-        success: 'border-green-500 bg-green-50 text-green-900 dark:bg-green-950 dark:text-green-100',
+        success:
+          'border-green-500 bg-green-50 text-green-900 dark:bg-green-950 dark:text-green-100',
       },
     },
     defaultVariants: {
@@ -32,12 +33,12 @@ const toastVariants = cva(
  * ```
  */
 export type ToastProps = React.HTMLAttributes<HTMLDivElement> &
-    VariantProps<typeof toastVariants> & {
-  /**
-   * Callback fired when the toast should be closed
-   */
-  onClose?: () => void;
-};
+  VariantProps<typeof toastVariants> & {
+    /**
+     * Callback fired when the toast should be closed
+     */
+    onClose?: () => void;
+  };
 
 /**
  * Toast component for displaying temporary notifications.
@@ -100,11 +101,7 @@ const ToastDescription = React.forwardRef<
   HTMLDivElement,
   ToastDescriptionProps
 >(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn('text-sm opacity-90', className)}
-    {...props}
-  />
+  <div ref={ref} className={cn('text-sm opacity-90', className)} {...props} />
 ));
 
 ToastDescription.displayName = 'ToastDescription';

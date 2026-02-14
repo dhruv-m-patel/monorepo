@@ -1,4 +1,9 @@
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '@dhruv-m-patel/react-components';
 import { ExternalLink } from 'lucide-react';
 
 interface FeatureCard {

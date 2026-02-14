@@ -8,19 +8,25 @@ const { Default, OpenByDefault, SimpleText } = composeStories(stories);
 describe('Collapsible', () => {
   it('renders default story', () => {
     render(<Default />);
-    expect(screen.getByText(/@peduarte starred 3 repositories/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/@peduarte starred 3 repositories/i)
+    ).toBeInTheDocument();
     expect(screen.getByText(/@radix-ui\/primitives/i)).toBeInTheDocument();
   });
 
   it('renders open by default story', () => {
     render(<OpenByDefault />);
     expect(screen.getByText(/expandable section/i)).toBeInTheDocument();
-    expect(screen.getByText(/this section is open by default/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/this section is open by default/i)
+    ).toBeInTheDocument();
   });
 
   it('renders simple text story', () => {
     render(<SimpleText />);
-    expect(screen.getByRole('button', { name: /show more details/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /show more details/i })
+    ).toBeInTheDocument();
   });
 
   it('displays collapsible trigger button', () => {

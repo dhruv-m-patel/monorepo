@@ -26,7 +26,9 @@ const PopoverAnchor = PopoverPrimitive.Anchor;
  * </Popover>
  * ```
  */
-export type PopoverContentProps = React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>;
+export type PopoverContentProps = React.ComponentPropsWithoutRef<
+  typeof PopoverPrimitive.Content
+>;
 
 /**
  * Popover content component - floating panel anchored to a trigger element

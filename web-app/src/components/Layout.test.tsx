@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ThemeProvider } from '@/context/ThemeContext';
+import { ThemeProvider } from '@dhruv-m-patel/react-components';
 import Layout from './Layout';
 
 function renderWithTheme(ui: React.ReactElement) {

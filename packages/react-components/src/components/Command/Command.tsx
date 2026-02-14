@@ -6,7 +6,9 @@ import { Dialog, DialogContent } from '@ui/components/Dialog';
 /**
  * Props for the Command component
  */
-export type CommandProps = React.ComponentPropsWithoutRef<typeof CommandPrimitive>;
+export type CommandProps = React.ComponentPropsWithoutRef<
+  typeof CommandPrimitive
+>;
 
 /**
  * Command menu component - searchable command palette
@@ -50,7 +52,9 @@ CommandDialog.displayName = 'CommandDialog';
 /**
  * Props for the CommandInput component
  */
-export type CommandInputProps = React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>;
+export type CommandInputProps = React.ComponentPropsWithoutRef<
+  typeof CommandPrimitive.Input
+>;
 
 /**
  * Command input component - search input with magnifying glass icon
@@ -91,7 +95,9 @@ CommandInput.displayName = CommandPrimitive.Input.displayName;
 /**
  * Props for the CommandList component
  */
-export type CommandListProps = React.ComponentPropsWithoutRef<typeof CommandPrimitive.List>;
+export type CommandListProps = React.ComponentPropsWithoutRef<
+  typeof CommandPrimitive.List
+>;
 
 /**
  * Command list component - scrollable container for command items
@@ -111,7 +117,9 @@ CommandList.displayName = CommandPrimitive.List.displayName;
 /**
  * Props for the CommandEmpty component
  */
-export type CommandEmptyProps = React.ComponentPropsWithoutRef<typeof CommandPrimitive.Empty>;
+export type CommandEmptyProps = React.ComponentPropsWithoutRef<
+  typeof CommandPrimitive.Empty
+>;
 
 /**
  * Command empty component - shown when no results are found
@@ -131,7 +139,9 @@ CommandEmpty.displayName = CommandPrimitive.Empty.displayName;
 /**
  * Props for the CommandGroup component
  */
-export type CommandGroupProps = React.ComponentPropsWithoutRef<typeof CommandPrimitive.Group>;
+export type CommandGroupProps = React.ComponentPropsWithoutRef<
+  typeof CommandPrimitive.Group
+>;
 
 /**
  * Command group component - groups related command items with a heading
@@ -154,7 +164,9 @@ CommandGroup.displayName = CommandPrimitive.Group.displayName;
 /**
  * Props for the CommandSeparator component
  */
-export type CommandSeparatorProps = React.ComponentPropsWithoutRef<typeof CommandPrimitive.Separator>;
+export type CommandSeparatorProps = React.ComponentPropsWithoutRef<
+  typeof CommandPrimitive.Separator
+>;
 
 /**
  * Command separator component - visual divider between command groups
@@ -174,7 +186,9 @@ CommandSeparator.displayName = CommandPrimitive.Separator.displayName;
 /**
  * Props for the CommandItem component
  */
-export type CommandItemProps = React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item>;
+export type CommandItemProps = React.ComponentPropsWithoutRef<
+  typeof CommandPrimitive.Item
+>;
 
 /**
  * Command item component - individual selectable command option
@@ -202,13 +216,13 @@ export type CommandShortcutProps = React.HTMLAttributes<HTMLSpanElement>;
 /**
  * Command shortcut component - displays keyboard shortcut hint
  */
-const CommandShortcut = ({
-  className,
-  ...props
-}: CommandShortcutProps) => {
+const CommandShortcut = ({ className, ...props }: CommandShortcutProps) => {
   return (
     <span
-      className={cn('ml-auto text-xs tracking-widest text-muted-foreground', className)}
+      className={cn(
+        'ml-auto text-xs tracking-widest text-muted-foreground',
+        className
+      )}
       {...props}
     />
   );

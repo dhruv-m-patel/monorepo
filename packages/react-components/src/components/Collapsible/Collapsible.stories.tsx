@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ChevronsUpDown } from 'lucide-react';
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from './Collapsible';
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from './Collapsible';
 import { Button } from '../Button';
 
 const meta = {
@@ -19,7 +23,9 @@ export const Default: Story = {
   render: () => (
     <Collapsible className="w-[350px] space-y-2">
       <div className="flex items-center justify-between space-x-4">
-        <h4 className="text-sm font-semibold">@peduarte starred 3 repositories</h4>
+        <h4 className="text-sm font-semibold">
+          @peduarte starred 3 repositories
+        </h4>
         <CollapsibleTrigger asChild>
           <Button variant="ghost" size="sm" className="w-9 p-0">
             <ChevronsUpDown className="h-4 w-4" />

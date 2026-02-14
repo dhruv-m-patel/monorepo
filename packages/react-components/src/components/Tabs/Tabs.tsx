@@ -16,7 +16,9 @@ import { cn } from '@ui/lib/utils';
  * </Tabs>
  * ```
  */
-export type TabsProps = React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>;
+export type TabsProps = React.ComponentPropsWithoutRef<
+  typeof TabsPrimitive.Root
+>;
 
 /**
  * TabsList component props
@@ -27,7 +29,9 @@ export type TabsProps = React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root
  * </TabsList>
  * ```
  */
-export type TabsListProps = React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>;
+export type TabsListProps = React.ComponentPropsWithoutRef<
+  typeof TabsPrimitive.List
+>;
 
 /**
  * TabsTrigger component props
@@ -36,7 +40,9 @@ export type TabsListProps = React.ComponentPropsWithoutRef<typeof TabsPrimitive.
  * <TabsTrigger value="tab1">Tab 1</TabsTrigger>
  * ```
  */
-export type TabsTriggerProps = React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>;
+export type TabsTriggerProps = React.ComponentPropsWithoutRef<
+  typeof TabsPrimitive.Trigger
+>;
 
 /**
  * TabsContent component props
@@ -47,7 +53,9 @@ export type TabsTriggerProps = React.ComponentPropsWithoutRef<typeof TabsPrimiti
  * </TabsContent>
  * ```
  */
-export type TabsContentProps = React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>;
+export type TabsContentProps = React.ComponentPropsWithoutRef<
+  typeof TabsPrimitive.Content
+>;
 
 const Tabs = TabsPrimitive.Root;
 

@@ -33,7 +33,7 @@ const badgeVariants = cva(
  * ```
  */
 export type BadgeProps = React.HTMLAttributes<HTMLSpanElement> &
-    VariantProps<typeof badgeVariants>;
+  VariantProps<typeof badgeVariants>;
 
 /**
  * Production-grade Badge component for status indicators and labels.

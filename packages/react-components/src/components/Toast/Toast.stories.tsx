@@ -1,10 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Toast, ToastTitle, ToastDescription, ToastClose, ToastAction } from './Toast';
+import {
+  Toast,
+  ToastTitle,
+  ToastDescription,
+  ToastClose,
+  ToastAction,
+} from './Toast';
 import { ToastProvider, useToast } from './useToast';
 import { Toaster } from './Toaster';
 
 // Wrapper component to demonstrate toast functionality
-function ToastDemo({ variant }: { variant?: 'default' | 'destructive' | 'success' }) {
+function ToastDemo({
+  variant,
+}: {
+  variant?: 'default' | 'destructive' | 'success';
+}) {
   const { toast } = useToast();
 
   return (
@@ -12,12 +22,18 @@ function ToastDemo({ variant }: { variant?: 'default' | 'destructive' | 'success
       <button
         onClick={() => {
           toast({
-            title: variant === 'destructive' ? 'Error' : variant === 'success' ? 'Success' : 'Notification',
-            description: variant === 'destructive'
-              ? 'There was a problem with your request.'
-              : variant === 'success'
-              ? 'Your action was completed successfully.'
-              : 'This is a notification message.',
+            title:
+              variant === 'destructive'
+                ? 'Error'
+                : variant === 'success'
+                ? 'Success'
+                : 'Notification',
+            description:
+              variant === 'destructive'
+                ? 'There was a problem with your request.'
+                : variant === 'success'
+                ? 'Your action was completed successfully.'
+                : 'This is a notification message.',
             variant: variant || 'default',
           });
         }}

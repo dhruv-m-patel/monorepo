@@ -23,7 +23,9 @@ const ToggleGroupContext = React.createContext<
  * </ToggleGroup>
  * ```
  */
-export type ToggleGroupProps = React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Root> &
+export type ToggleGroupProps = React.ComponentPropsWithoutRef<
+  typeof ToggleGroupPrimitive.Root
+> &
   VariantProps<typeof toggleVariants>;
 
 const ToggleGroup = React.forwardRef<
@@ -53,8 +55,10 @@ ToggleGroup.displayName = ToggleGroupPrimitive.Root.displayName;
  * </ToggleGroupItem>
  * ```
  */
-export type ToggleGroupItemProps = React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Item> &
-    VariantProps<typeof toggleVariants>;
+export type ToggleGroupItemProps = React.ComponentPropsWithoutRef<
+  typeof ToggleGroupPrimitive.Item
+> &
+  VariantProps<typeof toggleVariants>;
 
 const ToggleGroupItem = React.forwardRef<
   React.ElementRef<typeof ToggleGroupPrimitive.Item>,

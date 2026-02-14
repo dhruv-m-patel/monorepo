@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MessageProvider } from './context/MessageContext';
-import { ThemeProvider } from './context/ThemeContext';
+import { ThemeProvider } from '@dhruv-m-patel/react-components';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 

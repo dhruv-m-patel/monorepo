@@ -17,7 +17,9 @@ import { cn } from '@ui/lib/utils';
  * </Select>
  * ```
  */
-export type SelectProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root>;
+export type SelectProps = React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Root
+>;
 
 /**
  * SelectTrigger component props
@@ -29,7 +31,9 @@ export type SelectProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.
  * </SelectTrigger>
  * ```
  */
-export type SelectTriggerProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>;
+export type SelectTriggerProps = React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Trigger
+>;
 
 /**
  * SelectValue component props
@@ -39,7 +43,9 @@ export type SelectTriggerProps = React.ComponentPropsWithoutRef<typeof SelectPri
  * <SelectValue placeholder="Select a fruit" />
  * ```
  */
-export type SelectValueProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.Value>;
+export type SelectValueProps = React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Value
+>;
 
 /**
  * SelectContent component props
@@ -51,7 +57,9 @@ export type SelectValueProps = React.ComponentPropsWithoutRef<typeof SelectPrimi
  * </SelectContent>
  * ```
  */
-export type SelectContentProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>;
+export type SelectContentProps = React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Content
+>;
 
 /**
  * SelectItem component props
@@ -62,7 +70,9 @@ export type SelectContentProps = React.ComponentPropsWithoutRef<typeof SelectPri
  * <SelectItem value="banana" disabled>Banana</SelectItem>
  * ```
  */
-export type SelectItemProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>;
+export type SelectItemProps = React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Item
+>;
 
 /**
  * SelectGroup component props
@@ -75,7 +85,9 @@ export type SelectItemProps = React.ComponentPropsWithoutRef<typeof SelectPrimit
  * </SelectGroup>
  * ```
  */
-export type SelectGroupProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.Group>;
+export type SelectGroupProps = React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Group
+>;
 
 /**
  * SelectLabel component props
@@ -85,7 +97,9 @@ export type SelectGroupProps = React.ComponentPropsWithoutRef<typeof SelectPrimi
  * <SelectLabel>Fruits</SelectLabel>
  * ```
  */
-export type SelectLabelProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>;
+export type SelectLabelProps = React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Label
+>;
 
 /**
  * SelectSeparator component props
@@ -95,7 +109,9 @@ export type SelectLabelProps = React.ComponentPropsWithoutRef<typeof SelectPrimi
  * <SelectSeparator />
  * ```
  */
-export type SelectSeparatorProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator>;
+export type SelectSeparatorProps = React.ComponentPropsWithoutRef<
+  typeof SelectPrimitive.Separator
+>;
 
 /**
  * Production-grade Select component based on Radix UI Select primitive.

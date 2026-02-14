@@ -11,7 +11,9 @@ import * as CollapsiblePrimitive from '@radix-ui/react-collapsible';
  * </Collapsible>
  * ```
  */
-export type CollapsibleProps = React.ComponentPropsWithoutRef<typeof CollapsiblePrimitive.Root>;
+export type CollapsibleProps = React.ComponentPropsWithoutRef<
+  typeof CollapsiblePrimitive.Root
+>;
 
 /**
  * CollapsibleTrigger component props
@@ -22,7 +24,9 @@ export type CollapsibleProps = React.ComponentPropsWithoutRef<typeof Collapsible
  * </CollapsibleTrigger>
  * ```
  */
-export type CollapsibleTriggerProps = React.ComponentPropsWithoutRef<typeof CollapsiblePrimitive.Trigger>;
+export type CollapsibleTriggerProps = React.ComponentPropsWithoutRef<
+  typeof CollapsiblePrimitive.Trigger
+>;
 
 /**
  * CollapsibleContent component props
@@ -33,7 +37,9 @@ export type CollapsibleTriggerProps = React.ComponentPropsWithoutRef<typeof Coll
  * </CollapsibleContent>
  * ```
  */
-export type CollapsibleContentProps = React.ComponentPropsWithoutRef<typeof CollapsiblePrimitive.Content>;
+export type CollapsibleContentProps = React.ComponentPropsWithoutRef<
+  typeof CollapsiblePrimitive.Content
+>;
 
 const Collapsible = CollapsiblePrimitive.Root;
 

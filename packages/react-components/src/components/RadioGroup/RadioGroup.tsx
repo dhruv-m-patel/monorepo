@@ -15,7 +15,9 @@ import { cn } from '@ui/lib/utils';
  * </RadioGroup>
  * ```
  */
-export type RadioGroupProps = React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>;
+export type RadioGroupProps = React.ComponentPropsWithoutRef<
+  typeof RadioGroupPrimitive.Root
+>;
 
 /**
  * RadioGroupItem component props
@@ -25,7 +27,9 @@ export type RadioGroupProps = React.ComponentPropsWithoutRef<typeof RadioGroupPr
  * <RadioGroupItem value="default" id="r1" />
  * ```
  */
-export type RadioGroupItemProps = React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>;
+export type RadioGroupItemProps = React.ComponentPropsWithoutRef<
+  typeof RadioGroupPrimitive.Item
+>;
 
 /**
  * Production-grade RadioGroup component based on Radix UI Radio Group primitive.

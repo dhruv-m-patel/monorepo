@@ -23,7 +23,9 @@ const TooltipTrigger = TooltipPrimitive.Trigger;
  * </Tooltip>
  * ```
  */
-export type TooltipContentProps = React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>;
+export type TooltipContentProps = React.ComponentPropsWithoutRef<
+  typeof TooltipPrimitive.Content
+>;
 
 /**
  * Tooltip content component - floating content that appears on hover

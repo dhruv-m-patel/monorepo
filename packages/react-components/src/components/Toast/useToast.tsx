@@ -87,26 +87,23 @@ export interface ToastProviderProps {
 export function ToastProvider({ children }: ToastProviderProps) {
   const [state, dispatch] = React.useReducer(toastReducer, { toasts: [] });
 
-  const toast = React.useCallback(
-    (data: Omit<ToastData, 'id'>): string => {
-      const id = Math.random().toString(36).substr(2, 9);
-      const duration = data.duration ?? 5000;
+  const toast = React.useCallback((data: Omit<ToastData, 'id'>): string => {
+    const id = Math.random().toString(36).substr(2, 9);
+    const duration = data.duration ?? 5000;
 
-      dispatch({
-        type: 'ADD_TOAST',
-        toast: { ...data, id },
-      });
+    dispatch({
+      type: 'ADD_TOAST',
+      toast: { ...data, id },
+    });
 
-      if (duration > 0) {
-        setTimeout(() => {
-          dispatch({ type: 'REMOVE_TOAST', id });
-        }, duration);
-      }
+    if (duration > 0) {
+      setTimeout(() => {
+        dispatch({ type: 'REMOVE_TOAST', id });
+      }, duration);
+    }
 
-      return id;
-    },
-    []
-  );
+    return id;
+  }, []);
 
   const dismiss = React.useCallback((id: string) => {
     dispatch({ type: 'DISMISS_TOAST', id });

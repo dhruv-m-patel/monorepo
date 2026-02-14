@@ -42,10 +42,13 @@ export const Default: Story = {
         <div className="space-y-2">
           <h4 className="text-sm font-semibold">@username</h4>
           <p className="text-sm text-muted-foreground">
-            Software developer and open source enthusiast. Building tools for developers.
+            Software developer and open source enthusiast. Building tools for
+            developers.
           </p>
           <div className="flex items-center pt-2">
-            <span className="text-xs text-muted-foreground">Joined December 2023</span>
+            <span className="text-xs text-muted-foreground">
+              Joined December 2023
+            </span>
           </div>
         </div>
       </HoverCardContent>
@@ -152,8 +155,7 @@ export const DocumentPreview: Story = {
           <p className="text-xs text-muted-foreground font-mono">
             # My Project
             <br />
-            <br />
-            A comprehensive guide to getting started with this project...
+            <br />A comprehensive guide to getting started with this project...
           </p>
           <div className="flex items-center gap-4 pt-2 text-xs text-muted-foreground">
             <span>2.5 KB</span>

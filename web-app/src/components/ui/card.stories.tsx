@@ -6,8 +6,8 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from './card';
-import { Button } from './button';
+  Button,
+} from '@dhruv-m-patel/react-components';
 
 const meta = {
   title: 'UI/Card',

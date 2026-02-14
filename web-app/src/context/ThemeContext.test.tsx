@@ -1,85 +1,97 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ThemeProvider, useTheme } from './ThemeContext';
+import { ThemeProvider, useTheme } from '@dhruv-m-patel/react-components';
 
 // Helper component to test the hook
 function ThemeConsumer() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, resolvedTheme, toggleTheme } = useTheme();
   return (
     <div>
       <span data-testid="theme">{theme}</span>
+      <span data-testid="resolved-theme">{resolvedTheme}</span>
       <button onClick={toggleTheme}>Toggle</button>
     </div>
   );
 }
 
-describe('ThemeContext', () => {
+describe('ThemeContext (library)', () => {
   beforeEach(() => {
     localStorage.clear();
-    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.remove('dark', 'light');
   });
 
-  it('should provide default light theme', () => {
+  it('should provide default system theme', () => {
     render(
       <ThemeProvider>
         <ThemeConsumer />
       </ThemeProvider>
     );
-    expect(screen.getByTestId('theme').textContent).toBe('light');
+    expect(screen.getByTestId('theme').textContent).toBe('system');
   });
 
-  it('should toggle theme from light to dark', async () => {
+  it('should resolve system theme to light or dark', () => {
+    render(
+      <ThemeProvider>
+        <ThemeConsumer />
+      </ThemeProvider>
+    );
+    const resolved = screen.getByTestId('resolved-theme').textContent;
+    expect(['light', 'dark']).toContain(resolved);
+  });
+
+  it('should toggle theme', async () => {
     const user = userEvent.setup();
     render(
-      <ThemeProvider>
+      <ThemeProvider defaultTheme="light">
         <ThemeConsumer />
       </ThemeProvider>
     );
 
     await user.click(screen.getByText('Toggle'));
-    expect(screen.getByTestId('theme').textContent).toBe('dark');
+    expect(screen.getByTestId('resolved-theme').textContent).toBe('dark');
   });
 
-  it('should toggle theme back to light', async () => {
+  it('should toggle theme back', async () => {
     const user = userEvent.setup();
     render(
-      <ThemeProvider>
+      <ThemeProvider defaultTheme="light">
         <ThemeConsumer />
       </ThemeProvider>
     );
 
     await user.click(screen.getByText('Toggle'));
     await user.click(screen.getByText('Toggle'));
-    expect(screen.getByTestId('theme').textContent).toBe('light');
+    expect(screen.getByTestId('resolved-theme').textContent).toBe('light');
   });
 
   it('should persist theme to localStorage', async () => {
     const user = userEvent.setup();
     render(
-      <ThemeProvider>
+      <ThemeProvider defaultTheme="light">
         <ThemeConsumer />
       </ThemeProvider>
     );
 
     await user.click(screen.getByText('Toggle'));
-    expect(localStorage.getItem('theme')).toBe('dark');
+    expect(localStorage.getItem('ui-theme')).toBe('dark');
   });
 
   it('should read theme from localStorage on mount', () => {
-    localStorage.setItem('theme', 'dark');
+    localStorage.setItem('ui-theme', 'dark');
     render(
       <ThemeProvider>
         <ThemeConsumer />
       </ThemeProvider>
     );
     expect(screen.getByTestId('theme').textContent).toBe('dark');
+    expect(screen.getByTestId('resolved-theme').textContent).toBe('dark');
   });
 
   it('should add dark class to document element when dark', async () => {
     const user = userEvent.setup();
     render(
-      <ThemeProvider>
+      <ThemeProvider defaultTheme="light">
         <ThemeConsumer />
       </ThemeProvider>
     );

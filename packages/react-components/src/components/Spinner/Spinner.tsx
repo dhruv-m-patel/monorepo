@@ -25,7 +25,7 @@ const spinnerVariants = cva('animate-spin', {
  * ```
  */
 export type SpinnerProps = React.HTMLAttributes<HTMLSpanElement> &
-    VariantProps<typeof spinnerVariants>;
+  VariantProps<typeof spinnerVariants>;
 
 const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
   ({ className, size, ...props }, ref) => {

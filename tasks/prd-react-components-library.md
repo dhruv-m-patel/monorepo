@@ -708,28 +708,28 @@ As a developer, I want the library fully exported and the existing web-app fully
 
 **Acceptance Criteria**:
 
-- [ ] `src/index.ts` exports ALL components, theme provider, hooks, types, and utilities
-- [ ] Package builds successfully with Vite library mode (ESM output in `dist/`)
-- [ ] No circular dependencies in the barrel export
-- [ ] Package `exports` field in `package.json` correctly maps to built artifacts
-- [ ] `web-app/package.json` adds `@dhruv-m-patel/react-components: "workspace:*"` as dependency
-- [ ] **Full web-app migration** — replace ALL local UI components with library imports:
+- [x] `src/index.ts` exports ALL components, theme provider, hooks, types, and utilities
+- [x] Package builds successfully with Vite library mode (ESM output in `dist/`)
+- [x] No circular dependencies in the barrel export
+- [x] Package `exports` field in `package.json` correctly maps to built artifacts
+- [x] `web-app/package.json` adds `@dhruv-m-patel/react-components: "workspace:*"` as dependency
+- [x] **Full web-app migration** — replace ALL local UI components with library imports:
   - `web-app/src/components/ui/button.tsx` replaced by `Button` from `@dhruv-m-patel/react-components`
   - `web-app/src/components/ui/card.tsx` replaced by `Card`, `CardHeader`, `CardTitle`, `CardContent`, `CardFooter` from `@dhruv-m-patel/react-components`
   - Local `web-app/src/components/ui/` directory removed (or emptied) — all UI primitives come from the library
-- [ ] **ThemeProvider migration** — `web-app/src/context/ThemeContext.tsx` replaced by the library's `ThemeProvider` and `useTheme` hook:
+- [x] **ThemeProvider migration** — `web-app/src/context/ThemeContext.tsx` replaced by the library's `ThemeProvider` and `useTheme` hook:
   - `App.tsx` wraps with library's `<ThemeProvider>` instead of local `<ThemeProvider>`
   - Dark mode toggle in `Layout` uses library's `useTheme()` hook
   - Existing theme CSS variables in `web-app/src/index.css` remain (or merge with library's theme CSS)
-- [ ] **HomePage migration** — `web-app/src/pages/HomePage.tsx` uses library components exclusively (Card, Button, Typography, FlexGrid where applicable)
-- [ ] **Layout migration** — `web-app/src/components/Layout.tsx` uses library components where applicable (Button for theme toggle, Typography for headings)
-- [ ] web-app renders identically before and after migration (visual parity — no regressions)
-- [ ] web-app existing tests still pass after migration
-- [ ] `packages/react-components` Storybook builds: `yarn workspace @dhruv-m-patel/react-components run build-storybook`
-- [ ] All tests pass: `yarn test`
-- [ ] Full build passes: `yarn build`
-- [ ] Typecheck passes: `yarn typecheck`
-- [ ] Lint passes: `yarn lint`
+- [x] **HomePage migration** — `web-app/src/pages/HomePage.tsx` uses library components exclusively (Card, Button, Typography, FlexGrid where applicable)
+- [x] **Layout migration** — `web-app/src/components/Layout.tsx` uses library components where applicable (Button for theme toggle, Typography for headings)
+- [x] web-app renders identically before and after migration (visual parity — no regressions)
+- [x] web-app existing tests still pass after migration
+- [x] `packages/react-components` Storybook builds: `yarn workspace @dhruv-m-patel/react-components run build-storybook`
+- [x] All tests pass: `yarn test`
+- [x] Full build passes: `yarn build`
+- [x] Typecheck passes: `yarn typecheck`
+- [x] Lint passes: `yarn lint`
 
 **Notes**: This is the flagship adoption demonstration. The web-app should look and behave identically after migration — proving the library is a drop-in replacement. Remove local UI component files after migration to avoid confusion. The ThemeProvider migration is key — it proves the library's theming system works as a complete replacement for custom theme implementations.
 

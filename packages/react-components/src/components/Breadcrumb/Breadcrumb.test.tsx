@@ -9,9 +9,13 @@ const { Default, WithEllipsis, CustomSeparator, LongPath } =
 describe('Breadcrumb', () => {
   it('renders default story', () => {
     render(<Default />);
-    expect(screen.getByRole('navigation', { name: /breadcrumb/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('navigation', { name: /breadcrumb/i })
+    ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /home/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /components/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /components/i })
+    ).toBeInTheDocument();
     expect(screen.getByText(/breadcrumb/i)).toBeInTheDocument();
   });
 
@@ -22,15 +26,21 @@ describe('Breadcrumb', () => {
 
   it('renders custom separator', () => {
     render(<CustomSeparator />);
-    expect(screen.getByRole('link', { name: /documentation/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /documentation/i })
+    ).toBeInTheDocument();
     expect(screen.getByText(/getting started/i)).toBeInTheDocument();
   });
 
   it('renders long path', () => {
     render(<LongPath />);
     expect(screen.getByRole('link', { name: /products/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /electronics/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /computers/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /electronics/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /computers/i })
+    ).toBeInTheDocument();
     expect(screen.getByText(/laptops/i)).toBeInTheDocument();
   });
 

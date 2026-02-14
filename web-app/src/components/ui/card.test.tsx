@@ -7,7 +7,7 @@ import {
   CardDescription,
   CardContent,
   CardFooter,
-} from './card';
+} from '@dhruv-m-patel/react-components';
 
 describe('Card', () => {
   it('should render Card with children', () => {
@@ -19,7 +19,7 @@ describe('Card', () => {
     render(<Card className="custom-card">Content</Card>);
     const card = screen.getByText('Content');
     expect(card.className).toContain('custom-card');
-    expect(card.className).toContain('rounded-xl');
+    expect(card.className).toContain('rounded-lg');
   });
 
   it('should forward ref on Card', () => {

@@ -29,8 +29,10 @@ const avatarVariants = cva(
  * </Avatar>
  * ```
  */
-export type AvatarProps = React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root> &
-    VariantProps<typeof avatarVariants>;
+export type AvatarProps = React.ComponentPropsWithoutRef<
+  typeof AvatarPrimitive.Root
+> &
+  VariantProps<typeof avatarVariants>;
 
 const Avatar = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Root>,
@@ -52,7 +54,9 @@ Avatar.displayName = 'Avatar';
  * <AvatarImage src="https://example.com/avatar.jpg" alt="User name" />
  * ```
  */
-export type AvatarImageProps = React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>;
+export type AvatarImageProps = React.ComponentPropsWithoutRef<
+  typeof AvatarPrimitive.Image
+>;
 
 const AvatarImage = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Image>,
@@ -74,7 +78,9 @@ AvatarImage.displayName = 'AvatarImage';
  * <AvatarFallback>JD</AvatarFallback>
  * ```
  */
-export type AvatarFallbackProps = React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>;
+export type AvatarFallbackProps = React.ComponentPropsWithoutRef<
+  typeof AvatarPrimitive.Fallback
+>;
 
 const AvatarFallback = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Fallback>,

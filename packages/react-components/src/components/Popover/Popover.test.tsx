@@ -77,7 +77,12 @@ describe('Popover', () => {
     expect(content).toBeInTheDocument();
 
     const popoverContent = title.parentElement?.parentElement;
-    expect(popoverContent).toHaveClass('bg-popover', 'rounded-md', 'border', 'shadow-md');
+    expect(popoverContent).toHaveClass(
+      'bg-popover',
+      'rounded-md',
+      'border',
+      'shadow-md'
+    );
   });
 
   it('renders with custom side offset', () => {

@@ -53,7 +53,9 @@ export const Top: Story = {
       <PopoverContent side="top">
         <div className="space-y-2">
           <h4 className="font-medium leading-none">Top Aligned</h4>
-          <p className="text-sm text-muted-foreground">This popover appears above the trigger.</p>
+          <p className="text-sm text-muted-foreground">
+            This popover appears above the trigger.
+          </p>
         </div>
       </PopoverContent>
     </Popover>
@@ -87,7 +89,9 @@ export const Bottom: Story = {
       <PopoverContent side="bottom">
         <div className="space-y-2">
           <h4 className="font-medium leading-none">Bottom Aligned</h4>
-          <p className="text-sm text-muted-foreground">This popover appears below the trigger.</p>
+          <p className="text-sm text-muted-foreground">
+            This popover appears below the trigger.
+          </p>
         </div>
       </PopoverContent>
     </Popover>
@@ -188,8 +192,8 @@ export const CustomWidth: Story = {
         <div className="space-y-2">
           <h4 className="font-medium leading-none">Custom Width</h4>
           <p className="text-sm text-muted-foreground">
-            This popover has a custom width of 24rem (96 in Tailwind scale). You can easily adjust
-            the width using the className prop.
+            This popover has a custom width of 24rem (96 in Tailwind scale). You
+            can easily adjust the width using the className prop.
           </p>
         </div>
       </PopoverContent>

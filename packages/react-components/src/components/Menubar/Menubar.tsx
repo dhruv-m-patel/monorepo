@@ -24,7 +24,9 @@ const MenubarMenu = MenubarPrimitive.Menu;
 /**
  * Props for MenubarTrigger component
  */
-export type MenubarTriggerProps = React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Trigger>;
+export type MenubarTriggerProps = React.ComponentPropsWithoutRef<
+  typeof MenubarPrimitive.Trigger
+>;
 
 const MenubarTrigger = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Trigger>,
@@ -46,10 +48,12 @@ const MenubarSub = MenubarPrimitive.Sub;
 /**
  * Props for MenubarSubTrigger component
  */
-export type MenubarSubTriggerProps = React.ComponentPropsWithoutRef<typeof MenubarPrimitive.SubTrigger> & {
+export type MenubarSubTriggerProps = React.ComponentPropsWithoutRef<
+  typeof MenubarPrimitive.SubTrigger
+> & {
   /** Whether to add left inset padding */
   inset?: boolean;
-}
+};
 
 const MenubarSubTrigger = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.SubTrigger>,
@@ -73,7 +77,9 @@ MenubarSubTrigger.displayName = MenubarPrimitive.SubTrigger.displayName;
 /**
  * Props for MenubarSubContent component
  */
-export type MenubarSubContentProps = React.ComponentPropsWithoutRef<typeof MenubarPrimitive.SubContent>;
+export type MenubarSubContentProps = React.ComponentPropsWithoutRef<
+  typeof MenubarPrimitive.SubContent
+>;
 
 const MenubarSubContent = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.SubContent>,
@@ -93,7 +99,9 @@ MenubarSubContent.displayName = MenubarPrimitive.SubContent.displayName;
 /**
  * Props for MenubarContent component
  */
-export type MenubarContentProps = React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Content>;
+export type MenubarContentProps = React.ComponentPropsWithoutRef<
+  typeof MenubarPrimitive.Content
+>;
 
 const MenubarContent = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Content>,
@@ -123,10 +131,12 @@ MenubarContent.displayName = MenubarPrimitive.Content.displayName;
 /**
  * Props for MenubarItem component
  */
-export type MenubarItemProps = React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Item> & {
+export type MenubarItemProps = React.ComponentPropsWithoutRef<
+  typeof MenubarPrimitive.Item
+> & {
   /** Whether to add left inset padding */
   inset?: boolean;
-}
+};
 
 const MenubarItem = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Item>,
@@ -147,7 +157,9 @@ MenubarItem.displayName = MenubarPrimitive.Item.displayName;
 /**
  * Props for MenubarCheckboxItem component
  */
-export type MenubarCheckboxItemProps = React.ComponentPropsWithoutRef<typeof MenubarPrimitive.CheckboxItem>;
+export type MenubarCheckboxItemProps = React.ComponentPropsWithoutRef<
+  typeof MenubarPrimitive.CheckboxItem
+>;
 
 const MenubarCheckboxItem = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.CheckboxItem>,
@@ -177,7 +189,9 @@ const MenubarRadioGroup = MenubarPrimitive.RadioGroup;
 /**
  * Props for MenubarRadioItem component
  */
-export type MenubarRadioItemProps = React.ComponentPropsWithoutRef<typeof MenubarPrimitive.RadioItem>;
+export type MenubarRadioItemProps = React.ComponentPropsWithoutRef<
+  typeof MenubarPrimitive.RadioItem
+>;
 
 const MenubarRadioItem = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.RadioItem>,
@@ -204,7 +218,9 @@ MenubarRadioItem.displayName = MenubarPrimitive.RadioItem.displayName;
 /**
  * Props for MenubarSeparator component
  */
-export type MenubarSeparatorProps = React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Separator>;
+export type MenubarSeparatorProps = React.ComponentPropsWithoutRef<
+  typeof MenubarPrimitive.Separator
+>;
 
 const MenubarSeparator = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Separator>,

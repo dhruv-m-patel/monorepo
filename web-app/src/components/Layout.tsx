@@ -1,14 +1,13 @@
 import { type ReactNode } from 'react';
 import { Moon, Sun } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useTheme } from '@/context/ThemeContext';
+import { Button, useTheme } from '@dhruv-m-patel/react-components';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const { theme, toggleTheme } = useTheme();
+  const { resolvedTheme, toggleTheme } = useTheme();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -24,10 +23,10 @@ export default function Layout({ children }: LayoutProps) {
             size="icon"
             onClick={toggleTheme}
             aria-label={`Switch to ${
-              theme === 'light' ? 'dark' : 'light'
+              resolvedTheme === 'light' ? 'dark' : 'light'
             } mode`}
           >
-            {theme === 'light' ? (
+            {resolvedTheme === 'light' ? (
               <Moon className="h-5 w-5" />
             ) : (
               <Sun className="h-5 w-5" />

@@ -41,7 +41,9 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
  * </DialogContent>
  * ```
  */
-export type DialogContentProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>;
+export type DialogContentProps = React.ComponentPropsWithoutRef<
+  typeof DialogPrimitive.Content
+>;
 
 /**
  * Dialog content component - centered modal panel with overlay
@@ -92,7 +94,10 @@ const DialogHeader = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)}
+    className={cn(
+      'flex flex-col space-y-1.5 text-center sm:text-left',
+      className
+    )}
     {...props}
   />
 );
@@ -106,7 +111,10 @@ const DialogFooter = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
+    className={cn(
+      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
+      className
+    )}
     {...props}
   />
 );
@@ -120,7 +128,9 @@ DialogFooter.displayName = 'DialogFooter';
  * <DialogTitle>Delete Account</DialogTitle>
  * ```
  */
-export type DialogTitleProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>;
+export type DialogTitleProps = React.ComponentPropsWithoutRef<
+  typeof DialogPrimitive.Title
+>;
 
 /**
  * Dialog title component - accessible heading for the dialog
@@ -131,7 +141,10 @@ const DialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn('text-lg font-semibold leading-none tracking-tight', className)}
+    className={cn(
+      'text-lg font-semibold leading-none tracking-tight',
+      className
+    )}
     {...props}
   />
 ));
@@ -147,7 +160,9 @@ DialogTitle.displayName = DialogPrimitive.Title.displayName;
  * </DialogDescription>
  * ```
  */
-export type DialogDescriptionProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>;
+export type DialogDescriptionProps = React.ComponentPropsWithoutRef<
+  typeof DialogPrimitive.Description
+>;
 
 /**
  * Dialog description component - accessible description for the dialog

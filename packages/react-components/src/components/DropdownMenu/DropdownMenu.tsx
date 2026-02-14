@@ -18,8 +18,8 @@ const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
  * Props for DropdownMenuSubTrigger component
  */
 export type DropdownMenuSubTriggerProps = React.ComponentPropsWithoutRef<
-    typeof DropdownMenuPrimitive.SubTrigger
-  > & {
+  typeof DropdownMenuPrimitive.SubTrigger
+> & {
   /** Whether to show chevron icon */
   inset?: boolean;
 };
@@ -48,8 +48,8 @@ DropdownMenuSubTrigger.displayName =
  * Props for DropdownMenuSubContent component
  */
 export type DropdownMenuSubContentProps = React.ComponentPropsWithoutRef<
-    typeof DropdownMenuPrimitive.SubContent
-  >;
+  typeof DropdownMenuPrimitive.SubContent
+>;
 
 const DropdownMenuSubContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.SubContent>,
@@ -71,8 +71,8 @@ DropdownMenuSubContent.displayName =
  * Props for DropdownMenuContent component
  */
 export type DropdownMenuContentProps = React.ComponentPropsWithoutRef<
-    typeof DropdownMenuPrimitive.Content
-  >;
+  typeof DropdownMenuPrimitive.Content
+>;
 
 const DropdownMenuContent = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Content>,
@@ -95,7 +95,9 @@ DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
 /**
  * Props for DropdownMenuItem component
  */
-export type DropdownMenuItemProps = React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
+export type DropdownMenuItemProps = React.ComponentPropsWithoutRef<
+  typeof DropdownMenuPrimitive.Item
+> & {
   /** Whether to add left inset padding */
   inset?: boolean;
 };
@@ -120,8 +122,8 @@ DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName;
  * Props for DropdownMenuCheckboxItem component
  */
 export type DropdownMenuCheckboxItemProps = React.ComponentPropsWithoutRef<
-    typeof DropdownMenuPrimitive.CheckboxItem
-  >;
+  typeof DropdownMenuPrimitive.CheckboxItem
+>;
 
 const DropdownMenuCheckboxItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.CheckboxItem>,
@@ -151,8 +153,8 @@ DropdownMenuCheckboxItem.displayName =
  * Props for DropdownMenuRadioItem component
  */
 export type DropdownMenuRadioItemProps = React.ComponentPropsWithoutRef<
-    typeof DropdownMenuPrimitive.RadioItem
-  >;
+  typeof DropdownMenuPrimitive.RadioItem
+>;
 
 const DropdownMenuRadioItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.RadioItem>,
@@ -179,7 +181,9 @@ DropdownMenuRadioItem.displayName = DropdownMenuPrimitive.RadioItem.displayName;
 /**
  * Props for DropdownMenuLabel component
  */
-export type DropdownMenuLabelProps = React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> & {
+export type DropdownMenuLabelProps = React.ComponentPropsWithoutRef<
+  typeof DropdownMenuPrimitive.Label
+> & {
   /** Whether to add left inset padding */
   inset?: boolean;
 };
@@ -204,8 +208,8 @@ DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName;
  * Props for DropdownMenuSeparator component
  */
 export type DropdownMenuSeparatorProps = React.ComponentPropsWithoutRef<
-    typeof DropdownMenuPrimitive.Separator
-  >;
+  typeof DropdownMenuPrimitive.Separator
+>;
 
 const DropdownMenuSeparator = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Separator>,

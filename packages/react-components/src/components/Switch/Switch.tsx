@@ -12,7 +12,9 @@ import { cn } from '@ui/lib/utils';
  * <Switch id="marketing" disabled />
  * ```
  */
-export type SwitchProps = React.ComponentPropsWithoutRef<typeof SwitchPrimitive.Root>;
+export type SwitchProps = React.ComponentPropsWithoutRef<
+  typeof SwitchPrimitive.Root
+>;
 
 /**
  * Production-grade Switch component based on Radix UI Switch primitive.

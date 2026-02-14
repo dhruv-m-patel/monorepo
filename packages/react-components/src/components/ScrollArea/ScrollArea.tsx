@@ -9,7 +9,9 @@ import { cn } from '@ui/lib/utils';
  *   <div>Long content here...</div>
  * </ScrollArea>
  */
-export type ScrollAreaProps = React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>;
+export type ScrollAreaProps = React.ComponentPropsWithoutRef<
+  typeof ScrollAreaPrimitive.Root
+>;
 
 const ScrollArea = React.forwardRef<
   React.ElementRef<typeof ScrollAreaPrimitive.Root>,
@@ -35,8 +37,8 @@ ScrollArea.displayName = 'ScrollArea';
  * <ScrollBar orientation="vertical" />
  */
 export type ScrollBarProps = React.ComponentPropsWithoutRef<
-    typeof ScrollAreaPrimitive.ScrollAreaScrollbar
-  >;
+  typeof ScrollAreaPrimitive.ScrollAreaScrollbar
+>;
 
 const ScrollBar = React.forwardRef<
   React.ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,

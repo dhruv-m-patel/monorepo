@@ -48,13 +48,17 @@ describe('Table', () => {
   describe('WithSelectedRows Story', () => {
     it('should render table with selected rows', () => {
       const { container } = render(<WithSelectedRows />);
-      const selectedRows = container.querySelectorAll('[data-state="selected"]');
+      const selectedRows = container.querySelectorAll(
+        '[data-state="selected"]'
+      );
       expect(selectedRows).toHaveLength(2);
     });
 
     it('should have correct invoices selected', () => {
       const { container } = render(<WithSelectedRows />);
-      const selectedRows = container.querySelectorAll('[data-state="selected"]');
+      const selectedRows = container.querySelectorAll(
+        '[data-state="selected"]'
+      );
       expect(selectedRows[0]).toHaveTextContent('INV001');
       expect(selectedRows[1]).toHaveTextContent('INV003');
     });

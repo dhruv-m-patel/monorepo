@@ -53,10 +53,7 @@ export interface InputOTPProps {
 }
 
 const InputOTP = React.forwardRef<HTMLDivElement, InputOTPProps>(
-  (
-    { maxLength, value = '', onChange, pattern, children, className },
-    ref
-  ) => {
+  ({ maxLength, value = '', onChange, pattern, children, className }, ref) => {
     const [internalValue, setInternalValue] = React.useState(value);
     const [activeIndex, setActiveIndex] = React.useState(0);
     const inputRef = React.useRef<HTMLInputElement>(null);

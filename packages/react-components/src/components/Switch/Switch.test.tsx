@@ -10,7 +10,9 @@ const composed = composeStories(stories);
 describe('Switch', () => {
   it('renders default story', () => {
     render(<composed.Default />);
-    const switchElement = screen.getByRole('switch', { name: /airplane mode/i });
+    const switchElement = screen.getByRole('switch', {
+      name: /airplane mode/i,
+    });
     expect(switchElement).toBeInTheDocument();
     expect(switchElement).not.toBeChecked();
     expect(switchElement).not.toBeDisabled();
@@ -18,14 +20,18 @@ describe('Switch', () => {
 
   it('renders checked story', () => {
     render(<composed.Checked />);
-    const switchElement = screen.getByRole('switch', { name: /notifications/i });
+    const switchElement = screen.getByRole('switch', {
+      name: /notifications/i,
+    });
     expect(switchElement).toBeInTheDocument();
     expect(switchElement).toBeChecked();
   });
 
   it('renders disabled story', () => {
     render(<composed.Disabled />);
-    const switchElement = screen.getByRole('switch', { name: /disabled switch/i });
+    const switchElement = screen.getByRole('switch', {
+      name: /disabled switch/i,
+    });
     expect(switchElement).toBeInTheDocument();
     expect(switchElement).toBeDisabled();
     expect(switchElement).not.toBeChecked();
@@ -57,7 +63,9 @@ describe('Switch', () => {
 
   it('renders with description story', () => {
     render(<composed.WithDescription />);
-    const switchElement = screen.getByRole('switch', { name: /marketing emails/i });
+    const switchElement = screen.getByRole('switch', {
+      name: /marketing emails/i,
+    });
     expect(switchElement).toBeInTheDocument();
     expect(
       screen.getByText(/receive emails about new products/i)

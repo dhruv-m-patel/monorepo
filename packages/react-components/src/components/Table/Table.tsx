@@ -30,12 +30,11 @@ export type TableHeaderProps = React.HTMLAttributes<HTMLTableSectionElement>;
 /**
  * Table header section with bottom borders on rows
  */
-const TableHeader = React.forwardRef<
-  HTMLTableSectionElement,
-  TableHeaderProps
->(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn('[&_tr]:border-b', className)} {...props} />
-));
+const TableHeader = React.forwardRef<HTMLTableSectionElement, TableHeaderProps>(
+  ({ className, ...props }, ref) => (
+    <thead ref={ref} className={cn('[&_tr]:border-b', className)} {...props} />
+  )
+);
 TableHeader.displayName = 'TableHeader';
 
 /**
@@ -130,11 +129,7 @@ export type TableCellProps = React.TdHTMLAttributes<HTMLTableCellElement>;
  */
 const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
   ({ className, ...props }, ref) => (
-    <td
-      ref={ref}
-      className={cn('p-4 align-middle', className)}
-      {...props}
-    />
+    <td ref={ref} className={cn('p-4 align-middle', className)} {...props} />
   )
 );
 TableCell.displayName = 'TableCell';

@@ -9,7 +9,9 @@ const { Default, WithEllipsis, ManyPages, FirstPage, LastPage } =
 describe('Pagination', () => {
   it('renders default story', () => {
     render(<Default />);
-    expect(screen.getByRole('navigation', { name: /pagination/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('navigation', { name: /pagination/i })
+    ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /previous/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /next/i })).toBeInTheDocument();
   });

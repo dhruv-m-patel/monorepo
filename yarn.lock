@@ -456,7 +456,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@dhruv-m-patel/react-components@workspace:packages/react-components":
+"@dhruv-m-patel/react-components@workspace:*, @dhruv-m-patel/react-components@workspace:packages/react-components":
   version: 0.0.0-use.local
   resolution: "@dhruv-m-patel/react-components@workspace:packages/react-components"
   dependencies:
@@ -14875,6 +14875,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "web-app@workspace:web-app"
   dependencies:
+    "@dhruv-m-patel/react-components": "workspace:*"
     "@size-limit/file": ^12.0.0
     "@storybook/addon-essentials": ^8
     "@storybook/addon-interactions": ^8
