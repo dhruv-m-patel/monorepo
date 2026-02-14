@@ -35,6 +35,7 @@ after each iteration and it's included in prompts for context.
 - **Turborepo in Yarn 3 workspaces**: Install `turbo` as a root devDependency. Turborepo auto-detects Yarn workspaces - no `workspaces` field needed in `turbo.json`. Use `dependsOn: ["^build"]` for tasks that need upstream packages built first. Turborepo replaces `lerna run` for task orchestration (`turbo run build` vs `lerna run build --stream`). Keep `lerna` for interactive/streaming tasks like `dev` and `start` that don't benefit from caching.
 - **GitHub Actions with Yarn 3 caching**: Use `actions/setup-node@v4` with `cache: 'yarn'` for automatic Yarn cache management. Use `yarn install --immutable` instead of `--frozen-lockfile` (Yarn 3 syntax). Don't need `yarn bootstrap` with Turborepo - Yarn workspaces handle linking automatically on install.
 - **Claude Code skills format**: Skills are `SKILL.md` files in subdirectories under `.claude/skills/<name>/`. Require YAML frontmatter with `name` and `description`. Use `allowed-tools` to restrict tool access per skill. Skills are auto-discovered (no registration needed). Run `prettier:format` after creating skill markdown files to pass lint checks.
+- **Claude Code agent templates**: Agent templates are markdown files in `.claude/agents/` that define reusable workflows for complex multi-step AI tasks. Each template specifies: purpose, inputs (with types and defaults), expected outputs, phased workflow, tool usage matrix, decision rules, and constraints. Unlike skills (auto-triggered by intent), agent templates serve as reference documents that guide AI agents through structured workflows.
 
 ---
 
@@ -569,4 +570,29 @@ after each iteration and it's included in prompts for context.
   - Skills are automatically discovered by Claude Code from the `.claude/skills/` directory - no registration step needed unlike slash commands which are in `.claude/commands/`.
   - Skill markdown files are processed by Prettier during `yarn lint` (prettier check). Always run `yarn prettier:format` after creating skill files to avoid lint failures from markdown formatting differences.
   - Skills differ from slash commands: commands are user-invoked with `/$name`, while skills can be automatically loaded by Claude when their description matches the user's intent. Use `disable-model-invocation: true` to make a skill manual-only.
+---
+
+## 2026-02-14 - US-017
+- What was implemented:
+  - Created PRD generator skill (`.claude/skills/ralph-tui-prd/SKILL.md`) for generating structured Product Requirements Documents compatible with ralph-tui automated execution
+  - Created PRD-to-JSON converter skill (`.claude/skills/ralph-tui-create-json/SKILL.md`) for converting markdown PRDs into `tasks/prd.json` format with schema validation, dependency graph verification, and incremental update support
+  - Created `.claude/agents/` directory with 3 agent templates:
+    - **feature-implementer**: Takes a user story ID and implements it end-to-end (context gathering -> planning -> implementation -> quality verification -> documentation). Defines 5-phase workflow with tool usage matrix, decision rules, and constraints.
+    - **migration-helper**: Assists with package upgrades and framework migrations. Includes impact assessment, pre-migration snapshot, dependency update, code migration, verification, and documentation phases. Contains monorepo-specific migration pattern table and common gotchas.
+    - **pr-creator**: Creates well-structured GitHub PRs from completed work. Analyzes changes, categorizes by type, generates structured PR descriptions with summary/changes/test plan/breaking changes sections. Uses conventional commit title conventions.
+  - Each template follows consistent structure: purpose, inputs table (with types/defaults), expected outputs table, phased workflow, tool usage matrix, decision rules, and constraints
+  - PRD skills define the full ralph-tui compatible PRD format (markdown and JSON) with user story schema, dependency graph validation, priority scale, and execution phasing
+  - All quality checks pass: `yarn build`, `yarn lint`, `yarn test`
+- Files changed:
+  - `.claude/skills/ralph-tui-prd/SKILL.md` (new) - PRD generator skill
+  - `.claude/skills/ralph-tui-create-json/SKILL.md` (new) - PRD-to-JSON converter skill
+  - `.claude/agents/feature-implementer.md` (new) - Feature implementation agent template
+  - `.claude/agents/migration-helper.md` (new) - Package migration agent template
+  - `.claude/agents/pr-creator.md` (new) - PR creation agent template
+- **Learnings:**
+  - Agent templates differ from skills in that they are reference documents defining multi-phase workflows rather than auto-triggered actions. They serve as structured playbooks for AI agents executing complex tasks.
+  - The ralph-tui PRD format uses a JSON schema with `userStories` array where each story has `id`, `title`, `description`, `acceptanceCriteria` (string array), `priority` (1-5), `passes` (boolean), `notes`, and `dependsOn` (string array of story IDs). The `passes` field tracks completion status.
+  - Markdown files in `.claude/agents/` and `.claude/skills/` are processed by Prettier during `yarn lint`. Always run `yarn prettier:format` after creating these files to ensure consistent formatting (table alignment, line wrapping, etc.).
+  - Agent templates benefit from including a "Decision Rules" section that codifies the heuristics an AI agent should use when encountering common situations (e.g., "when a test fails: fix the implementation, not the test").
+  - The tool usage matrix in agent templates helps scope what tools each workflow phase needs, similar to `allowed-tools` in skill frontmatter but more descriptive.
 ---
