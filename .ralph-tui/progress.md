@@ -520,3 +520,29 @@ after each iteration and it's included in prompts for context.
   - `npm pack --dry-run` is a useful pre-publish verification step that shows exactly which files will be included in the published package.
   - `yarn npm audit --all --recursive` is the Yarn 3 equivalent of `npm audit` and checks all workspace packages. Using `|| true` prevents audit failures from blocking the entire PR (advisory, not blocking).
 ---
+
+## 2026-02-14 - US-015
+- What was implemented:
+  - Created `CLAUDE.md` at repo root with comprehensive project context, architecture overview, code conventions, common tasks, and important patterns/gotchas
+  - Created `.claude/commands/` directory with 4 slash commands:
+    - `/build` - Build all packages using Turborepo with error diagnosis guidance
+    - `/test` - Run tests with subcommand support (unit, e2e, perf, size, all)
+    - `/lint` - Lint and format check with auto-fix option
+    - `/new-package` - Scaffold a new workspace package with correct structure matching express-app pattern (package.json, tsconfig.json, tsconfig.cjs.json, tsconfig.esm.json, vitest.config.ts, src/, tests/) plus post-scaffolding integration steps (vitest.workspace.ts, eslint.config.mjs updates)
+  - Created `.claude/settings.json` with permissions configuration (allow common dev commands, deny destructive git operations and publishing)
+  - All slash commands documented with descriptions, usage examples, and troubleshooting guidance
+  - All quality checks pass: `yarn build`, `yarn lint`, `yarn test`
+- Files changed:
+  - `CLAUDE.md` (new) - Claude AI development framework documentation
+  - `.claude/commands/build.md` (new) - /build slash command
+  - `.claude/commands/test.md` (new) - /test slash command
+  - `.claude/commands/lint.md` (new) - /lint slash command
+  - `.claude/commands/new-package.md` (new) - /new-package scaffolding slash command
+  - `.claude/settings.json` (new) - Permissions configuration for allowed/denied operations
+- **Learnings:**
+  - Claude Code slash commands are Markdown files in `.claude/commands/` that expand into prompts when invoked. The `$ARGUMENTS` placeholder captures user input after the command name.
+  - `.claude/settings.json` supports `permissions.allow` and `permissions.deny` arrays for controlling which tool invocations are auto-approved. Glob patterns work for matching command prefixes (e.g., `Bash(yarn build*)`).
+  - When creating new files in a monorepo, always run `prettier:format` before verifying lint - Prettier catches formatting issues in Markdown and JSON files that ESLint doesn't cover.
+  - The `/new-package` command must include `tsconfig.cjs.json` and `tsconfig.esm.json` in addition to the main `tsconfig.json` to match the dual CJS/ESM build pattern used by express-app. The ESM config uses `module: "nodenext"` while CJS uses `module: "commonjs"`.
+  - Post-scaffolding integration steps are critical: new packages need to be added to `vitest.workspace.ts`, `eslint.config.mjs`, and registered via `yarn install` before they're fully functional in the monorepo.
+---
