@@ -17,7 +17,10 @@ The library integrates into the existing Yarn 3 + Lerna + Turborepo monorepo alo
 - Every component has a CSF3 story and a test that renders the composed story
 - Package is independently publishable to npm
 - Integrate with existing monorepo tooling (Turborepo, Vitest workspace, ESLint, CI)
-- After completion, create a `component-library-agent` skill for future library work
+- Achieve >80% test coverage on all component source files
+- Comprehensive MDX documentation with getting-started guide, theming guide, component catalog, and adoption strategy
+- Full AI-assisted development support: component-library-agent skill, slash commands, CLAUDE.md integration
+- After completion, a future developer can add a new component using AI tools without reading the PRD
 
 ## Non-Goals
 
@@ -37,6 +40,76 @@ yarn lint                     # ESLint + Prettier
 yarn test                     # Vitest across all packages
 yarn typecheck                # TypeScript strict mode
 ```
+
+**Test Coverage Requirement**: Every component story (US-003 through US-012) must achieve **>80% test coverage** on all component source files. Coverage is measured via Vitest v8 provider and enforced in the `vitest.config.ts` coverage thresholds. The `composeStories()` test pattern naturally drives high coverage since every story variant is rendered and asserted.
+
+## Agent Team Orchestration
+
+This PRD is designed for execution by a **team of parallel agents** using the existing agent and skill infrastructure in `.claude/agents/` and `.claude/skills/`. The orchestration strategy maximizes throughput by running independent stories concurrently while respecting dependency ordering.
+
+### Available Agents & Skills
+
+| Agent / Skill | Role in This PRD | Used In |
+|--------------|-----------------|---------|
+| **feature-implementer** (`.claude/agents/feature-implementer.md`) | Primary agent — takes a user story, implements it end-to-end (code + stories + tests), runs quality gates, updates progress log | US-001 through US-013 |
+| **test-writer** (`.claude/skills/test-writer/SKILL.md`) | Delegated by feature-implementer to generate comprehensive Vitest tests with >80% coverage for each component | US-003 through US-012 |
+| **component-generator** (`.claude/skills/component-generator/SKILL.md`) | Delegated by feature-implementer to scaffold component file structure (component + story + test + index) | US-003 through US-012 |
+| **code-reviewer** (`.claude/skills/code-reviewer/SKILL.md`) | Run after each phase completes to review all changes against monorepo conventions before committing | After each phase |
+| **pr-creator** (`.claude/agents/pr-creator.md`) | Creates the final PR after all stories are complete | After US-015 |
+
+### Agent Execution Plan
+
+```
+PHASE 1 — Sequential (foundation, 1 agent)
+  Agent A: US-001 (scaffold) → US-002 (theme engine)
+  ↓ commit after each
+
+PHASE 2 — Parallel (3 agents, after Phase 1)
+  Agent A: US-003 (Button, Badge, Input, Label, Textarea)
+  Agent B: US-004 (Separator, Skeleton, Avatar, Spinner, Typography)
+  Agent C: US-005 (Alert, Progress, Toast)
+  ↓ code-reviewer skill validates all 3 → commit each
+
+PHASE 3 — Parallel (3 agents, after Phase 2)
+  Agent A: US-006 (Dialog, Sheet, Tooltip, Popover, HoverCard)
+  Agent B: US-007 (Checkbox, RadioGroup, Switch, Select)
+  Agent C: US-008 (Slider, Toggle, ToggleGroup, InputOTP)
+  ↓ code-reviewer skill validates all 3 → commit each
+
+PHASE 4 — Parallel (4 agents, after Phase 1 — only needs theme)
+  Agent A: US-009 (Tabs, Accordion, Collapsible, Breadcrumb, Pagination)
+  Agent B: US-010 (Card, AspectRatio, ScrollArea, Resizable, FlexGrid)
+  Agent C: US-011 (DropdownMenu, ContextMenu, Menubar)
+  Agent D: US-012 (Table, Command)
+  ↓ code-reviewer skill validates all 4 → commit each
+
+PHASE 5 — Sequential (1 agent, after all component phases)
+  Agent A: US-013 (barrel exports, integration, verification)
+  ↓ commit
+
+PHASE 6 — Parallel (2 agents, after Phase 5)
+  Agent A: US-014 (component-library-agent skill)
+  Agent B: US-015 (documentation, MDX docs, adoption guide)
+  ↓ code-reviewer validates → commit each
+
+FINAL — Sequential (1 agent)
+  pr-creator agent: Creates PR from all commits
+```
+
+### Agent Workflow Per Story
+
+Each **feature-implementer** agent follows this workflow for component stories:
+
+1. **Read PRD** → extract target story acceptance criteria
+2. **Scaffold** → invoke `component-generator` skill for each component in the story
+3. **Implement** → write component logic, Tailwind styling, CVA variants, Radix wiring
+4. **Stories** → write CSF3 stories with `tags: ['autodocs']`, comprehensive argTypes, MDX doc links
+5. **Tests** → invoke `test-writer` skill, then enhance with `composeStories()` pattern, ensure >80% coverage
+6. **Docs** → write JSDoc on all exported types/props, add `@example` tags, write MDX companion doc
+7. **Quality gates** → `yarn build && yarn typecheck && yarn lint && yarn test`
+8. **Coverage check** → verify >80% on all new component files
+9. **Update barrel** → add exports to `src/index.ts`
+10. **Update PRD** → check off completed acceptance criteria in this document
 
 ## Technical Context
 
@@ -151,6 +224,8 @@ As a developer, I want foundational form and display primitives so that consumer
 - [ ] Each component in `src/components/{name}/` with `{name}.tsx`, `{name}.stories.tsx`, `{name}.test.tsx`, `index.ts`
 - [ ] Stories use CSF3 format with `satisfies Meta`, `tags: ['autodocs']`, argTypes for all variants/sizes
 - [ ] Tests import stories via `composeStories()` from `@storybook/react`, render each composed story, assert it renders without error, verify key variant classes, verify accessibility attributes
+- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
 - [ ] All components exported from `src/index.ts`
 - [ ] `yarn build` passes
 - [ ] `yarn test` passes (all new tests green)
@@ -179,6 +254,8 @@ As a developer, I want additional display primitives for loading states, content
 - [ ] Each component in `src/components/{name}/` directory with full file set
 - [ ] CSF3 stories with autodocs for each
 - [ ] Tests use `composeStories()` pattern
+- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
 - [ ] All components exported from `src/index.ts`
 - [ ] `yarn build` passes
 - [ ] `yarn test` passes
@@ -204,6 +281,8 @@ As a developer, I want feedback components for user notifications and status ind
 - [ ] Each with full file set (component, stories, tests, index)
 - [ ] Toast story demonstrates programmatic toast via `useToast` hook with play function
 - [ ] Tests use `composeStories()` pattern; Toast tests verify toast appears and auto-dismisses
+- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
 - [ ] All exported from `src/index.ts`
 - [ ] `yarn build` passes
 - [ ] `yarn test` passes
@@ -231,6 +310,8 @@ As a developer, I want overlay/floating components for modals, slide-in panels, 
 - [ ] Each with full file set (component, stories, tests, index)
 - [ ] Stories demonstrate open/close interaction with play functions where applicable
 - [ ] Tests use `composeStories()` pattern; overlay tests verify content visibility toggling
+- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
 - [ ] All exported from `src/index.ts`
 - [ ] `yarn build` passes
 - [ ] `yarn test` passes
@@ -257,10 +338,13 @@ As a developer, I want form control components for building complete forms with 
 - [ ] Each with full file set
 - [ ] Stories include form composition examples (checkbox with label, radio group with options)
 - [ ] Tests use `composeStories()` pattern; form tests verify checked/selected state changes
+- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
 - [ ] All exported from `src/index.ts`
 - [ ] `yarn build` passes
 - [ ] `yarn test` passes
 - [ ] `yarn typecheck` passes
+- [ ] `yarn lint` passes
 
 **Notes**: All form components use Radix primitives for proper keyboard navigation and ARIA. Select is the most complex — has many sub-components and scroll behavior.
 
@@ -282,10 +366,13 @@ As a developer, I want additional form controls for specialized input scenarios.
 - [ ] **InputOTP**: Segmented OTP input — `InputOTP`, `InputOTPGroup`, `InputOTPSlot`, `InputOTPSeparator`. Configurable length, pattern validation, auto-advance.
 - [ ] Each with full file set
 - [ ] Tests use `composeStories()` pattern
+- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
 - [ ] All exported from `src/index.ts`
 - [ ] `yarn build` passes
 - [ ] `yarn test` passes
 - [ ] `yarn typecheck` passes
+- [ ] `yarn lint` passes
 
 **Notes**: InputOTP can be built with a custom implementation using hidden input + visual slots pattern (no external dep needed). Slider/Toggle/ToggleGroup use Radix.
 
@@ -308,10 +395,13 @@ As a developer, I want navigation and content organization components.
 - [ ] **Pagination**: `Pagination`, `PaginationContent`, `PaginationItem`, `PaginationPrevious`, `PaginationNext`, `PaginationLink`, `PaginationEllipsis`. Uses button/link variants.
 - [ ] Each with full file set
 - [ ] Tests use `composeStories()` pattern
+- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
 - [ ] All exported from `src/index.ts`
 - [ ] `yarn build` passes
 - [ ] `yarn test` passes
 - [ ] `yarn typecheck` passes
+- [ ] `yarn lint` passes
 
 **Notes**: Breadcrumb and Pagination are pure HTML/CSS components (no Radix needed). Accordion animation uses `grid-template-rows: 0fr` → `1fr` trick or Radix's built-in animation support.
 
@@ -355,10 +445,13 @@ As a developer, I want layout and container components for content structure, in
   - Nesting renders correctly
 - [ ] Each with full file set
 - [ ] Tests use `composeStories()` pattern
+- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
 - [ ] All exported from `src/index.ts`
 - [ ] `yarn build` passes
 - [ ] `yarn test` passes
 - [ ] `yarn typecheck` passes
+- [ ] `yarn lint` passes
 
 **Notes**: Card is pure HTML/CSS. Resizable needs `react-resizable-panels` as a dependency — evaluate if this should be a peer dep or direct dep. FlexGrid is pure CSS/Tailwind — no external dependencies. Use the `FlexGrid.Column` compound component pattern (static property assignment) so consumers write `<FlexGrid><FlexGrid.Column xs={12} md={6}>...</FlexGrid.Column></FlexGrid>`. Column width mapping is straightforward: span 1 = `w-1/12`, span 6 = `w-6/12` (which Tailwind aliases as `w-1/2`), span 12 = `w-full`. Use Tailwind's fraction utilities where available, fall back to `basis-[percentage]` or `w-[percentage]` if needed for exact 12-column math.
 
@@ -380,10 +473,13 @@ As a developer, I want menu components for actions, context menus, and applicati
 - [ ] Each with full file set
 - [ ] Stories demonstrate nested sub-menus, checkbox items, radio groups, keyboard shortcuts
 - [ ] Tests use `composeStories()` pattern
+- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
 - [ ] All exported from `src/index.ts`
 - [ ] `yarn build` passes
 - [ ] `yarn test` passes
 - [ ] `yarn typecheck` passes
+- [ ] `yarn lint` passes
 
 **Notes**: These three share very similar patterns — build DropdownMenu first, then derive ContextMenu and Menubar from it. Each has ~12-15 sub-components but they follow identical patterns.
 
@@ -405,10 +501,13 @@ As a developer, I want data display components for tabular data and command pale
 - [ ] Table story demonstrates a realistic data table with headers, rows, and footer
 - [ ] Command story demonstrates searchable command palette with grouped items
 - [ ] Tests use `composeStories()` pattern
+- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
 - [ ] All exported from `src/index.ts`
 - [ ] `yarn build` passes
 - [ ] `yarn test` passes
 - [ ] `yarn typecheck` passes
+- [ ] `yarn lint` passes
 
 **Notes**: Table is pure HTML/CSS. Command needs `cmdk` as a dependency. Command is one of shadcn/ui's most popular components — used for search, command palettes, and comboboxes.
 
@@ -440,9 +539,9 @@ As a developer, I want the library fully exported, integrated into web-app as a 
 
 ---
 
-### US-014: Build component-library-agent skill
+### US-014: Build AI-assisted development framework for the component library
 
-As a developer, I want a Claude skill specialized for working with the `@dhruv-m-patel/react-components` package so that future component work follows established patterns automatically.
+As a developer, I want a comprehensive AI-assisted development setup for the `@dhruv-m-patel/react-components` package — including a specialized Claude skill, slash commands, and updated project instructions — so that future component work is fully AI-augmented and follows established patterns automatically.
 
 **Priority**: 3
 
@@ -450,53 +549,101 @@ As a developer, I want a Claude skill specialized for working with the `@dhruv-m
 
 **Acceptance Criteria**:
 
-- [ ] `.claude/skills/component-library-agent/SKILL.md` created
-- [ ] Skill documents: package structure, file naming conventions, component patterns (forwardRef, CVA, cn()), theming tokens, story format (CSF3 + composeStories test pattern), Radix usage guidelines
-- [ ] Skill includes templates for: new component, new story, new test (with composeStories)
-- [ ] Skill includes post-generation checklist with correct workspace commands
-- [ ] Skill references actual files in `packages/react-components/` as examples
-- [ ] Skill covers theme extension patterns (createTheme, ThemeProvider overrides)
-- [ ] Skill covers Radix UI integration patterns (when to use, how to wrap)
-- [ ] Skill covers dependency decisions (direct dep vs peer dep for Radix packages)
-- [ ] `yarn lint` passes (skill file is markdown, no lint impact — verify no regressions)
+- [ ] `.claude/skills/component-library-agent/SKILL.md` created with full knowledge capture:
+  - Package structure and file naming conventions
+  - Component patterns (forwardRef, CVA, cn(), displayName)
+  - Theming tokens and CSS variable conventions
+  - Story format (CSF3 + `satisfies Meta` + `tags: ['autodocs']` + composeStories test pattern)
+  - Radix UI integration guidelines (when to use, how to wrap, Radix + Tailwind v4 selectors)
+  - Dependency decisions (direct dep vs peer dep for Radix packages)
+  - FlexGrid and compound component patterns
+- [ ] Skill includes ready-to-use templates for: new component, new story, new test (with composeStories)
+- [ ] Skill includes post-generation checklist with correct workspace commands (`yarn workspace @dhruv-m-patel/react-components run ...`)
+- [ ] Skill references actual files in `packages/react-components/` as concrete examples for each pattern
+- [ ] Skill covers theme extension patterns (createTheme, ThemeProvider overrides, OKLCH token system)
+- [ ] `.claude/commands/new-component.md` slash command created — scaffolds a new component in the library with all files (component, story, test, index) using the component-generator skill
+- [ ] `.claude/commands/library-test.md` slash command created — runs tests for the react-components package with coverage report
+- [ ] Root `CLAUDE.md` updated with `react-components` package section: build commands, test commands, key patterns, path alias (`@ui/`), relationship to web-app
+- [ ] `yarn lint` passes (markdown/skill files have no lint impact — verify no regressions)
 
-**Notes**: This skill is a knowledge capture artifact. It should encode everything learned during this PRD execution so a future agent can add components without re-discovering conventions. Structure it like the existing `component-generator` skill but scoped to the `react-components` package.
+**Notes**: This story captures all institutional knowledge from the PRD execution. The skill, slash commands, and CLAUDE.md updates together form a complete AI-assisted development experience. A future developer (or agent) should be able to add a new component to the library by invoking `/new-component` and following the skill's guidance without reading this PRD.
+
+---
+
+### US-015: Documentation, Storybook MDX docs, and adoption guide
+
+As a developer adopting the library, I want comprehensive documentation linked to Storybook stories with clear examples so that I can quickly understand, adopt, and extend the component library.
+
+**Priority**: 3
+
+**Dependencies**: US-013
+
+**Acceptance Criteria**:
+
+- [ ] `packages/react-components/docs/getting-started.mdx` — Quick start guide: install, wrap with ThemeProvider, import first component, verify rendering
+- [ ] `packages/react-components/docs/theming.mdx` — Theming guide: default theme tokens, `createTheme()` usage, dark mode toggle, OKLCH color system explanation, CSS variable override patterns, custom palette examples
+- [ ] `packages/react-components/docs/component-patterns.mdx` — Architecture guide: CVA variants, `cn()` merging, forwardRef pattern, compound component pattern (FlexGrid.Column), Radix primitive integration, when to use which pattern
+- [ ] `packages/react-components/docs/testing.mdx` — Testing guide: composeStories pattern explanation, how to test new components, coverage requirements, example test walkthrough
+- [ ] Each component story file includes inline MDX documentation via `tags: ['autodocs']` with:
+  - Component description and purpose
+  - Props table (auto-generated from TypeScript types)
+  - Usage examples matching `@example` JSDoc tags
+  - Variant/size visual grid where applicable
+- [ ] `packages/react-components/docs/adoption-guide.mdx` — Migration/adoption guide: how to add the library to an existing app, ThemeProvider setup, gradual adoption strategy (use alongside existing components), web-app integration example
+- [ ] `packages/react-components/docs/component-catalog.mdx` — Full component catalog: organized by category (foundation, form, feedback, overlay, navigation, layout, menu, data), with links to individual Storybook stories
+- [ ] All MDX docs are linked from Storybook via `.storybook/main.ts` stories glob (e.g., `../docs/**/*.mdx`)
+- [ ] Storybook sidebar organizes docs: Introduction → Getting Started → Theming → Components (by category) → Testing → Adoption
+- [ ] `yarn build` passes
+- [ ] `yarn typecheck` passes
+- [ ] `yarn lint` passes
+
+**Notes**: MDX docs serve dual purpose — they render in Storybook as documentation pages AND can be read as standalone markdown. The adoption guide is the key deliverable for developer onboarding. Keep examples realistic and copy-pasteable. The component catalog provides a high-level map that links to individual component stories for detailed exploration.
 
 ---
 
 ## Execution Order
 
-Respecting dependencies and maximizing parallelism:
+Respecting dependencies and maximizing parallelism (aligned with Agent Execution Plan above):
 
 ```
-Phase 1 (sequential):
+Phase 1 — Sequential (foundation, 1 agent):
   └── US-001: Package scaffold
-
-Phase 2 (sequential, after Phase 1):
   └── US-002: Theme engine
+  ↓ commit after each
 
-Phase 3 (parallel, after Phase 2):
-  ├── US-003: Button, Badge, Input, Label, Textarea
-  ├── US-004: Separator, Skeleton, Avatar, Spinner, Typography
-  └── US-005: Alert, Progress, Toast
+Phase 2 — Parallel (3 agents, after Phase 1):
+  ├── Agent A: US-003 (Button, Badge, Input, Label, Textarea)
+  ├── Agent B: US-004 (Separator, Skeleton, Avatar, Spinner, Typography)
+  └── Agent C: US-005 (Alert, Progress, Toast)
+  ↓ code-reviewer validates → commit each
 
-Phase 4 (parallel, after Phase 3 — US-003 for Label dep):
-  ├── US-006: Dialog, Sheet, Tooltip, Popover, HoverCard
-  ├── US-007: Checkbox, RadioGroup, Switch, Select
-  └── US-008: Slider, Toggle, ToggleGroup, InputOTP
+Phase 3 — Parallel (3 agents, after Phase 2):
+  ├── Agent A: US-006 (Dialog, Sheet, Tooltip, Popover, HoverCard)
+  ├── Agent B: US-007 (Checkbox, RadioGroup, Switch, Select)
+  └── Agent C: US-008 (Slider, Toggle, ToggleGroup, InputOTP)
+  ↓ code-reviewer validates → commit each
 
-Phase 5 (parallel, after Phase 2):
-  ├── US-009: Tabs, Accordion, Collapsible, Breadcrumb, Pagination
-  ├── US-010: Card, AspectRatio, ScrollArea, Resizable, FlexGrid
-  ├── US-011: DropdownMenu, ContextMenu, Menubar
-  └── US-012: Table, Command
+Phase 4 — Parallel (4 agents, after Phase 1 — only needs theme):
+  ├── Agent A: US-009 (Tabs, Accordion, Collapsible, Breadcrumb, Pagination)
+  ├── Agent B: US-010 (Card, AspectRatio, ScrollArea, Resizable, FlexGrid)
+  ├── Agent C: US-011 (DropdownMenu, ContextMenu, Menubar)
+  └── Agent D: US-012 (Table, Command)
+  ↓ code-reviewer validates → commit each
 
-Phase 6 (sequential, after all above):
-  └── US-013: Barrel exports, integration, verification
+Phase 5 — Sequential (1 agent, after all component phases):
+  └── US-013: Barrel exports, web-app integration, full verification
+  ↓ commit
 
-Phase 7 (sequential, after Phase 6):
-  └── US-014: Component library agent skill
+Phase 6 — Parallel (2 agents, after Phase 5):
+  ├── Agent A: US-014 (AI-assisted development framework)
+  └── Agent B: US-015 (documentation, MDX docs, adoption guide)
+  ↓ code-reviewer validates → commit each
+
+FINAL — Sequential (1 agent):
+  └── pr-creator agent: Creates PR from all commits
 ```
+
+**Note**: Phases 2-4 can overlap if dependencies allow. Phase 3 depends on Phase 2 (US-003 provides Label for US-007). Phase 4 only depends on Phase 1 (theme engine). The orchestrator should schedule phases to maximize agent utilization.
 
 ## Commit Strategy
 
@@ -517,7 +664,8 @@ Each user story produces a conventional commit upon completion:
 | US-011 | `feat(react-components): add DropdownMenu, ContextMenu, Menubar` |
 | US-012 | `feat(react-components): add Table, Command` |
 | US-013 | `feat(react-components): barrel exports, web-app integration, verification` |
-| US-014 | `feat(ai-framework): add component-library-agent skill` |
+| US-014 | `feat(ai-framework): add component-library-agent skill, slash commands, CLAUDE.md` |
+| US-015 | `docs(react-components): add MDX documentation, adoption guide, component catalog` |
 
 **Update this plan document** before each commit to reflect completed checkboxes.
 
@@ -540,11 +688,16 @@ Each user story produces a conventional commit upon completion:
 
 ## Success Metrics
 
-- All 14 user stories completed with acceptance criteria checked off
+- All 15 user stories completed with acceptance criteria checked off
 - ~50+ components built with consistent patterns (including FlexGrid layout system)
 - Every component has a story and a test
+- **>80% test coverage** on all component source files (statements, branches, functions, lines)
 - Full quality gates pass: `yarn build && yarn lint && yarn test && yarn typecheck`
-- Storybook builds and renders all components
-- web-app successfully imports from the library
-- component-library-agent skill captures all patterns for future use
+- Storybook builds and renders all components with autodocs
+- MDX documentation covers getting started, theming, patterns, testing, and adoption
+- Component catalog organizes all components by category with Storybook links
+- web-app successfully imports from the library (proof-of-concept integration)
+- AI-assisted development framework complete: component-library-agent skill, slash commands, CLAUDE.md updates
+- Every exported component/type has JSDoc with `@example` tags
 - Zero TypeScript errors under strict mode
+- Future developer can add a new component using `/new-component` slash command without reading the PRD
