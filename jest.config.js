@@ -3,14 +3,12 @@ module.exports = {
   collectCoverageFrom: [
     'packages/**/*.{js,jsx,ts,tsx}',
     'service/**/*.{js,jsx,ts,tsx}',
-    'web-app/**/*.{js,jsx,ts,tsx}',
   ],
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
   projects: [
     '<rootDir>/packages/express-app/jest.config.js',
-    '<rootDir>/web-app/jest.config.js',
   ],
   rootDir: __dirname,
   transform: {

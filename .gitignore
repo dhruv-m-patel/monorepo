@@ -1,6 +1,7 @@
 node_modules
 build/
 build-static/
+dist/
 coverage/
 .env
 .DS_Store

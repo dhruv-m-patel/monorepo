@@ -13,6 +13,11 @@ after each iteration and it's included in prompts for context.
 - **ESLint v9 + lint-staged**: In lint-staged, use `eslint --no-warn-ignored` flag and match only lintable file extensions (`**/*.{ts,tsx,js,mjs}`) instead of running `eslint .` on all files.
 - **Vitest + nodenext**: Vitest natively handles `.js` -> `.ts` module resolution via Vite, unlike Jest/ts-jest which needs `moduleNameMapper`. Use explicit imports (`import { describe, it, expect } from 'vitest'`) instead of globals for cleaner type safety.
 - **tsx watch for dev mode**: `tsx watch --clear-screen=false -r dotenv/config src/index.ts` replaces nodemon + ts-node with zero config (no nodemon.json needed).
+- **Vite tsconfig for SPA**: When migrating from SSR Webpack to Vite SPA, use `module: "ESNext"`, `moduleResolution: "bundler"`, `jsx: "react-jsx"`. Remove `rootDir` constraint so config files at project root can be included. Remove `outDir` since Vite handles bundling.
+- **Vitest + @vitejs/plugin-react type mismatch**: When vitest bundles a different Vite version than the installed `vite` package, `@vitejs/plugin-react` types conflict. Use `defineConfig` from `vitest/config` with `react() as any` cast to resolve.
+- **@testing-library/react + Vitest cleanup**: With `globals: false` in Vitest, `@testing-library/react` doesn't auto-detect the framework for cleanup. Add explicit `afterEach(() => { cleanup(); })` in setupTests.ts.
+- **React 19 + ESLint**: React 19 with `jsx: "react-jsx"` doesn't require `import React` - add `'react/react-in-jsx-scope': 'off'` to ESLint config for React files.
+- **@testing-library/dom in Yarn workspaces**: `@testing-library/react` depends on `@testing-library/dom` as a peer dep. With Yarn 3 strict hoisting, it must be explicitly added to devDependencies or TypeScript can't resolve `screen` export.
 
 ---
 
@@ -141,3 +146,63 @@ after each iteration and it's included in prompts for context.
   - Vitest v3.x pulls in Vite as a dependency - this is expected and doesn't conflict with the rest of the monorepo.
 ---
 
+## 2026-02-13 - US-006
+- What was implemented:
+  - Migrated web-app from Webpack 4 + SSR to Vite 6 SPA
+  - Upgraded React from 16.14 to 19.0 with new JSX transform (`jsx: "react-jsx"`)
+  - Upgraded React Router from v5 (`Switch`/`Route`) to v7 (`Routes`/`Route` with `element` prop)
+  - Replaced Redux (redux, react-redux, redux-api-middleware) with React Context + `useReducer` hook
+  - Created `MessageContext` with provider and `useMessage` hook for API state management
+  - Removed Material-UI v4 (`@material-ui/core`, `@material-ui/icons`) - replaced with plain CSS
+  - Removed SSR infrastructure: Express server, `renderPage.tsx` middleware, `@loadable/component`, `@dhruv-m-patel/web-app`, `bluebird`
+  - Removed all old dependencies: `core-js`, `clsx`, `fast-deep-equal`, `store`, `react-helmet-async`, `dotenv`, storybook v6, stylelint, nodemon, ts-node, ts-loader, webpack-cli
+  - Moved from `src/client/index.ts` + `src/server/` to `src/main.tsx` Vite entry point
+  - Created `index.html` at web-app root (Vite convention) with `<script type="module">` pointing to entry
+  - Created `vite.config.ts` with `@vitejs/plugin-react`
+  - Created `vitest.config.ts` with jsdom environment
+  - Migrated tests from Jest 27 to Vitest 3.x with `@testing-library/react` v16
+  - Updated `tsconfig.json`: `module: "ESNext"`, `moduleResolution: "bundler"`, `jsx: "react-jsx"`
+  - Removed `tsconfig.webpack.json` (no longer needed)
+  - Removed `nodemon.json` (no longer needed)
+  - Removed `jest.config.js` (replaced by vitest.config.ts)
+  - Removed `webpack.config.js` (replaced by vite.config.ts)
+  - Updated root `jest.config.js` to remove web-app project reference
+  - Updated `eslint.config.mjs`: added `react/react-in-jsx-scope: off` for React 19, removed `globals.jest` from web-app config, added Vite config files section, added `**/dist/` to ignores
+  - Updated `.gitignore` to include `dist/`
+  - Added `"type": "module"` to web-app `package.json`
+  - All quality checks pass: `yarn build`, `yarn lint`, `yarn test`, `yarn typecheck`
+- Files changed:
+  - `web-app/package.json` - complete rewrite (new deps, scripts, type: module)
+  - `web-app/vite.config.ts` (new) - Vite configuration with React plugin
+  - `web-app/vitest.config.ts` (new) - Vitest configuration with jsdom
+  - `web-app/index.html` (new) - Vite entry HTML at project root
+  - `web-app/tsconfig.json` - updated for Vite (ESNext, bundler, react-jsx)
+  - `web-app/src/main.tsx` (new) - Vite client entry point with createRoot
+  - `web-app/src/App.tsx` (new) - root component with BrowserRouter + Routes
+  - `web-app/src/context/MessageContext.tsx` (new) - React Context replacement for Redux
+  - `web-app/src/pages/HomePage.tsx` (new) - rewritten without Material-UI/Redux connect
+  - `web-app/src/pages/HomePage.css` (new) - plain CSS styles
+  - `web-app/src/pages/HomePage.test.tsx` (new) - Vitest + RTL tests
+  - `web-app/src/setupTests.ts` - updated for Vitest + explicit cleanup
+  - `web-app/webpack.config.js` (deleted)
+  - `web-app/tsconfig.webpack.json` (deleted)
+  - `web-app/nodemon.json` (deleted)
+  - `web-app/jest.config.js` (deleted)
+  - `web-app/src/client/` (deleted) - old client entry, redux store, actions, reducers
+  - `web-app/src/server/` (deleted) - old Express SSR server
+  - `web-app/src/common/` (deleted) - old router and components
+  - `web-app/src/lib/` (deleted) - old utility functions
+  - `jest.config.js` - removed web-app project reference
+  - `eslint.config.mjs` - React 19 rules, removed jest globals for web-app, added dist ignores
+  - `.gitignore` - added dist/
+- **Learnings:**
+  - Vite's `index.html` must be at project root, not in `src/` or `public/`. The entry script is referenced with `<script type="module" src="/src/main.tsx">`.
+  - When migrating from SSR (Express + React SSR) to Vite SPA, the entire server directory can be removed. Vite has its own dev server with HMR.
+  - React 19's new JSX transform (`jsx: "react-jsx"`) eliminates the need for `import React from 'react'` in every file. ESLint needs `react/react-in-jsx-scope: off`.
+  - React Router v7 replaces `Switch` with `Routes`, removes `component` prop in favor of `element` (JSX), and removes `exact` (all routes are exact by default).
+  - `@testing-library/react` v16 with Vitest (globals: false) does NOT auto-cleanup between tests. You must add explicit `afterEach(() => cleanup())` in setupTests.
+  - `@testing-library/dom` is a peer dependency of `@testing-library/react` that Yarn 3 doesn't auto-hoist. Must explicitly list it in devDependencies.
+  - Vitest 3.x bundles its own Vite version (7.x) which can differ from the installed `vite` package (6.x). The `@vitejs/plugin-react` types may conflict. Use `defineConfig` from `vitest/config` with a type cast for the plugin.
+  - `moduleResolution: "bundler"` is the correct setting for Vite projects - it allows extensionless imports and handles both ESM and CJS, unlike "nodenext" which requires `.js` extensions.
+  - When converting from `useReducer` replacing Redux, the `useCallback` wrapper for async dispatch functions prevents unnecessary re-renders in consumers.
+---

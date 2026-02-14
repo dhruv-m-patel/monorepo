@@ -13,6 +13,7 @@ export default tseslint.config(
       '**/node_modules/',
       '**/build/',
       '**/build-static/',
+      '**/dist/',
       '**/.github/',
       '**/.yarn/',
       '**/.pnp.*',
@@ -103,7 +104,6 @@ export default tseslint.config(
       },
       globals: {
         ...globals.browser,
-        ...globals.jest,
       },
     },
     settings: {
@@ -115,8 +115,19 @@ export default tseslint.config(
       ...reactPlugin.configs.recommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
       ...jsxA11yPlugin.configs.recommended.rules,
+      'react/react-in-jsx-scope': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
+    },
+  },
+
+  // Vite config files for web-app
+  {
+    files: ['web-app/vite.config.ts', 'web-app/vitest.config.ts'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
     },
   },
 
