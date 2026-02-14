@@ -596,3 +596,29 @@ after each iteration and it's included in prompts for context.
   - Agent templates benefit from including a "Decision Rules" section that codifies the heuristics an AI agent should use when encountering common situations (e.g., "when a test fails: fix the implementation, not the test").
   - The tool usage matrix in agent templates helps scope what tools each workflow phase needs, similar to `allowed-tools` in skill frontmatter but more descriptive.
 ---
+
+## 2026-02-14 - US-018
+- What was implemented:
+  - Created `docs/ai-framework/` directory with 6 comprehensive documentation files
+  - `getting-started.md` - Framework overview, quick start guide, file layout, and navigation table to other docs
+  - `creating-skills.md` - Step-by-step skill creation guide with YAML frontmatter reference, available tools table, and a complete worked example (dependency auditor skill)
+  - `creating-commands.md` - Slash command creation guide with `$ARGUMENTS` explanation, worked example (deploy command), and commands vs. skills comparison table
+  - `creating-agents.md` - Agent template creation guide with phased workflow structure, worked example (refactoring agent), and agents vs. skills vs. commands comparison table
+  - `architecture.md` - Architecture overview with 5 Mermaid diagrams: system architecture, command sequence diagram, skill sequence diagram, agent phase flow, toolchain integration, and data flow
+  - `best-practices.md` - 8 patterns (do this) and 7 anti-patterns (avoid this), naming conventions, and a pre-submission checklist
+  - All docs reference actual files in the repo (e.g., `.claude/skills/code-reviewer/SKILL.md`, `.claude/agents/feature-implementer.md`)
+  - Each guide includes at least one complete worked example with full file contents
+  - All quality checks pass: `yarn build`, `yarn lint`, `yarn test`
+- Files changed:
+  - `docs/ai-framework/getting-started.md` (new) - Overview and quick start guide
+  - `docs/ai-framework/creating-skills.md` (new) - Skill creation guide with worked example
+  - `docs/ai-framework/creating-commands.md` (new) - Command creation guide with worked example
+  - `docs/ai-framework/creating-agents.md` (new) - Agent template creation guide with worked example
+  - `docs/ai-framework/architecture.md` (new) - Architecture overview with 5 Mermaid diagrams
+  - `docs/ai-framework/best-practices.md` (new) - Patterns, anti-patterns, and checklist
+- **Learnings:**
+  - Documentation-only changes (markdown files in `docs/`) don't affect build, typecheck, or test results, but they DO need to pass Prettier formatting via `yarn lint`
+  - Mermaid diagrams in markdown work well for documenting AI framework architecture - the skill -> agent -> command -> MCP server relationship diagram clearly shows the three invocation paths (explicit command, intent matching, reference by name)
+  - Worked examples are more valuable than abstract descriptions for framework documentation - showing the complete file contents of a hypothetical skill/command/agent gives developers a copy-paste starting point
+  - The distinction between skills (auto-triggered), commands (user-invoked), and agents (referenced playbooks) is the key conceptual model that documentation should emphasize early and reinforce throughout
+---
