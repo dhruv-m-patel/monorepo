@@ -487,24 +487,24 @@ As a developer, I want overlay/floating components for modals, slide-in panels, 
 
 **Acceptance Criteria**:
 
-- [ ] **Dialog**: Modal overlay using `@radix-ui/react-dialog` — `Dialog`, `DialogTrigger`, `DialogContent`, `DialogHeader`, `DialogTitle`, `DialogDescription`, `DialogFooter`, `DialogClose`. Animated open/close with CSS transitions. Focus trap, escape-to-close, overlay click-to-close.
-- [ ] **Sheet**: Slide-in panel built on `@radix-ui/react-dialog` — `Sheet`, `SheetTrigger`, `SheetContent` (side: top/right/bottom/left), `SheetHeader`, `SheetTitle`, `SheetDescription`, `SheetFooter`, `SheetClose`. CSS translate animations.
-- [ ] **Tooltip**: Hover/focus tooltip using `@radix-ui/react-tooltip` — `TooltipProvider`, `Tooltip`, `TooltipTrigger`, `TooltipContent`. Configurable delay, side, align.
-- [ ] **Popover**: Click-triggered floating content using `@radix-ui/react-popover` — `Popover`, `PopoverTrigger`, `PopoverContent`. Configurable side, align.
-- [ ] **HoverCard**: Hover-triggered preview card using `@radix-ui/react-hover-card` — `HoverCard`, `HoverCardTrigger`, `HoverCardContent`.
-- [ ] Each with full file set (component, stories, tests, index)
-- [ ] Stories demonstrate open/close interaction with play functions where applicable
-- [ ] Tests use `composeStories()` pattern; overlay tests verify content visibility toggling
-- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
-- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
-- [ ] All exported from `src/index.ts`
-- [ ] `yarn build` passes
-- [ ] `yarn test` passes
-- [ ] `yarn typecheck` passes
+- [x] **Dialog**: Modal overlay using `@radix-ui/react-dialog` — `Dialog`, `DialogTrigger`, `DialogContent`, `DialogHeader`, `DialogTitle`, `DialogDescription`, `DialogFooter`, `DialogClose`. Animated open/close with CSS transitions. Focus trap, escape-to-close, overlay click-to-close.
+- [x] **Sheet**: Slide-in panel built on `@radix-ui/react-dialog` — `Sheet`, `SheetTrigger`, `SheetContent` (side: top/right/bottom/left), `SheetHeader`, `SheetTitle`, `SheetDescription`, `SheetFooter`, `SheetClose`. CSS translate animations.
+- [x] **Tooltip**: Hover/focus tooltip using `@radix-ui/react-tooltip` — `TooltipProvider`, `Tooltip`, `TooltipTrigger`, `TooltipContent`. Configurable delay, side, align.
+- [x] **Popover**: Click-triggered floating content using `@radix-ui/react-popover` — `Popover`, `PopoverTrigger`, `PopoverContent`. Configurable side, align.
+- [x] **HoverCard**: Hover-triggered preview card using `@radix-ui/react-hover-card` — `HoverCard`, `HoverCardTrigger`, `HoverCardContent`.
+- [x] Each with full file set (component, stories, tests, index)
+- [x] Stories demonstrate open/close interaction with play functions where applicable
+- [x] Tests use `composeStories()` pattern; overlay tests verify content visibility toggling
+- [x] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [x] Each component has JSDoc on exported interface/props with `@example` usage snippet
+- [x] All exported from `src/index.ts`
+- [x] `yarn build` passes
+- [x] `yarn test` passes
+- [x] `yarn typecheck` passes
 
 **Notes**: All overlay components use Radix primitives for proper accessibility (focus management, aria attributes, keyboard interactions). Sheet is essentially Dialog with directional slide animations. Tooltip needs a TooltipProvider wrapper at the app root.
 
----
+
 
 ### US-007: Build form components — Checkbox, RadioGroup, Switch, Select
 
@@ -516,24 +516,24 @@ As a developer, I want form control components for building complete forms with 
 
 **Acceptance Criteria**:
 
-- [ ] **Checkbox**: Using `@radix-ui/react-checkbox` — controlled/uncontrolled, indeterminate state, check icon animation, disabled styling, pairs with Label
-- [ ] **RadioGroup**: Using `@radix-ui/react-radio-group` — `RadioGroup` + `RadioGroupItem`, vertical/horizontal layout, disabled items, pairs with Label
-- [ ] **Switch**: Using `@radix-ui/react-switch` — toggle switch with thumb animation, 2 sizes (default, sm), disabled state, pairs with Label
-- [ ] **Select**: Using `@radix-ui/react-select` — `Select`, `SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`, `SelectGroup`, `SelectLabel`, `SelectSeparator`. Scrollable content, disabled items, placeholder.
-- [ ] Each with full file set
-- [ ] Stories include form composition examples (checkbox with label, radio group with options)
-- [ ] Tests use `composeStories()` pattern; form tests verify checked/selected state changes
-- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
-- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
-- [ ] All exported from `src/index.ts`
-- [ ] `yarn build` passes
-- [ ] `yarn test` passes
-- [ ] `yarn typecheck` passes
-- [ ] `yarn lint` passes
+- [x] **Checkbox**: Using `@radix-ui/react-checkbox` — controlled/uncontrolled, indeterminate state, check icon animation, disabled styling, pairs with Label
+- [x] **RadioGroup**: Using `@radix-ui/react-radio-group` — `RadioGroup` + `RadioGroupItem`, vertical/horizontal layout, disabled items, pairs with Label
+- [x] **Switch**: Using `@radix-ui/react-switch` — toggle switch with thumb animation, 2 sizes (default, sm), disabled state, pairs with Label
+- [x] **Select**: Using `@radix-ui/react-select` — `Select`, `SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`, `SelectGroup`, `SelectLabel`, `SelectSeparator`. Scrollable content, disabled items, placeholder.
+- [x] Each with full file set
+- [x] Stories include form composition examples (checkbox with label, radio group with options)
+- [x] Tests use `composeStories()` pattern; form tests verify checked/selected state changes
+- [x] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [x] Each component has JSDoc on exported interface/props with `@example` usage snippet
+- [x] All exported from `src/index.ts`
+- [x] `yarn build` passes
+- [x] `yarn test` passes
+- [x] `yarn typecheck` passes
+- [x] `yarn lint` passes
 
 **Notes**: All form components use Radix primitives for proper keyboard navigation and ARIA. Select is the most complex — has many sub-components and scroll behavior.
 
----
+
 
 ### US-008: Build form components — Slider, Toggle, ToggleGroup, InputOTP
 
@@ -545,23 +545,23 @@ As a developer, I want additional form controls for specialized input scenarios.
 
 **Acceptance Criteria**:
 
-- [ ] **Slider**: Using `@radix-ui/react-slider` — range slider, min/max/step, single value, disabled state, themed track/thumb colors
-- [ ] **Toggle**: Using `@radix-ui/react-toggle` — pressed/unpressed state, 2 variants (default, outline), 3 sizes (default, sm, lg), disabled
-- [ ] **ToggleGroup**: Using `@radix-ui/react-toggle-group` — single/multiple selection, shares Toggle variants/sizes
-- [ ] **InputOTP**: Segmented OTP input — `InputOTP`, `InputOTPGroup`, `InputOTPSlot`, `InputOTPSeparator`. Configurable length, pattern validation, auto-advance.
-- [ ] Each with full file set
-- [ ] Tests use `composeStories()` pattern
-- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
-- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
-- [ ] All exported from `src/index.ts`
-- [ ] `yarn build` passes
-- [ ] `yarn test` passes
-- [ ] `yarn typecheck` passes
-- [ ] `yarn lint` passes
+- [x] **Slider**: Using `@radix-ui/react-slider` — range slider, min/max/step, single value, disabled state, themed track/thumb colors
+- [x] **Toggle**: Using `@radix-ui/react-toggle` — pressed/unpressed state, 2 variants (default, outline), 3 sizes (default, sm, lg), disabled
+- [x] **ToggleGroup**: Using `@radix-ui/react-toggle-group` — single/multiple selection, shares Toggle variants/sizes
+- [x] **InputOTP**: Segmented OTP input — `InputOTP`, `InputOTPGroup`, `InputOTPSlot`, `InputOTPSeparator`. Configurable length, pattern validation, auto-advance.
+- [x] Each with full file set
+- [x] Tests use `composeStories()` pattern
+- [x] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [x] Each component has JSDoc on exported interface/props with `@example` usage snippet
+- [x] All exported from `src/index.ts`
+- [x] `yarn build` passes
+- [x] `yarn test` passes
+- [x] `yarn typecheck` passes
+- [x] `yarn lint` passes
 
 **Notes**: InputOTP can be built with a custom implementation using hidden input + visual slots pattern (no external dep needed). Slider/Toggle/ToggleGroup use Radix.
 
----
+
 
 ### US-009: Build navigation components — Tabs, Accordion, Collapsible, Breadcrumb, Pagination
 
@@ -573,24 +573,24 @@ As a developer, I want navigation and content organization components.
 
 **Acceptance Criteria**:
 
-- [ ] **Tabs**: Using `@radix-ui/react-tabs` — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`. Horizontal layout, active indicator styling, disabled tabs.
-- [ ] **Accordion**: Using `@radix-ui/react-accordion` — `Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionContent`. Single/multiple open modes, animated expand/collapse with CSS, chevron rotation.
-- [ ] **Collapsible**: Using `@radix-ui/react-collapsible` — `Collapsible`, `CollapsibleTrigger`, `CollapsibleContent`. Simple open/close with animation.
-- [ ] **Breadcrumb**: `Breadcrumb`, `BreadcrumbList`, `BreadcrumbItem`, `BreadcrumbLink`, `BreadcrumbPage`, `BreadcrumbSeparator`, `BreadcrumbEllipsis`. Semantic `<nav aria-label="breadcrumb">` + `<ol>`.
-- [ ] **Pagination**: `Pagination`, `PaginationContent`, `PaginationItem`, `PaginationPrevious`, `PaginationNext`, `PaginationLink`, `PaginationEllipsis`. Uses button/link variants.
-- [ ] Each with full file set
-- [ ] Tests use `composeStories()` pattern
-- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
-- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
-- [ ] All exported from `src/index.ts`
-- [ ] `yarn build` passes
-- [ ] `yarn test` passes
-- [ ] `yarn typecheck` passes
-- [ ] `yarn lint` passes
+- [x] **Tabs**: Using `@radix-ui/react-tabs` — `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`. Horizontal layout, active indicator styling, disabled tabs.
+- [x] **Accordion**: Using `@radix-ui/react-accordion` — `Accordion`, `AccordionItem`, `AccordionTrigger`, `AccordionContent`. Single/multiple open modes, animated expand/collapse with CSS, chevron rotation.
+- [x] **Collapsible**: Using `@radix-ui/react-collapsible` — `Collapsible`, `CollapsibleTrigger`, `CollapsibleContent`. Simple open/close with animation.
+- [x] **Breadcrumb**: `Breadcrumb`, `BreadcrumbList`, `BreadcrumbItem`, `BreadcrumbLink`, `BreadcrumbPage`, `BreadcrumbSeparator`, `BreadcrumbEllipsis`. Semantic `<nav aria-label="breadcrumb">` + `<ol>`.
+- [x] **Pagination**: `Pagination`, `PaginationContent`, `PaginationItem`, `PaginationPrevious`, `PaginationNext`, `PaginationLink`, `PaginationEllipsis`. Uses button/link variants.
+- [x] Each with full file set
+- [x] Tests use `composeStories()` pattern
+- [x] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [x] Each component has JSDoc on exported interface/props with `@example` usage snippet
+- [x] All exported from `src/index.ts`
+- [x] `yarn build` passes
+- [x] `yarn test` passes
+- [x] `yarn typecheck` passes
+- [x] `yarn lint` passes
 
 **Notes**: Breadcrumb and Pagination are pure HTML/CSS components (no Radix needed). Accordion animation uses `grid-template-rows: 0fr` → `1fr` trick or Radix's built-in animation support.
 
----
+
 
 ### US-010: Build layout components — Card, AspectRatio, ScrollArea, Resizable, FlexGrid
 
@@ -602,11 +602,11 @@ As a developer, I want layout and container components for content structure, in
 
 **Acceptance Criteria**:
 
-- [ ] **Card**: `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`. Styled container with border, shadow, rounded corners. All sub-components use forwardRef + cn().
-- [ ] **AspectRatio**: Using `@radix-ui/react-aspect-ratio` — maintains width:height ratio for media content.
-- [ ] **ScrollArea**: Using `@radix-ui/react-scroll-area` — `ScrollArea`, `ScrollBar`. Custom-styled scrollbar, horizontal/vertical, auto-hide.
-- [ ] **Resizable**: `ResizablePanelGroup`, `ResizablePanel`, `ResizableHandle`. Draggable resize handle between panels, horizontal/vertical directions. Uses `react-resizable-panels` library.
-- [ ] **FlexGrid**: Responsive flex-based 12-column grid system with compound component API:
+- [x] **Card**: `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter`. Styled container with border, shadow, rounded corners. All sub-components use forwardRef + cn().
+- [x] **AspectRatio**: Using `@radix-ui/react-aspect-ratio` — maintains width:height ratio for media content.
+- [x] **ScrollArea**: Using `@radix-ui/react-scroll-area` — `ScrollArea`, `ScrollBar`. Custom-styled scrollbar, horizontal/vertical, auto-hide.
+- [x] **Resizable**: `ResizablePanelGroup`, `ResizablePanel`, `ResizableHandle`. Draggable resize handle between panels, horizontal/vertical directions. Uses `react-resizable-panels` library.
+- [x] **FlexGrid**: Responsive flex-based 12-column grid system with compound component API:
   - `FlexGrid` — container component. Props: `gap?: string` (Tailwind gap token, default `'4'`), `alignItems?: 'start' | 'center' | 'end' | 'stretch' | 'baseline'`, `justifyContent?: 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'`, `wrap?: boolean` (default `true`), `className`. Renders a `<div>` with `display: flex; flex-wrap: wrap` and negative margin technique for gutters (or Tailwind gap). All children are `FlexGrid.Column`.
   - `FlexGrid.Column` — column component exposed as static property on FlexGrid. Props: `xs?: 1-12` (required — mobile-first base), `sm?: 1-12` (≥640px, tablets), `md?: 1-12` (≥768px, laptops/desktops), `lg?: 1-12` (≥1024px, desktops/wide monitors), `xl?: 1-12` (≥1280px, wider viewports), `offset?: { xs?, sm?, md?, lg?, xl? }` (column offsets per breakpoint), `order?: { xs?, sm?, md?, lg?, xl? }` (flex order per breakpoint), `className`. Column widths calculated as `(span / 12) * 100%` using CSS classes.
   - Breakpoints use Tailwind v4 default breakpoints: `sm:640px`, `md:768px`, `lg:1024px`, `xl:1280px`. The `xs` prop applies with no media query (mobile-first base).
@@ -614,13 +614,13 @@ As a developer, I want layout and container components for content structure, in
   - Grid supports nesting: a `FlexGrid.Column` can contain a nested `FlexGrid`.
   - Both components use `forwardRef` and `cn()` for className merging.
   - TypeScript: Column span props typed as `1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12` (literal union, not just `number`).
-- [ ] FlexGrid stories demonstrate:
+- [x] FlexGrid stories demonstrate:
   - Equal columns (3x `xs={4}`)
   - Responsive layout (`xs={12} md={6} lg={4}` — stacks on mobile, 2-col on tablet, 3-col on desktop)
   - Mixed widths (sidebar + main: `md={3}` + `md={9}`)
   - Nested grids
   - With gap and alignment variations
-- [ ] FlexGrid tests verify:
+- [x] FlexGrid tests verify:
   - Default rendering with `composeStories()` pattern
   - Column width classes applied correctly for each breakpoint prop
   - Responsive class combinations (e.g., `xs={12} md={6}` produces `w-full md:w-6/12`)
@@ -628,19 +628,19 @@ As a developer, I want layout and container components for content structure, in
   - FlexGrid.Column compound component access pattern works
   - Ref forwarding on both FlexGrid and FlexGrid.Column
   - Nesting renders correctly
-- [ ] Each with full file set
-- [ ] Tests use `composeStories()` pattern
-- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
-- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
-- [ ] All exported from `src/index.ts`
-- [ ] `yarn build` passes
-- [ ] `yarn test` passes
-- [ ] `yarn typecheck` passes
-- [ ] `yarn lint` passes
+- [x] Each with full file set
+- [x] Tests use `composeStories()` pattern
+- [x] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [x] Each component has JSDoc on exported interface/props with `@example` usage snippet
+- [x] All exported from `src/index.ts`
+- [x] `yarn build` passes
+- [x] `yarn test` passes
+- [x] `yarn typecheck` passes
+- [x] `yarn lint` passes
 
 **Notes**: Card is pure HTML/CSS. Resizable needs `react-resizable-panels` as a dependency — evaluate if this should be a peer dep or direct dep. FlexGrid is pure CSS/Tailwind — no external dependencies. Use the `FlexGrid.Column` compound component pattern (static property assignment) so consumers write `<FlexGrid><FlexGrid.Column xs={12} md={6}>...</FlexGrid.Column></FlexGrid>`. Column width mapping is straightforward: span 1 = `w-1/12`, span 6 = `w-6/12` (which Tailwind aliases as `w-1/2`), span 12 = `w-full`. Use Tailwind's fraction utilities where available, fall back to `basis-[percentage]` or `w-[percentage]` if needed for exact 12-column math.
 
----
+
 
 ### US-011: Build menu components — DropdownMenu, ContextMenu, Menubar
 
@@ -652,23 +652,23 @@ As a developer, I want menu components for actions, context menus, and applicati
 
 **Acceptance Criteria**:
 
-- [ ] **DropdownMenu**: Using `@radix-ui/react-dropdown-menu` — `DropdownMenu`, `DropdownMenuTrigger`, `DropdownMenuContent`, `DropdownMenuItem`, `DropdownMenuCheckboxItem`, `DropdownMenuRadioGroup`, `DropdownMenuRadioItem`, `DropdownMenuLabel`, `DropdownMenuSeparator`, `DropdownMenuShortcut`, `DropdownMenuGroup`, `DropdownMenuSub`, `DropdownMenuSubTrigger`, `DropdownMenuSubContent`.
-- [ ] **ContextMenu**: Using `@radix-ui/react-context-menu` — mirrors DropdownMenu API surface with `ContextMenu*` prefix. Triggered by right-click.
-- [ ] **Menubar**: Using `@radix-ui/react-menubar` — `Menubar`, `MenubarMenu`, `MenubarTrigger`, `MenubarContent`, `MenubarItem`, `MenubarSeparator`, `MenubarShortcut`, `MenubarCheckboxItem`, `MenubarRadioGroup`, `MenubarRadioItem`, `MenubarSub`, `MenubarSubTrigger`, `MenubarSubContent`.
-- [ ] Each with full file set
-- [ ] Stories demonstrate nested sub-menus, checkbox items, radio groups, keyboard shortcuts
-- [ ] Tests use `composeStories()` pattern
-- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
-- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
-- [ ] All exported from `src/index.ts`
-- [ ] `yarn build` passes
-- [ ] `yarn test` passes
-- [ ] `yarn typecheck` passes
-- [ ] `yarn lint` passes
+- [x] **DropdownMenu**: Using `@radix-ui/react-dropdown-menu` — `DropdownMenu`, `DropdownMenuTrigger`, `DropdownMenuContent`, `DropdownMenuItem`, `DropdownMenuCheckboxItem`, `DropdownMenuRadioGroup`, `DropdownMenuRadioItem`, `DropdownMenuLabel`, `DropdownMenuSeparator`, `DropdownMenuShortcut`, `DropdownMenuGroup`, `DropdownMenuSub`, `DropdownMenuSubTrigger`, `DropdownMenuSubContent`.
+- [x] **ContextMenu**: Using `@radix-ui/react-context-menu` — mirrors DropdownMenu API surface with `ContextMenu*` prefix. Triggered by right-click.
+- [x] **Menubar**: Using `@radix-ui/react-menubar` — `Menubar`, `MenubarMenu`, `MenubarTrigger`, `MenubarContent`, `MenubarItem`, `MenubarSeparator`, `MenubarShortcut`, `MenubarCheckboxItem`, `MenubarRadioGroup`, `MenubarRadioItem`, `MenubarSub`, `MenubarSubTrigger`, `MenubarSubContent`.
+- [x] Each with full file set
+- [x] Stories demonstrate nested sub-menus, checkbox items, radio groups, keyboard shortcuts
+- [x] Tests use `composeStories()` pattern
+- [x] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [x] Each component has JSDoc on exported interface/props with `@example` usage snippet
+- [x] All exported from `src/index.ts`
+- [x] `yarn build` passes
+- [x] `yarn test` passes
+- [x] `yarn typecheck` passes
+- [x] `yarn lint` passes
 
 **Notes**: These three share very similar patterns — build DropdownMenu first, then derive ContextMenu and Menubar from it. Each has ~12-15 sub-components but they follow identical patterns.
 
----
+
 
 ### US-012: Build data display — Table, Command
 
@@ -680,23 +680,23 @@ As a developer, I want data display components for tabular data and command pale
 
 **Acceptance Criteria**:
 
-- [ ] **Table**: `Table`, `TableHeader`, `TableBody`, `TableFooter`, `TableHead`, `TableRow`, `TableCell`, `TableCaption`. Semantic HTML table elements with Tailwind styling, responsive overflow handling, striped rows option.
-- [ ] **Command**: Using `cmdk` library — `Command`, `CommandDialog`, `CommandInput`, `CommandList`, `CommandEmpty`, `CommandGroup`, `CommandItem`, `CommandShortcut`, `CommandSeparator`. Keyboard-navigable command palette / searchable list.
-- [ ] Each with full file set
-- [ ] Table story demonstrates a realistic data table with headers, rows, and footer
-- [ ] Command story demonstrates searchable command palette with grouped items
-- [ ] Tests use `composeStories()` pattern
-- [ ] **>80% test coverage** on all component source files (statements, branches, functions, lines)
-- [ ] Each component has JSDoc on exported interface/props with `@example` usage snippet
-- [ ] All exported from `src/index.ts`
-- [ ] `yarn build` passes
-- [ ] `yarn test` passes
-- [ ] `yarn typecheck` passes
-- [ ] `yarn lint` passes
+- [x] **Table**: `Table`, `TableHeader`, `TableBody`, `TableFooter`, `TableHead`, `TableRow`, `TableCell`, `TableCaption`. Semantic HTML table elements with Tailwind styling, responsive overflow handling, striped rows option.
+- [x] **Command**: Using `cmdk` library — `Command`, `CommandDialog`, `CommandInput`, `CommandList`, `CommandEmpty`, `CommandGroup`, `CommandItem`, `CommandShortcut`, `CommandSeparator`. Keyboard-navigable command palette / searchable list.
+- [x] Each with full file set
+- [x] Table story demonstrates a realistic data table with headers, rows, and footer
+- [x] Command story demonstrates searchable command palette with grouped items
+- [x] Tests use `composeStories()` pattern
+- [x] **>80% test coverage** on all component source files (statements, branches, functions, lines)
+- [x] Each component has JSDoc on exported interface/props with `@example` usage snippet
+- [x] All exported from `src/index.ts`
+- [x] `yarn build` passes
+- [x] `yarn test` passes
+- [x] `yarn typecheck` passes
+- [x] `yarn lint` passes
 
 **Notes**: Table is pure HTML/CSS. Command needs `cmdk` as a dependency. Command is one of shadcn/ui's most popular components — used for search, command palettes, and comboboxes.
 
----
+
 
 ### US-013: Barrel exports, full web-app adoption, and verification
 

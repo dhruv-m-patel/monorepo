@@ -32,9 +32,8 @@ const badgeVariants = cva(
  * <Badge variant="outline">Draft</Badge>
  * ```
  */
-export interface BadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof badgeVariants> {}
+export type BadgeProps = React.HTMLAttributes<HTMLSpanElement> &
+    VariantProps<typeof badgeVariants>;
 
 /**
  * Production-grade Badge component for status indicators and labels.

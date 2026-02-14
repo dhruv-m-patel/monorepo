@@ -66,8 +66,7 @@ Alert.displayName = 'Alert';
  * <AlertTitle>Warning</AlertTitle>
  * ```
  */
-export interface AlertTitleProps
-  extends React.HTMLAttributes<HTMLHeadingElement> {}
+export type AlertTitleProps = React.HTMLAttributes<HTMLHeadingElement>;
 
 /**
  * AlertTitle component for the alert heading.
@@ -92,8 +91,7 @@ AlertTitle.displayName = 'AlertTitle';
  * <AlertDescription>This is a detailed message</AlertDescription>
  * ```
  */
-export interface AlertDescriptionProps
-  extends React.HTMLAttributes<HTMLParagraphElement> {}
+export type AlertDescriptionProps = React.HTMLAttributes<HTMLParagraphElement>;
 
 /**
  * AlertDescription component for the alert body text.

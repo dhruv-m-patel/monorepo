@@ -31,20 +31,19 @@ const toastVariants = cva(
  * </Toast>
  * ```
  */
-export interface ToastProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof toastVariants> {
+export type ToastProps = React.HTMLAttributes<HTMLDivElement> &
+    VariantProps<typeof toastVariants> & {
   /**
    * Callback fired when the toast should be closed
    */
   onClose?: () => void;
-}
+};
 
 /**
  * Toast component for displaying temporary notifications.
  */
 const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
-  ({ className, variant, children, onClose, ...props }, ref) => {
+  ({ className, variant, children, onClose: _onClose, ...props }, ref) => {
     return (
       <div
         ref={ref}
@@ -67,8 +66,7 @@ Toast.displayName = 'Toast';
  * <ToastTitle>Success</ToastTitle>
  * ```
  */
-export interface ToastTitleProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+export type ToastTitleProps = React.HTMLAttributes<HTMLDivElement>;
 
 /**
  * ToastTitle component for the toast heading.
@@ -93,8 +91,7 @@ ToastTitle.displayName = 'ToastTitle';
  * <ToastDescription>Your changes have been saved</ToastDescription>
  * ```
  */
-export interface ToastDescriptionProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+export type ToastDescriptionProps = React.HTMLAttributes<HTMLDivElement>;
 
 /**
  * ToastDescription component for the toast body text.
@@ -120,8 +117,7 @@ ToastDescription.displayName = 'ToastDescription';
  * <ToastClose onClick={() => dismiss(id)} />
  * ```
  */
-export interface ToastCloseProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+export type ToastCloseProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 /**
  * ToastClose component for dismissing the toast.
@@ -164,8 +160,7 @@ ToastClose.displayName = 'ToastClose';
  * <ToastAction onClick={handleAction}>Undo</ToastAction>
  * ```
  */
-export interface ToastActionProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
+export type ToastActionProps = React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 /**
  * ToastAction component for action buttons in the toast.

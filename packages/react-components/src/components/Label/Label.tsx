@@ -16,9 +16,8 @@ const labelVariants = cva(
  * <Label htmlFor="password" className="text-destructive">Password *</Label>
  * ```
  */
-export interface LabelProps
-  extends React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>,
-    VariantProps<typeof labelVariants> {}
+export type LabelProps = React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> &
+    VariantProps<typeof labelVariants>;
 
 /**
  * Production-grade Label component based on Radix UI Label primitive.

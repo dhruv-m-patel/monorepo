@@ -8,7 +8,7 @@ import { cn } from '@ui/lib/utils';
  * <H1>The Joke Tax Chronicles</H1>
  * ```
  */
-export interface H1Props extends React.HTMLAttributes<HTMLHeadingElement> {}
+export type H1Props = React.HTMLAttributes<HTMLHeadingElement>;
 
 const H1 = React.forwardRef<HTMLHeadingElement, H1Props>(
   ({ className, ...props }, ref) => {
@@ -34,7 +34,7 @@ H1.displayName = 'H1';
  * <H2>The People of the Kingdom</H2>
  * ```
  */
-export interface H2Props extends React.HTMLAttributes<HTMLHeadingElement> {}
+export type H2Props = React.HTMLAttributes<HTMLHeadingElement>;
 
 const H2 = React.forwardRef<HTMLHeadingElement, H2Props>(
   ({ className, ...props }, ref) => {
@@ -60,7 +60,7 @@ H2.displayName = 'H2';
  * <H3>The King's Plan</H3>
  * ```
  */
-export interface H3Props extends React.HTMLAttributes<HTMLHeadingElement> {}
+export type H3Props = React.HTMLAttributes<HTMLHeadingElement>;
 
 const H3 = React.forwardRef<HTMLHeadingElement, H3Props>(
   ({ className, ...props }, ref) => {
@@ -86,7 +86,7 @@ H3.displayName = 'H3';
  * <H4>People stopped telling jokes</H4>
  * ```
  */
-export interface H4Props extends React.HTMLAttributes<HTMLHeadingElement> {}
+export type H4Props = React.HTMLAttributes<HTMLHeadingElement>;
 
 const H4 = React.forwardRef<HTMLHeadingElement, H4Props>(
   ({ className, ...props }, ref) => {
@@ -112,7 +112,7 @@ H4.displayName = 'H4';
  * <P>The king, seeing how much happier his subjects were, realized the error of his ways.</P>
  * ```
  */
-export interface PProps extends React.HTMLAttributes<HTMLParagraphElement> {}
+export type PProps = React.HTMLAttributes<HTMLParagraphElement>;
 
 const P = React.forwardRef<HTMLParagraphElement, PProps>(
   ({ className, ...props }, ref) => {
@@ -135,7 +135,7 @@ P.displayName = 'P';
  * <Lead>A modal dialog that interrupts the user with important content.</Lead>
  * ```
  */
-export interface LeadProps extends React.HTMLAttributes<HTMLParagraphElement> {}
+export type LeadProps = React.HTMLAttributes<HTMLParagraphElement>;
 
 const Lead = React.forwardRef<HTMLParagraphElement, LeadProps>(
   ({ className, ...props }, ref) => {
@@ -158,7 +158,7 @@ Lead.displayName = 'Lead';
  * <Large>Are you absolutely sure?</Large>
  * ```
  */
-export interface LargeProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type LargeProps = React.HTMLAttributes<HTMLDivElement>;
 
 const Large = React.forwardRef<HTMLDivElement, LargeProps>(
   ({ className, ...props }, ref) => {
@@ -181,7 +181,7 @@ Large.displayName = 'Large';
  * <Small>Email address</Small>
  * ```
  */
-export interface SmallProps extends React.HTMLAttributes<HTMLElement> {}
+export type SmallProps = React.HTMLAttributes<HTMLElement>;
 
 const Small = React.forwardRef<HTMLElement, SmallProps>(
   ({ className, ...props }, ref) => {
@@ -204,7 +204,7 @@ Small.displayName = 'Small';
  * <Muted>Enter your email address.</Muted>
  * ```
  */
-export interface MutedProps extends React.HTMLAttributes<HTMLParagraphElement> {}
+export type MutedProps = React.HTMLAttributes<HTMLParagraphElement>;
 
 const Muted = React.forwardRef<HTMLParagraphElement, MutedProps>(
   ({ className, ...props }, ref) => {
@@ -227,7 +227,7 @@ Muted.displayName = 'Muted';
  * <InlineCode>@radix-ui/react-alert-dialog</InlineCode>
  * ```
  */
-export interface InlineCodeProps extends React.HTMLAttributes<HTMLElement> {}
+export type InlineCodeProps = React.HTMLAttributes<HTMLElement>;
 
 const InlineCode = React.forwardRef<HTMLElement, InlineCodeProps>(
   ({ className, ...props }, ref) => {
@@ -255,8 +255,7 @@ InlineCode.displayName = 'InlineCode';
  * </Blockquote>
  * ```
  */
-export interface BlockquoteProps
-  extends React.HTMLAttributes<HTMLQuoteElement> {}
+export type BlockquoteProps = React.HTMLAttributes<HTMLQuoteElement>;
 
 const Blockquote = React.forwardRef<HTMLQuoteElement, BlockquoteProps>(
   ({ className, ...props }, ref) => {

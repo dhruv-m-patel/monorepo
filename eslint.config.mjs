@@ -135,6 +135,7 @@ export default tseslint.config(
       ...reactHooksPlugin.configs.recommended.rules,
       ...jsxA11yFlatRecommended.rules,
       'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off', // Using TypeScript for prop validation
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
     },
@@ -211,6 +212,10 @@ export default tseslint.config(
       ...reactHooksPlugin.configs.recommended.rules,
       ...jsxA11yFlatRecommended.rules,
       'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off', // Using TypeScript for prop validation
+      // Component library wrappers pass children via ...props spread
+      'jsx-a11y/heading-has-content': 'off',
+      'jsx-a11y/anchor-has-content': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
     },
