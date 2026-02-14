@@ -10,3 +10,4 @@ storybook-static/
 playwright-report/
 test-results/
 perf-results/
+size-report.json

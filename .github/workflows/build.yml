@@ -36,3 +36,6 @@ jobs:
 
       - name: Run tests
         run: yarn ci:test
+
+      - name: Check bundle sizes
+        run: yarn workspace web-app run test:size

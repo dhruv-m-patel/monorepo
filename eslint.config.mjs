@@ -31,6 +31,7 @@ export default tseslint.config(
       'playwright-report/',
       'test-results/',
       'perf-results/',
+      'size-report.json',
     ],
   },
 

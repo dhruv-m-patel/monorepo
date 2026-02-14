@@ -31,6 +31,7 @@ after each iteration and it's included in prompts for context.
 - **Vite proxy for API calls**: When web-app fetches `/api/*` and the service runs on a different port, add `server.proxy` in `vite.config.ts` to forward requests: `'/api': { target: 'http://localhost:4000', changeOrigin: true }`.
 - **Autocannon percentiles**: Autocannon provides p50, p75, p90, p97_5, p99 (no p95). Use `p97_5` as the closest approximation when testing against p95 thresholds. The `@types/autocannon` Histogram interface defines `p97_5` not `p95`.
 - **Vitest perf test isolation**: Use a separate `vitest.perf.config.ts` with `include: ['tests/performance/**/*.perf.test.ts']` and add `exclude: ['tests/performance/**']` to the main `vitest.config.ts` so performance tests don't run during `yarn test`. Run them via `yarn test:perf` which references the separate config.
+- **size-limit with @size-limit/file for Vite**: Use `@size-limit/file` (not `@size-limit/esbuild`) for Vite projects since the bundle is already built. `@size-limit/esbuild` tries to re-bundle and chokes on `.map` files. The `ignore` config option requires a bundler plugin - with `@size-limit/file`, use explicit glob patterns or arrays of paths instead. By default, `@size-limit/file` uses brotli compression; set `gzip: true` explicitly for gzip measurement.
 
 ---
 
@@ -438,4 +439,32 @@ after each iteration and it's included in prompts for context.
   - For performance tests, `pool: 'forks'` with `singleFork: true` ensures tests run serially in a single process. Load tests should not compete for CPU/network resources with each other.
   - The Express `app.listen(0)` pattern (port 0) lets the OS assign a random available port, which is ideal for test isolation. Extract the actual port from `server.address()` after listening.
   - Autocannon with 10 connections and 5-second duration produces ~38K-40K requests against a local Express server, with p50 latency of ~1ms. These are good baseline numbers for simple JSON endpoints.
+---
+
+## 2026-02-14 - US-013
+- What was implemented:
+  - Added automated bundle size tracking for web-app using `size-limit` v12 with `@size-limit/file` plugin
+  - Configured 4 size-limit checks: JS gzip (160 kB), JS brotli (130 kB), CSS gzip (6 kB), Total gzip (170 kB)
+  - Baseline bundle sizes established: JS=141.65 kB gzip / 118.19 kB brotli, CSS=4.19 kB gzip, Total=145.84 kB gzip
+  - Added `yarn test:size` script at both web-app and root level (root builds first, then checks)
+  - Added `yarn test:size:report` script for JSON output (`size-report.json`)
+  - Created `.github/workflows/bundle-size.yml` - PR workflow that compares bundle sizes against base branch and posts a comment with delta table
+  - Updated `.github/workflows/build.yml` to include bundle size check step (CI fails if limits exceeded)
+  - Updated `.gitignore`, `.prettierignore` with `size-report.json`
+  - Updated `eslint.config.mjs` with `size-report.json` in ignores
+  - All quality checks pass: `yarn build`, `yarn lint`, `yarn test`, `yarn typecheck`, `yarn test:size`
+- Files changed:
+  - `web-app/package.json` - added size-limit, @size-limit/file devDependencies, test:size and test:size:report scripts, size-limit config
+  - `package.json` - added `test:size` root script
+  - `.github/workflows/bundle-size.yml` (new) - PR bundle size comparison workflow with comment reporting
+  - `.github/workflows/build.yml` - added bundle size check step
+  - `eslint.config.mjs` - added `size-report.json` to ignores
+  - `.gitignore` - added `size-report.json`
+  - `.prettierignore` - added `size-report.json`
+- **Learnings:**
+  - `@size-limit/file` is the correct plugin for Vite projects where the bundle is already built. `@size-limit/esbuild` tries to re-bundle the output and fails on `.map` files (no loader configured for `.map`).
+  - The `ignore` config option in size-limit requires `@size-limit/webpack` or `@size-limit/esbuild` plugin. With `@size-limit/file`, use explicit file extension globs (e.g., `dist/assets/*.js`) or an array of paths to exclude unwanted files like source maps.
+  - `@size-limit/file` defaults to brotli compression measurement when neither `gzip` nor `brotli` is specified. Set `gzip: true` explicitly if you want gzip sizes for consistency with Vite's build output reporting.
+  - size-limit v12 exits with non-zero code when any limit is exceeded, making it CI-friendly out of the box - no wrapper script needed.
+  - The `--json` flag outputs machine-readable results with `name`, `passed`, `size`, and `sizeLimit` fields - ideal for PR comment generation and CI artifact storage.
 ---

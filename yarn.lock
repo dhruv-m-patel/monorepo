@@ -1903,6 +1903,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@size-limit/file@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@size-limit/file@npm:12.0.0"
+  peerDependencies:
+    size-limit: 12.0.0
+  checksum: 1cc4876760ea7c4e1bb70bccf85fe1e20f30ad11ab5354a09a6bf163550f3f2c231a63c3f39190e74e3f00678f9b0071202bb8beb00b8da4d666439e5194b5e2
+  languageName: node
+  linkType: hard
+
 "@storybook/addon-actions@npm:8.6.15":
   version: 8.6.15
   resolution: "@storybook/addon-actions@npm:8.6.15"
@@ -4062,6 +4071,13 @@ __metadata:
   version: 7.0.0
   resolution: "byte-size@npm:7.0.0"
   checksum: 6cdd45fb64ac3f80d5cbbc01df7974a4613b3e64bd792b6b8211c8669ca3d1f7efd9379ba24cebfc371ce3e890817dcdaf0bd7ed99571fe2de4b946e6c31a138
+  languageName: node
+  linkType: hard
+
+"bytes-iec@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "bytes-iec@npm:3.1.1"
+  checksum: 092a90897e938c8d28acf2b6383e5b91abc97c5d4251d9b6ebe331eb55b6064a331dcc78520efb98f90d554cfe9c7309e9138306f58d133dc0dcfa1edf38fc0a
   languageName: node
   linkType: hard
 
@@ -8673,6 +8689,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lilconfig@npm:^3.1.3":
+  version: 3.1.3
+  resolution: "lilconfig@npm:3.1.3"
+  checksum: 644eb10830350f9cdc88610f71a921f510574ed02424b57b0b3abb66ea725d7a082559552524a842f4e0272c196b88dfe1ff7d35ffcc6f45736777185cd67c9a
+  languageName: node
+  linkType: hard
+
 "lines-and-columns@npm:^1.1.6":
   version: 1.2.4
   resolution: "lines-and-columns@npm:1.2.4"
@@ -9478,6 +9501,15 @@ __metadata:
   bin:
     nanoid: bin/nanoid.cjs
   checksum: 3be20d8866a57a6b6d218e82549711c8352ed969f9ab3c45379da28f405363ad4c9aeb0b39e9abc101a529ca65a72ff9502b00bf74a912c4b64a9d62dfd26c29
+  languageName: node
+  linkType: hard
+
+"nanospinner@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "nanospinner@npm:1.2.2"
+  dependencies:
+    picocolors: ^1.1.1
+  checksum: 1a5faf20d6e0712c1c2c959c1b84dff8d08a70b59f0b34e54367b247fcc62388f530fa597e240459def1ea97222399d3d1bcaad39d6e90b62f4e588bed381833
   languageName: node
   linkType: hard
 
@@ -11852,6 +11884,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"size-limit@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "size-limit@npm:12.0.0"
+  dependencies:
+    bytes-iec: ^3.1.1
+    lilconfig: ^3.1.3
+    nanospinner: ^1.2.2
+    picocolors: ^1.1.1
+    tinyglobby: ^0.2.15
+  peerDependencies:
+    jiti: ^2.0.0
+  peerDependenciesMeta:
+    jiti:
+      optional: true
+  bin:
+    size-limit: bin.js
+  checksum: 5757d8aeb44b831da473d24df66f24f2ff3b5c58260093a985f6876f545f7882f9334bd8825292826384ebb81d41ab9f3b927803e7c01e8cca8e4743f70f2610
+  languageName: node
+  linkType: hard
+
 "slash@npm:3.0.0, slash@npm:^3.0.0":
   version: 3.0.0
   resolution: "slash@npm:3.0.0"
@@ -13400,6 +13452,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "web-app@workspace:web-app"
   dependencies:
+    "@size-limit/file": ^12.0.0
     "@storybook/addon-essentials": ^8
     "@storybook/addon-interactions": ^8
     "@storybook/addon-links": ^8
@@ -13424,6 +13477,7 @@ __metadata:
     react-dom: ^19.0.0
     react-router-dom: ^7.1.0
     rimraf: ^5.0.10
+    size-limit: ^12.0.0
     storybook: ^8
     tailwind-merge: ^3.4.0
     tailwindcss: ^4.1.18

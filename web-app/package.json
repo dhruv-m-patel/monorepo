@@ -15,8 +15,39 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test:size": "size-limit",
+    "test:size:report": "size-limit --json > size-report.json"
   },
+  "size-limit": [
+    {
+      "name": "JS Bundle (gzip)",
+      "path": "dist/assets/*.js",
+      "gzip": true,
+      "limit": "160 kB"
+    },
+    {
+      "name": "JS Bundle (brotli)",
+      "path": "dist/assets/*.js",
+      "brotli": true,
+      "limit": "130 kB"
+    },
+    {
+      "name": "CSS (gzip)",
+      "path": "dist/assets/*.css",
+      "gzip": true,
+      "limit": "6 kB"
+    },
+    {
+      "name": "Total Bundle (gzip)",
+      "path": [
+        "dist/assets/*.js",
+        "dist/assets/*.css"
+      ],
+      "gzip": true,
+      "limit": "170 kB"
+    }
+  ],
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
     "class-variance-authority": "^0.7.1",
@@ -29,6 +60,7 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "@size-limit/file": "^12.0.0",
     "@storybook/addon-essentials": "^8",
     "@storybook/addon-interactions": "^8",
     "@storybook/addon-links": "^8",
@@ -46,6 +78,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "jsdom": "^25.0.1",
     "rimraf": "^5.0.10",
+    "size-limit": "^12.0.0",
     "storybook": "^8",
     "typescript": "^5.7.3",
     "vite": "^6.0.0",
