@@ -6,6 +6,11 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import globals from 'globals';
 
+// Flat config objects from plugins (ESLint v9 compatible)
+const reactFlatRecommended = reactPlugin.configs.flat.recommended;
+const reactFlatJsxRuntime = reactPlugin.configs.flat['jsx-runtime'];
+const jsxA11yFlatRecommended = jsxA11yPlugin.flatConfigs.recommended;
+
 export default tseslint.config(
   // Global ignores (replaces .eslintignore)
   {
@@ -102,10 +107,13 @@ export default tseslint.config(
   // React-specific config for web-app
   {
     files: ['web-app/src/**/*.tsx', 'web-app/src/**/*.ts'],
+    ...reactFlatRecommended,
+    ...reactFlatJsxRuntime,
     plugins: {
-      react: reactPlugin,
+      ...reactFlatRecommended.plugins,
+      ...reactFlatJsxRuntime.plugins,
+      ...jsxA11yFlatRecommended.plugins,
       'react-hooks': reactHooksPlugin,
-      'jsx-a11y': jsxA11yPlugin,
     },
     languageOptions: {
       parserOptions: {
@@ -123,9 +131,9 @@ export default tseslint.config(
       },
     },
     rules: {
-      ...reactPlugin.configs.recommended.rules,
+      ...reactFlatRecommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
-      ...jsxA11yPlugin.configs.recommended.rules,
+      ...jsxA11yFlatRecommended.rules,
       'react/react-in-jsx-scope': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
