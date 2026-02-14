@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { ApiRequest } from '../types';
+import { ApiRequest } from '../types.js';
 
 /**
  * Creates a health check route handler.

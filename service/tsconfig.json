@@ -1,11 +1,10 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./build",
     "types": ["node"],
-    "esModuleInterop": true,
-    "typeRoots": ["node_modules/@types", "node_modules/@dhruv-m-patel"]
+    "typeRoots": ["../node_modules/@types", "node_modules/@dhruv-m-patel"]
   },
   "include": ["./src"],
   "exclude": ["./tests", "node_modules"]

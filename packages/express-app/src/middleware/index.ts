@@ -1,3 +1,3 @@
-export { finalErrorHandler } from './errorHandler';
-export { requestTracing } from './requestTracing';
-export { createHealthCheck } from './healthCheck';
+export { finalErrorHandler } from './errorHandler.js';
+export { requestTracing } from './requestTracing.js';
+export { createHealthCheck } from './healthCheck.js';

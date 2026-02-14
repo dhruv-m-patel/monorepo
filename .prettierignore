@@ -6,3 +6,6 @@ coverage
 .env.example
 package-lock.json
 readme.md
+.ralph-tui
+.turbo
+tasks

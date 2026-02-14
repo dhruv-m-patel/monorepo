@@ -1,5 +1,5 @@
 import { runApp } from '@dhruv-m-patel/express-app';
-import app from './app';
+import app from './app.js';
 
 runApp(app, {
   appName: 'Backend Service',

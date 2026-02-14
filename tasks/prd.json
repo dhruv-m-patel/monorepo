@@ -22,7 +22,7 @@
         "yarn test passes"
       ],
       "priority": 1,
-      "passes": false,
+      "passes": true,
       "notes": "Phase 1 - must be done first before any other migration work",
       "dependsOn": []
     },
@@ -43,11 +43,12 @@
         "yarn test passes"
       ],
       "priority": 2,
-      "passes": false,
+      "passes": true,
       "notes": "Phase 1 - sequential after US-001",
       "dependsOn": [
         "US-001"
-      ]
+      ],
+      "completionNotes": "Completed by agent"
     },
     {
       "id": "US-003",
@@ -68,7 +69,7 @@
         "yarn test passes"
       ],
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "notes": "Phase 2 - can run in parallel with US-004 and US-008",
       "dependsOn": [
         "US-002"
@@ -93,7 +94,7 @@
         "yarn test passes"
       ],
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "notes": "Phase 2 - can run in parallel with US-003 and US-008",
       "dependsOn": [
         "US-002"
@@ -450,6 +451,6 @@
     }
   ],
   "metadata": {
-    "updatedAt": "2026-02-13T23:16:29.456Z"
+    "updatedAt": "2026-02-14T01:44:37.696Z"
   }
 }

@@ -21,7 +21,7 @@
     "build"
   ],
   "engines": {
-    "node": ">= 18"
+    "node": ">= 22"
   },
   "scripts": {
     "build": "rimraf ./build && yarn build:cjs && yarn build:esm",
@@ -29,7 +29,8 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "test": "jest --runInBand",
     "test:ci": "jest --silent --ci --coverage --coverageReporters=text --coverageReporters=text-summary",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "typecheck": "tsc --noEmit"
   },
   "author": {
     "name": "Dhruv Patel",

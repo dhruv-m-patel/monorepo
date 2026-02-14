@@ -4,18 +4,17 @@ import express from 'express';
 import cors from 'cors';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
-import fs from 'fs';
 import * as ExpressOpenApiValidator from 'express-openapi-validator';
 import swaggerUi from 'swagger-ui-express';
 import yamljs from 'yamljs';
 import process from 'process';
 
-import { AppConfigOptions, ApiStartupOptions } from './types';
+import { AppConfigOptions, ApiStartupOptions } from './types.js';
 import {
   finalErrorHandler,
   requestTracing,
   createHealthCheck,
-} from './middleware';
+} from './middleware/index.js';
 
 function isPromise(value?: unknown): value is Promise<void> {
   return Boolean(value && typeof (value as Promise<void>).then === 'function');
@@ -52,10 +51,9 @@ export function configureApp(
 
     // Request/response validation
     if (specType === 'openapi') {
-      const specContent = fs.readFileSync(apiSpec, 'utf8');
       app.use(
         ExpressOpenApiValidator.middleware({
-          apiSpec: specContent,
+          apiSpec,
           validateRequests: true,
           validateResponses,
         })
@@ -146,9 +144,9 @@ export function runApp(
 }
 
 // Re-export types and middleware
-export * from './types';
+export * from './types.js';
 export {
   finalErrorHandler,
   requestTracing,
   createHealthCheck,
-} from './middleware';
+} from './middleware/index.js';

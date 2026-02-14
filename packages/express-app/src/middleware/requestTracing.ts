@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { ApiRequest } from '../types';
+import { ApiRequest } from '../types.js';
 
 /**
  * Request tracing middleware.

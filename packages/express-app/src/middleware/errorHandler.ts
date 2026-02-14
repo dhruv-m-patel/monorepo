@@ -1,5 +1,5 @@
 import { Response, NextFunction } from 'express';
-import { ApiError, ApiRequest } from '../types';
+import { ApiError, ApiRequest } from '../types.js';
 
 /**
  * Final error handler middleware.
