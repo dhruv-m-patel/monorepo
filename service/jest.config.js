@@ -1,7 +1,7 @@
 const path = require('path');
 const JestConfig = require('../jest.config');
 
-const { projects, ...baseConfig } = JestConfig;
+const { projects: _projects, ...baseConfig } = JestConfig;
 
 module.exports = {
   ...baseConfig,

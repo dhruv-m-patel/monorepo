@@ -9,6 +9,8 @@ after each iteration and it's included in prompts for context.
 - **Webpack 4 + ES2022 target**: Webpack 4's parser (acorn 6.x) only supports up to ES2019 syntax. Use a separate `tsconfig.webpack.json` with `target: "ES2017"` and configure ts-loader's `configFile` option. Also need `NODE_OPTIONS=--openssl-legacy-provider` for the MD4 hash issue.
 - **Hoisted types in Yarn workspaces**: With `node-modules` linker, `@types/*` packages are hoisted to root `node_modules/@types`. Package tsconfig `typeRoots` must point to `../node_modules/@types` (relative to package dir) to find them.
 - **express-openapi-validator v5**: Expects `apiSpec` to be a file path or parsed object, NOT a YAML string content. Passing file content as string causes "spec could not be read" errors.
+- **ESLint v9 flat config in monorepos**: Use a single root `eslint.config.mjs` with file-pattern-based config objects instead of per-package `.eslintrc` files. CommonJS config files (jest.config.js, etc.) need `globals.node` + `globals.commonjs` to avoid `no-undef` errors for `module`, `require`, `__dirname`.
+- **ESLint v9 + lint-staged**: In lint-staged, use `eslint --no-warn-ignored` flag and match only lintable file extensions (`**/*.{ts,tsx,js,mjs}`) instead of running `eslint .` on all files.
 
 ---
 
@@ -61,5 +63,47 @@ after each iteration and it's included in prompts for context.
   - Webpack 4 on Node 22 requires `NODE_OPTIONS=--openssl-legacy-provider` due to removal of legacy MD4 hash algorithm.
   - When `types` field is specified in tsconfig, TypeScript only looks for those specific type packages in `typeRoots`. If they're hoisted, `typeRoots` must point to root.
   - web-app still uses `module: "commonjs"` / `moduleResolution: "node"` since it's bundled with Webpack 4. Full nodenext migration will happen with Vite migration (US-006).
+---
+
+## 2026-02-13 - US-008
+- What was implemented:
+  - Upgraded ESLint from v8.34.0 to v9.39.2
+  - Upgraded from @typescript-eslint/eslint-plugin v5 + @typescript-eslint/parser v5 to typescript-eslint v8 (unified package)
+  - Replaced all .eslintrc (JSON) files with a single root eslint.config.mjs (flat config format)
+  - Removed .eslintignore (ignores now in flat config)
+  - Installed and configured: @eslint/js, typescript-eslint, eslint-config-prettier v10, eslint-plugin-react (latest), eslint-plugin-react-hooks (latest), eslint-plugin-jsx-a11y (latest), globals
+  - Removed old packages: @typescript-eslint/eslint-plugin, @typescript-eslint/parser, eslint-plugin-import, eslint-plugin-jest, eslint-plugin-node, eslint-plugin-promise, eslint-plugin-standard
+  - Removed eslint-plugin-react from web-app devDependencies (now at root)
+  - Configured React-specific lint rules (react, react-hooks, jsx-a11y) for web-app
+  - Prettier integration maintained via eslint-config-prettier v10
+  - Updated lint-staged config to use `--no-warn-ignored` flag and target specific file extensions
+  - Fixed auto-fixable issues (unused eslint-disable directives in errorHandler.ts and client/index.ts)
+  - Fixed root jest.config.js circular self-require (unused `baseConfig` variable)
+  - Fixed web-app/jest.config.js duplicate `rootDir` key
+  - Renamed destructured unused `projects` to `_projects` in service and web-app jest configs
+  - Added eslint-disable for react-hooks/immutability in renderApp.tsx (legitimate SSR pattern)
+- Files changed:
+  - `package.json` - devDependencies (ESLint v9, typescript-eslint v8, new plugins), lint-staged config
+  - `eslint.config.mjs` (new) - root flat config replacing all .eslintrc files
+  - `.eslintrc` (deleted) - old root config
+  - `.eslintignore` (deleted) - moved to flat config ignores
+  - `service/.eslintrc` (deleted) - replaced by root flat config
+  - `web-app/.eslintrc` (deleted) - replaced by root flat config
+  - `web-app/package.json` - removed eslint-plugin-react devDependency
+  - `jest.config.js` - removed unused `baseConfig` require
+  - `service/jest.config.js` - renamed `projects` to `_projects` in destructuring
+  - `web-app/jest.config.js` - renamed `projects` to `_projects`, removed duplicate `rootDir`
+  - `web-app/src/client/renderApp.tsx` - added eslint-disable for react-hooks/immutability
+  - `packages/express-app/src/middleware/errorHandler.ts` - prettier auto-fixed (removed stale eslint-disable)
+  - `web-app/src/client/index.ts` - prettier auto-fixed (removed stale eslint-disable)
+- **Learnings:**
+  - ESLint v9 flat config uses file-pattern-based objects instead of cascading `.eslintrc` files. A single root config can handle the entire monorepo by using `files` patterns like `['web-app/src/**/*.tsx']`.
+  - The `typescript-eslint` v8 package is a unified replacement for the separate `@typescript-eslint/parser` and `@typescript-eslint/eslint-plugin` packages. Import as `import tseslint from 'typescript-eslint'` and use `tseslint.config()` helper.
+  - CommonJS config files (jest.config.js, etc.) need both `globals.node` and `globals.commonjs` in the flat config to avoid `no-undef` errors for `module`, `require`, `__dirname`.
+  - In flat config, `.eslintignore` is replaced by an ignores-only config object at the start of the config array.
+  - `eslint-config-prettier` v10 works with flat config by simply including it in the config array (no more `"extends": ["prettier"]`).
+  - `eslint-plugin-react-hooks` in v5+ includes a new `immutability` rule that flags mutations of external variables (like `delete window.__PRELOADED_STATE__`). This is a legitimate SSR cleanup pattern that needs an inline disable.
+  - lint-staged with ESLint v9 should use `eslint --no-warn-ignored` and match specific file extensions rather than running `eslint .` which tries to lint non-JS files.
+  - Old plugins like `eslint-plugin-node`, `eslint-plugin-standard`, `eslint-plugin-promise` are no longer needed - their useful rules are covered by `@eslint/js` recommended config.
 ---
 

@@ -9,7 +9,7 @@ export function finalErrorHandler(
   err: ApiError,
   req: ApiRequest,
   res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   next: NextFunction
 ): void {
   if (err) {

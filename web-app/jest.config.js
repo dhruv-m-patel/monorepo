@@ -1,7 +1,7 @@
 const path = require('path');
 const JestConfig = require('../jest.config');
 
-const { projects, ...baseConfig } = JestConfig;
+const { projects: _projects, ...baseConfig } = JestConfig;
 
 module.exports = {
   ...baseConfig,
@@ -25,7 +25,6 @@ module.exports = {
     path.join(__dirname, 'src/**/*.test.ts'),
     path.join(__dirname, 'src/**/*.test.tsx'),
   ],
-  rootDir: './src',
   moduleDirectories: ['node_modules', 'src'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],

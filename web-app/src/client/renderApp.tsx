@@ -15,6 +15,7 @@ export default function RenderApp() {
     const stateData = document.getElementById('stateData') as HTMLElement;
     if (stateData) document.head.removeChild(stateData);
     // @ts-ignore
+    // eslint-disable-next-line react-hooks/immutability
     delete window.__PRELOADED_STATE__;
   }
 

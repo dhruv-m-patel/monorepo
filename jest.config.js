@@ -1,5 +1,3 @@
-const baseConfig = require('./jest.config');
-
 module.exports = {
   clearMocks: true,
   collectCoverageFrom: [
