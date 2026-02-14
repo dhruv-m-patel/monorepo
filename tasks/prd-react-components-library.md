@@ -807,36 +807,36 @@ As a developer using Next.js or another SSR framework, I want every component in
 
 **Acceptance Criteria**:
 
-- [ ] **`'use client'` directive**: Every component file that uses React hooks, event handlers, `useRef`, `useEffect`, `useState`, `useContext`, or browser APIs has `'use client'` at the top of the file. This includes:
+- [x] **`'use client'` directive**: Every component file that uses React hooks, event handlers, `useRef`, `useEffect`, `useState`, `useContext`, or browser APIs has `'use client'` at the top of the file. This includes:
   - All Radix-based components (Dialog, Select, Tooltip, Popover, etc.)
   - ThemeProvider, useTheme
   - Toast system (ToastProvider, useToast, Toaster)
   - InputOTP (uses internal state)
   - Toggle, ToggleGroup (uses Radix state)
   - Components with `forwardRef` that also use hooks internally
-- [ ] **Pure presentational components** that do NOT need `'use client'` (they can render on the server):
+- [x] **Pure presentational components** that do NOT need `'use client'` (they can render on the server):
   - Badge, Separator, Skeleton, Typography (H1-H4, P, Lead, etc.), Card sub-components, Table sub-components, Breadcrumb, Pagination, FlexGrid, FlexGrid.Column
   - Verify these render correctly without `'use client'` directive
-- [ ] **Barrel export compatibility**: `src/index.ts` re-exports both client and server-safe components — consumers can import any component and the bundler (Next.js, Remix, etc.) handles the client boundary correctly
-- [ ] **No `window`/`document` access at module scope**: All browser API access (localStorage, matchMedia, document.documentElement) is guarded behind `useEffect`, event handlers, or `typeof window !== 'undefined'` checks
+- [x] **Barrel export compatibility**: `src/index.ts` re-exports both client and server-safe components — consumers can import any component and the bundler (Next.js, Remix, etc.) handles the client boundary correctly
+- [x] **No `window`/`document` access at module scope**: All browser API access (localStorage, matchMedia, document.documentElement) is guarded behind `useEffect`, event handlers, or `typeof window !== 'undefined'` checks
   - ThemeProvider: localStorage access only in useEffect, not during SSR render
   - Toast: portal rendering only in useEffect
   - System theme detection (matchMedia) only in useEffect
-- [ ] **SSR-safe defaults**: Components that depend on client state (theme, toast) render a sensible default on the server (e.g., light theme, no toasts) without hydration mismatch warnings
-- [ ] **Hydration safety**: No React hydration mismatches — server-rendered HTML matches initial client render for all components
-- [ ] **SSR test suite**: `packages/react-components/tests/ssr/` directory with tests that:
+- [x] **SSR-safe defaults**: Components that depend on client state (theme, toast) render a sensible default on the server (e.g., light theme, no toasts) without hydration mismatch warnings
+- [x] **Hydration safety**: No React hydration mismatches — server-rendered HTML matches initial client render for all components
+- [x] **SSR test suite**: `packages/react-components/tests/ssr/` directory with tests that:
   - Use `renderToString` from `react-dom/server` to render each component
   - Verify no errors or warnings during server render
   - Verify ThemeProvider renders with default theme on server
   - Verify components with Radix primitives render their closed/default state on server
   - Verify no `window is not defined` or `document is not defined` errors
-- [ ] **Package.json exports** updated to support both ESM and SSR bundlers:
+- [x] **Package.json exports** updated to support both ESM and SSR bundlers:
   - `"type": "module"` in package.json
   - `exports` field with proper conditions (`import`, `types`)
-- [ ] `yarn build` passes
-- [ ] `yarn test` passes (including new SSR tests)
-- [ ] `yarn typecheck` passes
-- [ ] `yarn lint` passes
+- [x] `yarn build` passes
+- [x] `yarn test` passes (including new SSR tests)
+- [x] `yarn typecheck` passes
+- [x] `yarn lint` passes
 
 **Notes**: The key principle is **progressive enhancement** — the library works in SSR environments by default, and components that need client-side interactivity declare themselves with `'use client'`. This does NOT require the library to be a Next.js-specific package — `'use client'` is a React convention that bundlers understand. The SSR test suite using `renderToString` is lightweight and runs in Node.js (no browser needed). Radix primitives generally handle SSR well since they render in their closed/default state on the server and hydrate on the client.
 

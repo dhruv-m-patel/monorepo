@@ -1,64 +1,75 @@
-import '@testing-library/jest-dom/vitest';
-import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
 
-// Mock window.matchMedia - not implemented in jsdom
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: vi.fn().mockImplementation((query: string) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
-});
+// Only run browser-specific setup when in jsdom/happy-dom environment
+const isBrowserEnv = typeof window !== 'undefined';
 
-// Mock ResizeObserver - not implemented in jsdom
-class ResizeObserverMock {
-  observe = vi.fn();
-  unobserve = vi.fn();
-  disconnect = vi.fn();
+if (isBrowserEnv) {
+  // Dynamically import browser-specific test utilities
+  await import('@testing-library/jest-dom/vitest');
+  const { cleanup } = await import('@testing-library/react');
+
+  // Mock window.matchMedia - not implemented in jsdom
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: vi.fn().mockImplementation((query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  });
+
+  // Mock ResizeObserver - not implemented in jsdom
+  class ResizeObserverMock {
+    observe = vi.fn();
+    unobserve = vi.fn();
+    disconnect = vi.fn();
+  }
+  Object.defineProperty(window, 'ResizeObserver', {
+    writable: true,
+    value: ResizeObserverMock,
+  });
+
+  // Mock scrollIntoView - not implemented in jsdom (needed by cmdk)
+  Element.prototype.scrollIntoView = vi.fn();
+
+  // Mock localStorage with full API (some jsdom versions lack .clear)
+  const localStorageMock = (() => {
+    let store: Record<string, string> = {};
+    return {
+      getItem: vi.fn((key: string) => store[key] ?? null),
+      setItem: vi.fn((key: string, value: string) => {
+        store[key] = value;
+      }),
+      removeItem: vi.fn((key: string) => {
+        delete store[key];
+      }),
+      clear: vi.fn(() => {
+        store = {};
+      }),
+      get length() {
+        return Object.keys(store).length;
+      },
+      key: vi.fn((index: number) => Object.keys(store)[index] ?? null),
+    };
+  })();
+
+  Object.defineProperty(window, 'localStorage', {
+    value: localStorageMock,
+    writable: true,
+  });
+
+  afterEach(() => {
+    cleanup();
+    localStorageMock.clear();
+    vi.clearAllMocks();
+  });
+} else {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
 }
-Object.defineProperty(window, 'ResizeObserver', {
-  writable: true,
-  value: ResizeObserverMock,
-});
-
-// Mock scrollIntoView - not implemented in jsdom (needed by cmdk)
-Element.prototype.scrollIntoView = vi.fn();
-
-// Mock localStorage with full API (some jsdom versions lack .clear)
-const localStorageMock = (() => {
-  let store: Record<string, string> = {};
-  return {
-    getItem: vi.fn((key: string) => store[key] ?? null),
-    setItem: vi.fn((key: string, value: string) => {
-      store[key] = value;
-    }),
-    removeItem: vi.fn((key: string) => {
-      delete store[key];
-    }),
-    clear: vi.fn(() => {
-      store = {};
-    }),
-    get length() {
-      return Object.keys(store).length;
-    },
-    key: vi.fn((index: number) => Object.keys(store)[index] ?? null),
-  };
-})();
-
-Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock,
-  writable: true,
-});
-
-afterEach(() => {
-  cleanup();
-  localStorageMock.clear();
-  vi.clearAllMocks();
-});
