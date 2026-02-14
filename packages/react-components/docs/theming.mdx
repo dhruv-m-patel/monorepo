@@ -1,0 +1,165 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Theming" />
+
+# Theming Guide
+
+The component library uses an OKLCH-based color token system with CSS custom properties for seamless light/dark mode switching.
+
+## Theme Architecture
+
+```
+ThemeProvider (React context)
+  └── CSS Custom Properties (--color-*)
+       └── Tailwind CSS v4 @theme {} blocks
+            └── Utility classes (bg-primary, text-muted-foreground, etc.)
+```
+
+## Default Theme Tokens
+
+Colors are defined in `src/styles/theme.css` using the OKLCH color space for perceptually uniform color manipulation:
+
+### Light Mode
+
+| Token         | CSS Variable          | Role                   |
+| ------------- | --------------------- | ---------------------- |
+| `background`  | `--color-background`  | Page background        |
+| `foreground`  | `--color-foreground`  | Default text color     |
+| `primary`     | `--color-primary`     | Primary actions/links  |
+| `secondary`   | `--color-secondary`   | Secondary actions      |
+| `muted`       | `--color-muted`       | Muted backgrounds      |
+| `accent`      | `--color-accent`      | Hover/focus highlights |
+| `destructive` | `--color-destructive` | Error/danger actions   |
+| `success`     | `--color-success`     | Success states         |
+| `warning`     | `--color-warning`     | Warning states         |
+| `border`      | `--color-border`      | Default borders        |
+| `input`       | `--color-input`       | Input field borders    |
+| `ring`        | `--color-ring`        | Focus ring color       |
+
+Each semantic token has a `-foreground` variant for text rendered on that background (e.g., `primary-foreground` is the text color used on `primary` backgrounds).
+
+### Dark Mode
+
+Dark mode colors are defined in a `.dark` CSS selector. The `ThemeProvider` toggles the `.dark` class on `document.documentElement`, causing all tokens to switch automatically. No `dark:` prefix is needed in component styles.
+
+## Using createTheme()
+
+Override specific color tokens by passing a partial palette to `ThemeProvider`:
+
+```tsx
+import { ThemeProvider } from '@dhruv-m-patel/react-components';
+
+<ThemeProvider
+  defaultTheme="system"
+  overrides={{
+    primary: 'oklch(0.6 0.2 280)', // Purple primary
+    'primary-foreground': 'oklch(0.98 0 0)', // White text on primary
+    destructive: 'oklch(0.5 0.25 30)', // Custom red
+  }}
+>
+  <App />
+</ThemeProvider>;
+```
+
+The `overrides` prop accepts any subset of the `ColorPalette` interface. Values are applied as inline CSS variables, overriding the defaults from `theme.css`.
+
+### Programmatic Theme Creation
+
+For more control, use `createTheme()` directly:
+
+```tsx
+import { createTheme } from '@dhruv-m-patel/react-components';
+
+const brandTheme = createTheme({
+  primary: 'oklch(0.55 0.15 250)',
+  secondary: 'oklch(0.7 0.1 200)',
+});
+
+// Returns: { '--color-primary': 'oklch(0.55 0.15 250)', '--color-secondary': 'oklch(0.7 0.1 200)' }
+// Apply as inline styles or merge into your CSS
+```
+
+## Theme Modes
+
+The `ThemeProvider` supports three modes:
+
+| Mode     | Behavior                               |
+| -------- | -------------------------------------- |
+| `light`  | Always use light theme                 |
+| `dark`   | Always use dark theme                  |
+| `system` | Follow OS/browser preference (default) |
+
+### Reading Theme State
+
+```tsx
+import { useTheme } from '@dhruv-m-patel/react-components';
+
+function MyComponent() {
+  const { theme, resolvedTheme, setTheme, toggleTheme } = useTheme();
+
+  // theme: 'light' | 'dark' | 'system' (user's selection)
+  // resolvedTheme: 'light' | 'dark' (actual applied theme)
+  // setTheme: (mode) => void
+  // toggleTheme: () => void (toggles between light/dark)
+}
+```
+
+### Persistence
+
+Theme preference is persisted to `localStorage` under the key `ui-theme`. On mount, the provider reads from localStorage; if no stored preference exists, it falls back to `defaultTheme`.
+
+## OKLCH Color System
+
+OKLCH (Oklab Lightness, Chroma, Hue) provides perceptually uniform color manipulation:
+
+```
+oklch(L C H)
+  L = Lightness (0 = black, 1 = white)
+  C = Chroma (0 = gray, higher = more colorful)
+  H = Hue angle (0-360 degrees)
+```
+
+Benefits over HSL:
+
+- Perceptually uniform: equal L values look equally bright
+- Consistent saturation across hues
+- Better for programmatic color generation
+
+### Example Palette Generation
+
+```css
+/* Blue family with consistent perceived brightness */
+--color-primary: oklch(0.55 0.2 250); /* Base blue */
+--color-secondary: oklch(0.65 0.1 250); /* Lighter, less saturated */
+--color-accent: oklch(0.7 0.15 250); /* Accent highlight */
+```
+
+## CSS Variable Override Patterns
+
+### Global Override (via CSS)
+
+```css
+:root {
+  --color-primary: oklch(0.6 0.2 280);
+}
+```
+
+### Scoped Override (via inline styles)
+
+```tsx
+<div style={{ '--color-primary': 'oklch(0.6 0.2 280)' } as React.CSSProperties}>
+  <Button>Uses custom primary</Button>
+</div>
+```
+
+### Component-Level Override (via ThemeProvider nesting)
+
+```tsx
+<ThemeProvider defaultTheme="light">
+  <Button>Default primary</Button>
+
+  <ThemeProvider overrides={{ primary: 'oklch(0.6 0.2 280)' }}>
+    <Button>Purple primary</Button>
+  </ThemeProvider>
+</ThemeProvider>
+```

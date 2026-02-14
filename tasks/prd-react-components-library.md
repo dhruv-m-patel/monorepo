@@ -776,22 +776,22 @@ As a developer adopting the library, I want comprehensive documentation linked t
 
 **Acceptance Criteria**:
 
-- [ ] `packages/react-components/docs/getting-started.mdx` — Quick start guide: install, wrap with ThemeProvider, import first component, verify rendering
-- [ ] `packages/react-components/docs/theming.mdx` — Theming guide: default theme tokens, `createTheme()` usage, dark mode toggle, OKLCH color system explanation, CSS variable override patterns, custom palette examples
-- [ ] `packages/react-components/docs/component-patterns.mdx` — Architecture guide: CVA variants, `cn()` merging, forwardRef pattern, compound component pattern (FlexGrid.Column), Radix primitive integration, when to use which pattern
-- [ ] `packages/react-components/docs/testing.mdx` — Testing guide: composeStories pattern explanation, how to test new components, coverage requirements, example test walkthrough
-- [ ] Each component story file includes inline MDX documentation via `tags: ['autodocs']` with:
+- [x] `packages/react-components/docs/getting-started.mdx` — Quick start guide: install, wrap with ThemeProvider, import first component, verify rendering
+- [x] `packages/react-components/docs/theming.mdx` — Theming guide: default theme tokens, `createTheme()` usage, dark mode toggle, OKLCH color system explanation, CSS variable override patterns, custom palette examples
+- [x] `packages/react-components/docs/component-patterns.mdx` — Architecture guide: CVA variants, `cn()` merging, forwardRef pattern, compound component pattern (FlexGrid.Column), Radix primitive integration, when to use which pattern
+- [x] `packages/react-components/docs/testing.mdx` — Testing guide: composeStories pattern explanation, how to test new components, coverage requirements, example test walkthrough
+- [x] Each component story file includes inline MDX documentation via `tags: ['autodocs']` with:
   - Component description and purpose
   - Props table (auto-generated from TypeScript types)
   - Usage examples matching `@example` JSDoc tags
   - Variant/size visual grid where applicable
-- [ ] `packages/react-components/docs/adoption-guide.mdx` — Migration/adoption guide: how to add the library to an existing app, ThemeProvider setup, gradual adoption strategy (use alongside existing components), web-app integration example
-- [ ] `packages/react-components/docs/component-catalog.mdx` — Full component catalog: organized by category (foundation, form, feedback, overlay, navigation, layout, menu, data), with links to individual Storybook stories
-- [ ] All MDX docs are linked from Storybook via `.storybook/main.ts` stories glob (e.g., `../docs/**/*.mdx`)
-- [ ] Storybook sidebar organizes docs: Introduction → Getting Started → Theming → Components (by category) → Testing → Adoption
-- [ ] `yarn build` passes
-- [ ] `yarn typecheck` passes
-- [ ] `yarn lint` passes
+- [x] `packages/react-components/docs/adoption-guide.mdx` — Migration/adoption guide: how to add the library to an existing app, ThemeProvider setup, gradual adoption strategy (use alongside existing components), web-app integration example
+- [x] `packages/react-components/docs/component-catalog.mdx` — Full component catalog: organized by category (foundation, form, feedback, overlay, navigation, layout, menu, data), with links to individual Storybook stories
+- [x] All MDX docs are linked from Storybook via `.storybook/main.ts` stories glob (e.g., `../docs/**/*.mdx`)
+- [x] Storybook sidebar organizes docs: Introduction → Getting Started → Theming → Components (by category) → Testing → Adoption
+- [x] `yarn build` passes
+- [x] `yarn typecheck` passes
+- [x] `yarn lint` passes
 
 **Notes**: MDX docs serve dual purpose — they render in Storybook as documentation pages AND can be read as standalone markdown. The adoption guide is the key deliverable for developer onboarding. Keep examples realistic and copy-pasteable. The component catalog provides a high-level map that links to individual component stories for detailed exploration.
 

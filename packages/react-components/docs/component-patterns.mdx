@@ -1,0 +1,193 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Component Patterns" />
+
+# Component Patterns
+
+Architecture guide covering the patterns used throughout the library.
+
+## Pattern 1: CVA Variants
+
+Most components use [class-variance-authority](https://cva.style/) (CVA) for managing variant and size props:
+
+```tsx
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@ui/lib/utils';
+
+const buttonVariants = cva('base-classes shared-by-all-variants', {
+  variants: {
+    variant: {
+      default: 'bg-primary text-primary-foreground',
+      destructive: 'bg-destructive text-destructive-foreground',
+      outline: 'border border-input bg-background',
+    },
+    size: {
+      default: 'h-10 px-4 py-2',
+      sm: 'h-9 px-3',
+      lg: 'h-11 px-8',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+    size: 'default',
+  },
+});
+```
+
+**When to use**: Any component with visual variants (buttons, badges, alerts, inputs).
+
+**Reference**: `src/components/Button/Button.tsx`
+
+## Pattern 2: cn() Utility
+
+All className merging uses the `cn()` utility, which combines `clsx` (conditional classes) with `tailwind-merge` (conflict resolution):
+
+```tsx
+import { cn } from '@ui/lib/utils';
+
+// Merges defaults with user overrides, resolving Tailwind conflicts
+className={cn(buttonVariants({ variant, size }), className)}
+
+// Example: cn('px-4 py-2', 'px-8') → 'py-2 px-8' (px-8 wins)
+```
+
+**Rule**: Always use `cn()` as the outermost className expression. Never concatenate strings manually.
+
+## Pattern 3: React.forwardRef
+
+Every component uses `React.forwardRef` for ref forwarding, enabling parent components to access the underlying DOM element:
+
+```tsx
+export const Component = React.forwardRef<HTMLDivElement, ComponentProps>(
+  ({ className, children, ...props }, ref) => (
+    <div ref={ref} className={cn('classes', className)} {...props}>
+      {children}
+    </div>
+  )
+);
+
+Component.displayName = 'Component';
+```
+
+**Rules**:
+
+- First generic parameter: element type (`HTMLDivElement`, `HTMLButtonElement`, etc.)
+- Second generic parameter: props interface
+- Always set `displayName` after the component definition
+- Always destructure and explicitly render `children`
+
+## Pattern 4: Radix UI Integration
+
+Interactive components wrap [Radix UI](https://www.radix-ui.com/) primitives for accessible, unstyled behavior:
+
+```tsx
+'use client';
+
+import * as DialogPrimitive from '@radix-ui/react-dialog';
+
+const Dialog = DialogPrimitive.Root; // Re-export root as-is
+const DialogTrigger = DialogPrimitive.Trigger; // Re-export trigger as-is
+
+// Wrap styled sub-components with forwardRef
+const DialogContent = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
+  <DialogPrimitive.Portal>
+    <DialogPrimitive.Overlay className={cn('overlay-classes')} />
+    <DialogPrimitive.Content
+      ref={ref}
+      className={cn('content-classes', className)}
+      {...props}
+    >
+      {children}
+    </DialogPrimitive.Content>
+  </DialogPrimitive.Portal>
+));
+DialogContent.displayName = DialogPrimitive.Content.displayName;
+```
+
+**Key rules**:
+
+- Always add `'use client'` directive (Radix uses internal state/hooks)
+- Use `React.ElementRef<typeof Primitive>` for ref type
+- Use `React.ComponentPropsWithoutRef<typeof Primitive>` for props type
+- Set `displayName` to the Radix primitive's displayName
+- Tailwind v4 `data-[state=open]:` selectors work for Radix state attributes
+
+**Reference**: `src/components/Dialog/Dialog.tsx`, `src/components/Sheet/Sheet.tsx`
+
+## Pattern 5: Compound Components
+
+Components with multiple related sub-components use `Object.assign` to create a single namespace:
+
+```tsx
+const FlexGridRoot = React.forwardRef<HTMLDivElement, FlexGridProps>(
+  (props, ref) => <div ref={ref} {...props} />
+);
+FlexGridRoot.displayName = 'FlexGrid';
+
+const FlexGridColumn = React.forwardRef<HTMLDivElement, FlexGridColumnProps>(
+  (props, ref) => <div ref={ref} {...props} />
+);
+FlexGridColumn.displayName = 'FlexGrid.Column';
+
+// Combine into single export
+const FlexGrid = Object.assign(FlexGridRoot, { Column: FlexGridColumn });
+
+export { FlexGrid };
+```
+
+**Usage**:
+
+```tsx
+<FlexGrid gap="4">
+  <FlexGrid.Column xs={12} md={6}>
+    Column 1
+  </FlexGrid.Column>
+  <FlexGrid.Column xs={12} md={6}>
+    Column 2
+  </FlexGrid.Column>
+</FlexGrid>
+```
+
+**Reference**: `src/components/FlexGrid/FlexGrid.tsx`
+
+## Pattern 6: 'use client' Directive
+
+The `'use client'` directive marks files as client-only for React Server Components compatibility:
+
+| Needs `'use client'`          | Does NOT need `'use client'` |
+| ----------------------------- | ---------------------------- |
+| All Radix UI wrappers         | Badge, Card, Typography      |
+| Components with useState/etc. | Separator, Skeleton, Table   |
+| Components using cmdk         | Breadcrumb, Pagination       |
+| Toast system (hooks + portal) | FlexGrid, Alert              |
+
+**Rule**: If in doubt, check if the file imports from `@radix-ui/*` or uses any React hook. If yes, add the directive.
+
+## Pattern 7: Props Interface with JSDoc
+
+Every exported props interface includes JSDoc with `@example` tags:
+
+````tsx
+/**
+ * Button component props
+ *
+ * @example
+ * ```tsx
+ * <Button variant="default" size="lg">Click me</Button>
+ * <Button variant="destructive" loading>Processing...</Button>
+ * ```
+ */
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  /** Render as a child element (using Radix Slot) */
+  asChild?: boolean;
+  /** Show loading spinner and disable button */
+  loading?: boolean;
+}
+````
+
+These JSDoc tags power Storybook's autodocs feature, generating props tables and usage examples automatically.

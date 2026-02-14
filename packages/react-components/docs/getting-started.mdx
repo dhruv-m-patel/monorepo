@@ -1,0 +1,101 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Getting Started" />
+
+# Getting Started
+
+Install and configure `@dhruv-m-patel/react-components` in your React application.
+
+## Installation
+
+Add the library as a workspace dependency (monorepo) or install from npm:
+
+```bash
+# Workspace dependency
+yarn add @dhruv-m-patel/react-components
+
+# Or in this monorepo
+# Already linked via workspace:* in web-app/package.json
+```
+
+## Setup
+
+### 1. Import Theme CSS
+
+Import the theme stylesheet at your application's entry point:
+
+```tsx
+// main.tsx or App.tsx
+import '@dhruv-m-patel/react-components/styles';
+```
+
+### 2. Wrap with ThemeProvider
+
+The `ThemeProvider` manages light/dark mode, system preference detection, and localStorage persistence:
+
+```tsx
+import { ThemeProvider } from '@dhruv-m-patel/react-components';
+
+function App() {
+  return (
+    <ThemeProvider defaultTheme="system">
+      <YourApp />
+    </ThemeProvider>
+  );
+}
+```
+
+### 3. Use Components
+
+Import any component directly from the library:
+
+```tsx
+import {
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '@dhruv-m-patel/react-components';
+
+function MyPage() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Welcome</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Button variant="default">Get Started</Button>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+### 4. Toggle Theme
+
+Use the `useTheme` hook to access and control the current theme:
+
+```tsx
+import { useTheme, Button } from '@dhruv-m-patel/react-components';
+
+function ThemeToggle() {
+  const { resolvedTheme, toggleTheme } = useTheme();
+
+  return (
+    <Button variant="outline" onClick={toggleTheme}>
+      {resolvedTheme === 'light' ? 'Switch to Dark' : 'Switch to Light'}
+    </Button>
+  );
+}
+```
+
+## Verify Rendering
+
+After setup, you should see styled components with the default light theme. Toggle to dark mode to verify the theme engine is working. All colors will switch automatically via CSS custom properties.
+
+## Next Steps
+
+- [Theming Guide](?path=/docs/theming--docs) — Customize colors and create custom palettes
+- [Component Patterns](?path=/docs/component-patterns--docs) — Understand the architecture
+- [Component Catalog](?path=/docs/component-catalog--docs) — Browse all available components

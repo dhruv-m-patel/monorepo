@@ -3,6 +3,19 @@ import '../src/styles/theme.css';
 
 const preview: Preview = {
   parameters: {
+    options: {
+      storySort: {
+        order: [
+          'Getting Started',
+          'Theming',
+          'Component Patterns',
+          'Component Catalog',
+          'Components',
+          'Testing',
+          'Adoption Guide',
+        ],
+      },
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,
