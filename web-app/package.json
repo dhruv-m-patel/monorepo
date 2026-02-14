@@ -17,7 +17,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test:size": "size-limit",
-    "test:size:report": "size-limit --json > size-report.json"
+    "test:size:report": "size-limit --json > size-report.json",
+    "start": "vite preview --port 3000"
   },
   "size-limit": [
     {

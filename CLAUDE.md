@@ -2,17 +2,17 @@
 
 ## Project Overview
 
-This is a **Yarn 3 monorepo** managed with **Lerna** (versioning) and **Turborepo** (task orchestration). It contains a Node.js/Express REST API service, a React SPA, a shared Express utility package, and a production-grade React component library.
+This is a **Yarn 3 monorepo** managed with **Turborepo** for task orchestration. It contains a Node.js/Express REST API service, a React SPA, a shared Express utility package, and a production-grade React component library.
 
 - **Package Manager**: Yarn 3.2.3 (`yarn@3.2.3` in `packageManager`)
 - **Node.js**: >= 22 (see `.nvmrc` for exact LTS version)
 - **TypeScript**: 5.x with `nodenext` module resolution (except web-app which uses `bundler`)
-- **Monorepo tools**: Lerna (versioning/publishing), Turborepo (cached task orchestration)
+- **Monorepo tools**: Turborepo (cached task orchestration, dev/build/test/start)
 
 ## Architecture
 
 ```
-lerna-monorepo-sample/
+monorepo/
 ├── packages/
 │   ├── express-app/          # Shared Express REST API server package (@dhruv-m-patel/express-app)
 │   │   ├── src/              # Source: middleware (health, tracing, errors), app config
@@ -41,7 +41,6 @@ lerna-monorepo-sample/
 ├── .github/workflows/        # CI/CD: build, PR checks, package publishing
 ├── tsconfig.base.json        # Shared TypeScript base config
 ├── turbo.json                # Turborepo task graph
-├── lerna.json                # Lerna config (independent versioning)
 ├── eslint.config.mjs         # ESLint v9 flat config (single root config)
 ├── vitest.workspace.ts       # Vitest workspace (all packages)
 └── playwright.config.ts      # Playwright E2E config
@@ -130,7 +129,7 @@ yarn prettier:format        # Auto-format all files
 ### Development
 
 ```bash
-yarn dev                    # Start all packages in dev mode (Lerna streaming)
+yarn dev                    # Start all packages in dev mode (Turborepo)
 yarn storybook              # Start Storybook for web-app
 ```
 
@@ -194,7 +193,7 @@ Use the `/new-component` Claude slash command, or see the `component-generator` 
 - **nodenext imports**: All `.ts` imports in service/express-app must use `.js` extensions
 - **Hoisted types**: Package `typeRoots` must point to `../node_modules/@types` (Yarn hoisting)
 - **Webpack 4 legacy**: web-app used to use Webpack 4; now uses Vite 6. Old webpack patterns no longer apply
-- **Turborepo vs Lerna**: Use `turbo run` for cacheable tasks (build, test, typecheck). Use `lerna run` for streaming/interactive tasks (dev, start, storybook)
+- **Turborepo**: All tasks (build, test, typecheck, dev, start, storybook) run through `turbo run`. Dev and storybook tasks use `persistent: true`
 - **express-openapi-validator**: Pass file path to `apiSpec`, NOT YAML string content
 - **Vitest workspace**: Root `vitest.workspace.ts` enables `vitest run` at root level for all packages
 - **CI**: PR checks run in parallel jobs (lint+typecheck+build, unit tests, e2e, perf, bundle size, audit)

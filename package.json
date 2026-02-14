@@ -1,5 +1,5 @@
 {
-  "name": "lerna-monorepo-sample",
+  "name": "monorepo",
   "private": true,
   "engines": {
     "node": ">= 22"
@@ -23,7 +23,6 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "globals": "^17.3.0",
     "husky": "^8.0.3",
-    "lerna": "^6.5.1",
     "lint-staged": "^13.1.2",
     "prettier": "^2.8.4",
     "turbo": "^2.8.8",
@@ -45,22 +44,20 @@
     "ci:test": "turbo run test:ci",
     "ci:lint": "eslint . && yarn run lint:spec && yarn prettier:verify",
     "clean": "turbo run clean",
-    "start": "lerna run start --stream",
-    "start:prod": "lerna run start --stream -- -- dotenv_config_path=../../.env",
-    "dev": "lerna run dev --stream -- -- dotenv_config_path=../../.env",
+    "start": "turbo run start",
+    "dev": "turbo run dev",
     "test": "turbo run test",
     "lint": "eslint . && yarn run lint:spec && yarn prettier:verify",
     "lint:spec": "glob '**/src/**/api-spec.yaml' | xargs -n1 npx swagger-cli validate",
-    "lint:fix": "lerna run lint:fix --stream",
+    "lint:fix": "eslint . --fix",
     "prettier:format": "prettier --write .",
     "prettier:verify": "prettier --check .",
-    "storybook": "lerna run storybook --stream",
-    "build-storybook": "lerna run build-storybook --stream",
+    "storybook": "turbo run storybook",
+    "build-storybook": "turbo run build-storybook",
     "test:e2e": "playwright test",
     "test:perf": "yarn workspace service run bundle:api && yarn workspace service run test:perf",
     "test:size": "yarn workspace web-app run build && yarn workspace web-app run test:size",
-    "typecheck": "turbo run typecheck",
-    "version": "lerna version --yes"
+    "typecheck": "turbo run typecheck"
   },
   "packageManager": "yarn@3.2.3"
 }

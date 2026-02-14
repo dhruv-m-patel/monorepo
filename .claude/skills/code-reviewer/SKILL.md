@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: Reviews code changes for monorepo best practices, TypeScript conventions, testing patterns, and common gotchas specific to this Yarn 3 + Lerna + Turborepo monorepo.
+description: Reviews code changes for monorepo best practices, TypeScript conventions, testing patterns, and common gotchas specific to this Yarn 3 + Turborepo monorepo.
 allowed-tools:
   - Read
   - Glob
@@ -72,8 +72,7 @@ Apply these monorepo-specific checks:
 
 #### Performance & Build
 
-- [ ] **Turborepo**: Cacheable tasks (build, test, typecheck) use `turbo run`, NOT `lerna run`
-- [ ] **Lerna**: Only for interactive/streaming tasks (dev, start, storybook)
+- [ ] **Turborepo**: All tasks (build, test, typecheck, dev, start, storybook) use `turbo run`. No `lerna run`
 - [ ] **Bundle size**: web-app changes should consider impact on bundle size (tracked via size-limit)
 
 ### 3. Common Gotchas to Watch For

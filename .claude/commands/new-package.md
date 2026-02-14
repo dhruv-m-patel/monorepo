@@ -71,7 +71,7 @@ packages/<name>/
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dhruv-m-patel/lerna-monorepo-sample.git",
+    "url": "https://github.com/dhruv-m-patel/monorepo.git",
     "directory": "packages/<name>"
   },
   "devDependencies": {

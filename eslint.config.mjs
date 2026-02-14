@@ -31,7 +31,6 @@ export default tseslint.config(
       '.ralph-tui/',
       '.turbo/',
       'tasks/',
-      'lerna.json',
       '**/storybook-static/',
       'playwright-report/',
       'test-results/',

@@ -178,7 +178,7 @@ This is especially important because the project requires Node.js >= 22 and uses
 description: Helps with code
 
 # Good: specific intent phrases that avoid false matches
-description: Reviews code changes for monorepo best practices, TypeScript conventions, testing patterns, and common gotchas specific to this Yarn 3 + Lerna + Turborepo monorepo.
+description: Reviews code changes for monorepo best practices, TypeScript conventions, testing patterns, and common gotchas specific to this Yarn 3 + Turborepo monorepo.
 ```
 
 A vague description causes the skill to activate when not intended, leading to unexpected behavior.

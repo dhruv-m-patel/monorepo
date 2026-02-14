@@ -15,7 +15,7 @@ export default function Layout({ children }: LayoutProps) {
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
             <span className="text-lg font-semibold tracking-tight">
-              Lerna Monorepo
+              Turborepo Monorepo
             </span>
           </div>
           <Button

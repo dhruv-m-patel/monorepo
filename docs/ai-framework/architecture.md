@@ -199,8 +199,7 @@ graph TB
     end
 
     subgraph "Task Orchestration"
-        TURBO[Turborepo<br/>Cached parallel tasks]
-        LERNA[Lerna<br/>Streaming/interactive]
+        TURBO[Turborepo<br/>All tasks: build, test, dev, start]
     end
 
     subgraph "Quality Gates"
@@ -237,16 +236,15 @@ graph TB
     BUILD --> WEB
     BUILD --> PKG
 
-    LERNA -->|yarn dev| SVC
-    LERNA -->|yarn dev| WEB
+    TURBO -->|yarn dev| SVC
+    TURBO -->|yarn dev| WEB
 ```
 
 ### Key Integration Points
 
 | Tool       | How the Framework Uses It                                                    |
 | ---------- | ---------------------------------------------------------------------------- |
-| Turborepo  | Commands and agents run `turbo run build\|test\|typecheck` for cached builds |
-| Lerna      | Commands use `lerna run` for `dev` and `start` (streaming tasks)             |
+| Turborepo  | Commands and agents run `turbo run` for all tasks (build, test, dev, start)  |
 | Vitest     | Test-writer skill generates Vitest tests; agents verify with `yarn test`     |
 | ESLint v9  | Lint command runs `eslint` with flat config; code-reviewer checks compliance |
 | Vite       | Component-generator skill understands Vite's build and dev server            |
@@ -289,7 +287,7 @@ flowchart LR
 ## Directory Structure Summary
 
 ```
-lerna-monorepo-sample/
+monorepo/
 ├── CLAUDE.md                              # Project context (read on startup)
 ├── .claude/
 │   ├── settings.json                      # Tool permissions

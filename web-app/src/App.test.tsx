@@ -5,12 +5,14 @@ import App from './App';
 describe('App', () => {
   it('should render the application', () => {
     render(<App />);
-    expect(screen.getByText('Lerna Monorepo')).toBeInTheDocument();
+    expect(screen.getByText('Turborepo Monorepo')).toBeInTheDocument();
   });
 
   it('should render the homepage with welcome message', () => {
     render(<App />);
-    expect(screen.getByText(/Welcome to Lerna Monorepo/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Welcome to Turborepo Monorepo/)
+    ).toBeInTheDocument();
   });
 
   it('should render the layout footer', () => {

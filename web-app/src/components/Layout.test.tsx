@@ -11,7 +11,7 @@ function renderWithTheme(ui: React.ReactElement) {
 describe('Layout', () => {
   it('should render the header with app title', () => {
     renderWithTheme(<Layout>Content</Layout>);
-    expect(screen.getByText('Lerna Monorepo')).toBeInTheDocument();
+    expect(screen.getByText('Turborepo Monorepo')).toBeInTheDocument();
   });
 
   it('should render children in main area', () => {

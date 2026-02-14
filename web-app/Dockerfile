@@ -1,18 +1,33 @@
-FROM node:14.17-slim
-
+# ---------- build stage ----------
+FROM node:22-slim AS builder
 WORKDIR /usr/app
 
-COPY ./web-app ./web-app
+# Copy workspace root files needed for install
+COPY package.json yarn.lock .yarnrc.yml tsconfig.base.json ./
+COPY .yarn .yarn
 
-COPY ["package.json", "yarn.lock", "lerna.json",  "tsconfig.json", "./"]
+# Copy only the packages this app depends on
+COPY packages/react-components/package.json packages/react-components/
+COPY web-app/package.json web-app/
 
-COPY .env.example .env
+# Install all workspace dependencies
+RUN yarn install --immutable
 
-# install packages and perform build.
-RUN yarn install --frozen-lockfile
-RUN yarn bootstrap
-RUN yarn build
+# Copy full source for the dependency package and the web app
+COPY packages/react-components packages/react-components
+COPY web-app web-app
+
+# Build the dependency first, then the web app (produces static files in web-app/dist/)
+RUN yarn workspace @dhruv-m-patel/react-components run build
+RUN yarn workspace web-app run build
+
+# ---------- production stage ----------
+FROM node:22-slim AS production
+
+RUN npm install -g serve@14
+
+COPY --from=builder /usr/app/web-app/dist /usr/app/dist
 
 EXPOSE 3000
 
-CMD ["yarn", "start"]
+CMD ["serve", "-s", "/usr/app/dist", "-l", "3000"]

@@ -6,7 +6,7 @@ Build a production-grade, themeable React component library at `packages/react-c
 
 Every component gets a Storybook story in CSF3 format. Every test file imports its sibling stories, composes them with `composeStories()` from `@storybook/react`, renders the composed stories in jsdom, and verifies assertions — ensuring stories and tests never drift apart.
 
-The library integrates into the existing Yarn 3 + Lerna + Turborepo monorepo alongside `service`, `web-app`, and `express-app`.
+The library integrates into the existing Yarn 3 + Turborepo monorepo alongside `service`, `web-app`, and `express-app`.
 
 ## Goals
 
@@ -122,7 +122,7 @@ Each **feature-implementer** agent follows this workflow for component stories:
 | Aspect | Current |
 |--------|---------|
 | Package manager | Yarn 3.2.3 |
-| Monorepo tools | Lerna (versioning) + Turborepo (task orchestration) |
+| Monorepo tools | Turborepo (task orchestration) |
 | TypeScript | 5.7+ with `strict: true` |
 | React | 19.x |
 | Styling | Tailwind CSS v4 with `@theme {}` OKLCH variables |
