@@ -745,7 +745,7 @@ As a developer, I want a comprehensive AI-assisted development setup for the `@d
 
 **Acceptance Criteria**:
 
-- [ ] `.claude/skills/component-library-agent/SKILL.md` created with full knowledge capture:
+- [x] `.claude/skills/component-library-agent/SKILL.md` created with full knowledge capture:
   - Package structure and file naming conventions
   - Component patterns (forwardRef, CVA, cn(), displayName)
   - Theming tokens and CSS variable conventions
@@ -753,14 +753,14 @@ As a developer, I want a comprehensive AI-assisted development setup for the `@d
   - Radix UI integration guidelines (when to use, how to wrap, Radix + Tailwind v4 selectors)
   - Dependency decisions (direct dep vs peer dep for Radix packages)
   - FlexGrid and compound component patterns
-- [ ] Skill includes ready-to-use templates for: new component, new story, new test (with composeStories)
-- [ ] Skill includes post-generation checklist with correct workspace commands (`yarn workspace @dhruv-m-patel/react-components run ...`)
-- [ ] Skill references actual files in `packages/react-components/` as concrete examples for each pattern
-- [ ] Skill covers theme extension patterns (createTheme, ThemeProvider overrides, OKLCH token system)
-- [ ] `.claude/commands/new-component.md` slash command created — scaffolds a new component in the library with all files (component, story, test, index) using the component-generator skill
-- [ ] `.claude/commands/library-test.md` slash command created — runs tests for the react-components package with coverage report
-- [ ] Root `CLAUDE.md` updated with `react-components` package section: build commands, test commands, key patterns, path alias (`@ui/`), relationship to web-app
-- [ ] `yarn lint` passes (markdown/skill files have no lint impact — verify no regressions)
+- [x] Skill includes ready-to-use templates for: new component, new story, new test (with composeStories)
+- [x] Skill includes post-generation checklist with correct workspace commands (`yarn workspace @dhruv-m-patel/react-components run ...`)
+- [x] Skill references actual files in `packages/react-components/` as concrete examples for each pattern
+- [x] Skill covers theme extension patterns (createTheme, ThemeProvider overrides, OKLCH token system)
+- [x] `.claude/commands/new-component.md` slash command created — scaffolds a new component in the library with all files (component, story, test, index) using the component-generator skill
+- [x] `.claude/commands/library-test.md` slash command created — runs tests for the react-components package with coverage report
+- [x] Root `CLAUDE.md` updated with `react-components` package section: build commands, test commands, key patterns, path alias (`@ui/`), relationship to web-app
+- [x] `yarn lint` passes (markdown/skill files have no lint impact — verify no regressions)
 
 **Notes**: This story captures all institutional knowledge from the PRD execution. The skill, slash commands, and CLAUDE.md updates together form a complete AI-assisted development experience. A future developer (or agent) should be able to add a new component to the library by invoking `/new-component` and following the skill's guidance without reading this PRD.
 

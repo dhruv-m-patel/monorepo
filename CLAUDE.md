@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a **Yarn 3 monorepo** managed with **Lerna** (versioning) and **Turborepo** (task orchestration). It contains a Node.js/Express REST API service, a React SPA, and a shared Express utility package.
+This is a **Yarn 3 monorepo** managed with **Lerna** (versioning) and **Turborepo** (task orchestration). It contains a Node.js/Express REST API service, a React SPA, a shared Express utility package, and a production-grade React component library.
 
 - **Package Manager**: Yarn 3.2.3 (`yarn@3.2.3` in `packageManager`)
 - **Node.js**: >= 22 (see `.nvmrc` for exact LTS version)
@@ -14,18 +14,25 @@ This is a **Yarn 3 monorepo** managed with **Lerna** (versioning) and **Turborep
 ```
 lerna-monorepo-sample/
 ├── packages/
-│   └── express-app/          # Shared Express REST API server package (@dhruv-m-patel/express-app)
-│       ├── src/              # Source: middleware (health, tracing, errors), app config
-│       ├── tests/            # Vitest unit tests
-│       ├── tsconfig.json     # Extends ../../tsconfig.base.json
-│       ├── tsconfig.cjs.json # CJS build config
-│       └── tsconfig.esm.json # ESM build config
+│   ├── express-app/          # Shared Express REST API server package (@dhruv-m-patel/express-app)
+│   │   ├── src/              # Source: middleware (health, tracing, errors), app config
+│   │   ├── tests/            # Vitest unit tests
+│   │   ├── tsconfig.json     # Extends ../../tsconfig.base.json
+│   │   ├── tsconfig.cjs.json # CJS build config
+│   │   └── tsconfig.esm.json # ESM build config
+│   └── react-components/     # Shared React component library (@dhruv-m-patel/react-components)
+│       ├── src/              # Components, theme engine, utilities
+│       ├── tests/            # SSR tests (renderToString in node env)
+│       ├── docs/             # MDX documentation for Storybook
+│       ├── .storybook/       # Storybook v8 config
+│       ├── vitest.config.ts  # jsdom + node (SSR) environments
+│       └── tailwind.config.ts # Tailwind CSS v4 config
 ├── service/                  # Express REST API service (uses express-app)
 │   ├── src/                  # Source: routes, API spec (OpenAPI YAML)
 │   ├── tests/                # Vitest unit/integration + performance tests
 │   ├── vitest.config.ts      # Unit/integration test config
 │   └── vitest.perf.config.ts # Performance test config (autocannon)
-├── web-app/                  # React 19 SPA (Vite + Tailwind CSS v4 + shadcn/ui)
+├── web-app/                  # React 19 SPA (Vite + Tailwind CSS v4)
 │   ├── src/                  # Source: components, pages, context, lib
 │   ├── .storybook/           # Storybook v8 config
 │   ├── vite.config.ts        # Vite 6 + React + Tailwind
@@ -36,14 +43,14 @@ lerna-monorepo-sample/
 ├── turbo.json                # Turborepo task graph
 ├── lerna.json                # Lerna config (independent versioning)
 ├── eslint.config.mjs         # ESLint v9 flat config (single root config)
-├── vitest.workspace.ts       # Vitest workspace (all 3 packages)
+├── vitest.workspace.ts       # Vitest workspace (all packages)
 └── playwright.config.ts      # Playwright E2E config
 ```
 
 ### Package Dependency Graph
 
 ```
-web-app (standalone SPA)
+web-app → @dhruv-m-patel/react-components (workspace:*)
 service → @dhruv-m-patel/express-app (workspace:*)
 ```
 
@@ -54,6 +61,7 @@ service → @dhruv-m-patel/express-app (workspace:*)
 - **Base config**: All packages extend `tsconfig.base.json` (target: ES2022, module: nodenext, strict: true)
 - **Import extensions**: Use `.js` extensions on all relative imports in `nodenext` packages (service, express-app)
 - **web-app exception**: Uses `module: "ESNext"`, `moduleResolution: "bundler"` (Vite handles resolution)
+- **react-components**: Uses `moduleResolution: "bundler"` with `@ui` path alias mapping to `src/`
 - **Strict mode**: All packages use `strict: true`
 
 ### Testing
@@ -63,6 +71,7 @@ service → @dhruv-m-patel/express-app (workspace:*)
 - **Web-app**: Uses `@testing-library/react` v16 with jsdom environment
 - **E2E**: Playwright with Chromium, tests in `e2e/` directory
 - **Performance**: Autocannon-based load tests in `service/tests/performance/`
+- **react-components**: Uses `composeStories` from `@storybook/react` for story-driven tests + SSR tests with `renderToString`
 - **Coverage**: v8 provider with text + lcov reporters
 
 ### Linting & Formatting
@@ -131,6 +140,8 @@ yarn storybook              # Start Storybook for web-app
 yarn workspace service run dev          # Dev server for service only
 yarn workspace web-app run dev          # Dev server for web-app only
 yarn workspace @dhruv-m-patel/express-app run test  # Test express-app only
+yarn workspace @dhruv-m-patel/react-components run test      # Test component library
+yarn workspace @dhruv-m-patel/react-components run storybook # Storybook dev server
 ```
 
 ### Adding a new workspace package
@@ -141,6 +152,42 @@ Use the `/new-package` Claude slash command, or manually:
 2. Add `package.json`, `tsconfig.json`, `vitest.config.ts`, `src/`, `tests/`
 3. Package is auto-detected by Yarn workspaces (`packages/*` glob)
 4. Run `yarn install` to link the new package
+
+## React Component Library (`@dhruv-m-patel/react-components`)
+
+Production-grade, themeable component library used by `web-app`. Located at `packages/react-components/`.
+
+### Key Patterns
+
+- **Component structure**: Each component in `src/components/<Name>/` with `<Name>.tsx`, `index.ts`, `<Name>.test.tsx`, `<Name>.stories.tsx`
+- **CVA variants**: Use `class-variance-authority` for variant/size props (see `Button.tsx`)
+- **Radix UI wrappers**: Import from `@radix-ui/react-*`, wrap with `React.forwardRef`, set `displayName`
+- **Compound components**: Use `Object.assign(Root, { Sub })` pattern (see `FlexGrid.tsx`)
+- **Path alias**: `@ui` maps to `src/` (e.g., `import { cn } from '@ui/lib/utils'`)
+- **`'use client'`**: Required for all Radix-based and interactive components; omit for pure presentational
+- **Theme engine**: `ThemeProvider` + `useTheme()` + `createTheme()` with OKLCH color tokens
+- **Story format**: CSF3 with `satisfies Meta`, `tags: ['autodocs']`, `composeStories` in tests
+
+### Commands
+
+```bash
+yarn workspace @dhruv-m-patel/react-components run build       # Build library
+yarn workspace @dhruv-m-patel/react-components run test        # Run tests
+yarn workspace @dhruv-m-patel/react-components run test:ci     # Tests with coverage
+yarn workspace @dhruv-m-patel/react-components run typecheck   # Type checking
+yarn workspace @dhruv-m-patel/react-components run storybook   # Storybook dev
+yarn workspace @dhruv-m-patel/react-components run build-storybook  # Build Storybook
+```
+
+### Adding a New Component
+
+Use the `/new-component` Claude slash command, or see the `component-generator` skill for manual steps. Key files to update:
+
+1. `src/components/<Name>/<Name>.tsx` — Component implementation
+2. `src/components/<Name>/index.ts` — Re-export
+3. `src/components/<Name>/<Name>.stories.tsx` — Storybook story
+4. `src/components/<Name>/<Name>.test.tsx` — Tests with `composeStories`
+5. `src/index.ts` — Add barrel export
 
 ## Important Patterns & Gotchas
 
