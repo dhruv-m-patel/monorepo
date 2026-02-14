@@ -162,22 +162,22 @@ As a developer, I want the `packages/react-components` directory created with al
 
 **Acceptance Criteria**:
 
-- [ ] `packages/react-components/package.json` created with name `@dhruv-m-patel/react-components`, React 19 as peer dep, Vite/Vitest/Storybook/Testing Library/Radix as dev deps, `class-variance-authority`, `clsx`, `tailwind-merge`, `tailwindcss` as dependencies
-- [ ] `packages/react-components/tsconfig.json` extends `../../tsconfig.base.json`, uses `module: "ESNext"`, `moduleResolution: "bundler"`, `jsx: "react-jsx"`, `paths: { "@ui/*": ["./src/*"] }`
-- [ ] `packages/react-components/vite.config.ts` configures Vite library mode with React + Tailwind plugins, external `react`/`react-dom`, outputs ESM to `dist/`
-- [ ] `packages/react-components/vitest.config.ts` uses jsdom environment, setupFiles, coverage config, `@ui/` alias
-- [ ] `packages/react-components/src/setupTests.ts` imports `@testing-library/jest-dom/vitest`, mocks `matchMedia`, cleanup afterEach
-- [ ] `packages/react-components/.storybook/main.ts` configured with `@storybook/react-vite`, stories glob, `@ui/` path alias
-- [ ] `packages/react-components/.storybook/preview.ts` imports theme CSS, configures dark mode decorator
-- [ ] Root `vitest.workspace.ts` updated to include `packages/react-components/vitest.config.ts`
-- [ ] Root `eslint.config.mjs` updated with config block for `packages/react-components/`
-- [ ] Root `package.json` workspaces already covers `packages/*` (verify, no change needed)
-- [ ] `packages/react-components/src/lib/utils.ts` exports `cn()` utility
-- [ ] `packages/react-components/src/index.ts` barrel export file created (initially empty, grows per phase)
-- [ ] `yarn install` succeeds with new package linked
-- [ ] `yarn build` passes
-- [ ] `yarn lint` passes
-- [ ] `yarn typecheck` passes
+- [x] `packages/react-components/package.json` created with name `@dhruv-m-patel/react-components`, React 19 as peer dep, Vite/Vitest/Storybook/Testing Library/Radix as dev deps, `class-variance-authority`, `clsx`, `tailwind-merge`, `tailwindcss` as dependencies
+- [x] `packages/react-components/tsconfig.json` extends `../../tsconfig.base.json`, uses `module: "ESNext"`, `moduleResolution: "bundler"`, `jsx: "react-jsx"`, `paths: { "@ui/*": ["./src/*"] }`
+- [x] `packages/react-components/vite.config.ts` configures Vite library mode with React + Tailwind plugins, external `react`/`react-dom`, outputs ESM to `dist/`
+- [x] `packages/react-components/vitest.config.ts` uses jsdom environment, setupFiles, coverage config, `@ui/` alias
+- [x] `packages/react-components/src/setupTests.ts` imports `@testing-library/jest-dom/vitest`, mocks `matchMedia`, cleanup afterEach
+- [x] `packages/react-components/.storybook/main.ts` configured with `@storybook/react-vite`, stories glob, `@ui/` path alias
+- [x] `packages/react-components/.storybook/preview.ts` imports theme CSS, configures dark mode decorator
+- [x] Root `vitest.workspace.ts` updated to include `packages/react-components/vitest.config.ts`
+- [x] Root `eslint.config.mjs` updated with config block for `packages/react-components/`
+- [x] Root `package.json` workspaces already covers `packages/*` (verify, no change needed)
+- [x] `packages/react-components/src/lib/utils.ts` exports `cn()` utility
+- [x] `packages/react-components/src/index.ts` barrel export file created (initially empty, grows per phase)
+- [x] `yarn install` succeeds with new package linked
+- [x] `yarn build` passes
+- [x] `yarn lint` passes
+- [x] `yarn typecheck` passes
 
 **Notes**: Use Vite library mode (not dual CJS/ESM like express-app) since this is a React library consumed only via bundlers. Path alias is `@ui/` (not `@/`) to avoid collision with web-app.
 

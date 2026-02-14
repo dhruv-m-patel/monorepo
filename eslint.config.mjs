@@ -177,6 +177,59 @@ export default tseslint.config(
     },
   },
 
+  // React-components package config (React + JSX + a11y)
+  {
+    files: [
+      'packages/react-components/src/**/*.tsx',
+      'packages/react-components/src/**/*.ts',
+    ],
+    ...reactFlatRecommended,
+    ...reactFlatJsxRuntime,
+    plugins: {
+      ...reactFlatRecommended.plugins,
+      ...reactFlatJsxRuntime.plugins,
+      ...jsxA11yFlatRecommended.plugins,
+      'react-hooks': reactHooksPlugin,
+    },
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      globals: {
+        ...globals.browser,
+      },
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+    },
+    rules: {
+      ...reactFlatRecommended.rules,
+      ...reactHooksPlugin.configs.recommended.rules,
+      ...jsxA11yFlatRecommended.rules,
+      'react/react-in-jsx-scope': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
+    },
+  },
+
+  // Vite and Storybook config files for react-components
+  {
+    files: [
+      'packages/react-components/vite.config.ts',
+      'packages/react-components/vitest.config.ts',
+      'packages/react-components/.storybook/*.ts',
+    ],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+
   // Vitest and Playwright config files
   {
     files: [
