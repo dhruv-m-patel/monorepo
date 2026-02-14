@@ -2,7 +2,7 @@
 
 ## Overview
 
-Build a production-grade, themeable React component library at `packages/react-components/` (npm: `@dhruv-m-patel/react-components`). The library wraps shadcn/ui patterns with Tailwind CSS v4, provides a complete suite of ~50 components, and ships a default theme using OKLCH CSS custom properties with a `ThemeProvider` that lets consumers override the entire color palette via props or CSS variables.
+Build a production-grade, themeable React component library at `packages/react-components/` (npm: `@dhruv-m-patel/react-components`). The library wraps shadcn/ui patterns with Tailwind CSS v4, provides a complete suite of ~50+ components, and ships a default theme using OKLCH CSS custom properties with a `ThemeProvider` that lets consumers override the entire color palette via props or CSS variables.
 
 Every component gets a Storybook story in CSF3 format. Every test file imports its sibling stories, composes them with `composeStories()` from `@storybook/react`, renders the composed stories in jsdom, and verifies assertions — ensuring stories and tests never drift apart.
 
@@ -10,7 +10,7 @@ The library integrates into the existing Yarn 3 + Lerna + Turborepo monorepo alo
 
 ## Goals
 
-- Provide a full component suite covering forms, feedback, navigation, data display, layout, and overlays
+- Provide a full component suite covering forms, feedback, navigation, data display, layout (including a responsive 12-column FlexGrid system), and overlays
 - Ship a default theme (light + dark) with easy one-line override via `createTheme()` utility
 - Follow shadcn/ui conventions: CVA variants, `cn()` merging, `forwardRef`, CSS variable tokens
 - Use Radix UI primitives only where accessibility/behavior is complex (Dialog, Popover, Select, etc.)
@@ -317,9 +317,9 @@ As a developer, I want navigation and content organization components.
 
 ---
 
-### US-010: Build layout components — Card, AspectRatio, ScrollArea, Resizable
+### US-010: Build layout components — Card, AspectRatio, ScrollArea, Resizable, FlexGrid
 
-As a developer, I want layout and container components for content structure.
+As a developer, I want layout and container components for content structure, including a responsive flex-based grid system.
 
 **Priority**: 2
 
@@ -331,6 +331,28 @@ As a developer, I want layout and container components for content structure.
 - [ ] **AspectRatio**: Using `@radix-ui/react-aspect-ratio` — maintains width:height ratio for media content.
 - [ ] **ScrollArea**: Using `@radix-ui/react-scroll-area` — `ScrollArea`, `ScrollBar`. Custom-styled scrollbar, horizontal/vertical, auto-hide.
 - [ ] **Resizable**: `ResizablePanelGroup`, `ResizablePanel`, `ResizableHandle`. Draggable resize handle between panels, horizontal/vertical directions. Uses `react-resizable-panels` library.
+- [ ] **FlexGrid**: Responsive flex-based 12-column grid system with compound component API:
+  - `FlexGrid` — container component. Props: `gap?: string` (Tailwind gap token, default `'4'`), `alignItems?: 'start' | 'center' | 'end' | 'stretch' | 'baseline'`, `justifyContent?: 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly'`, `wrap?: boolean` (default `true`), `className`. Renders a `<div>` with `display: flex; flex-wrap: wrap` and negative margin technique for gutters (or Tailwind gap). All children are `FlexGrid.Column`.
+  - `FlexGrid.Column` — column component exposed as static property on FlexGrid. Props: `xs?: 1-12` (required — mobile-first base), `sm?: 1-12` (≥640px, tablets), `md?: 1-12` (≥768px, laptops/desktops), `lg?: 1-12` (≥1024px, desktops/wide monitors), `xl?: 1-12` (≥1280px, wider viewports), `offset?: { xs?, sm?, md?, lg?, xl? }` (column offsets per breakpoint), `order?: { xs?, sm?, md?, lg?, xl? }` (flex order per breakpoint), `className`. Column widths calculated as `(span / 12) * 100%` using CSS classes.
+  - Breakpoints use Tailwind v4 default breakpoints: `sm:640px`, `md:768px`, `lg:1024px`, `xl:1280px`. The `xs` prop applies with no media query (mobile-first base).
+  - Column width classes generated via Tailwind responsive prefixes (e.g., `xs={6}` → `w-6/12`, `md={4}` → `md:w-4/12`, `lg={3}` → `lg:w-3/12`).
+  - Grid supports nesting: a `FlexGrid.Column` can contain a nested `FlexGrid`.
+  - Both components use `forwardRef` and `cn()` for className merging.
+  - TypeScript: Column span props typed as `1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12` (literal union, not just `number`).
+- [ ] FlexGrid stories demonstrate:
+  - Equal columns (3x `xs={4}`)
+  - Responsive layout (`xs={12} md={6} lg={4}` — stacks on mobile, 2-col on tablet, 3-col on desktop)
+  - Mixed widths (sidebar + main: `md={3}` + `md={9}`)
+  - Nested grids
+  - With gap and alignment variations
+- [ ] FlexGrid tests verify:
+  - Default rendering with `composeStories()` pattern
+  - Column width classes applied correctly for each breakpoint prop
+  - Responsive class combinations (e.g., `xs={12} md={6}` produces `w-full md:w-6/12`)
+  - Offset and order classes when specified
+  - FlexGrid.Column compound component access pattern works
+  - Ref forwarding on both FlexGrid and FlexGrid.Column
+  - Nesting renders correctly
 - [ ] Each with full file set
 - [ ] Tests use `composeStories()` pattern
 - [ ] All exported from `src/index.ts`
@@ -338,7 +360,7 @@ As a developer, I want layout and container components for content structure.
 - [ ] `yarn test` passes
 - [ ] `yarn typecheck` passes
 
-**Notes**: Card is pure HTML/CSS. Resizable needs `react-resizable-panels` as a dependency — evaluate if this should be a peer dep or direct dep.
+**Notes**: Card is pure HTML/CSS. Resizable needs `react-resizable-panels` as a dependency — evaluate if this should be a peer dep or direct dep. FlexGrid is pure CSS/Tailwind — no external dependencies. Use the `FlexGrid.Column` compound component pattern (static property assignment) so consumers write `<FlexGrid><FlexGrid.Column xs={12} md={6}>...</FlexGrid.Column></FlexGrid>`. Column width mapping is straightforward: span 1 = `w-1/12`, span 6 = `w-6/12` (which Tailwind aliases as `w-1/2`), span 12 = `w-full`. Use Tailwind's fraction utilities where available, fall back to `basis-[percentage]` or `w-[percentage]` if needed for exact 12-column math.
 
 ---
 
@@ -465,7 +487,7 @@ Phase 4 (parallel, after Phase 3 — US-003 for Label dep):
 
 Phase 5 (parallel, after Phase 2):
   ├── US-009: Tabs, Accordion, Collapsible, Breadcrumb, Pagination
-  ├── US-010: Card, AspectRatio, ScrollArea, Resizable
+  ├── US-010: Card, AspectRatio, ScrollArea, Resizable, FlexGrid
   ├── US-011: DropdownMenu, ContextMenu, Menubar
   └── US-012: Table, Command
 
@@ -491,7 +513,7 @@ Each user story produces a conventional commit upon completion:
 | US-007 | `feat(react-components): add Checkbox, RadioGroup, Switch, Select` |
 | US-008 | `feat(react-components): add Slider, Toggle, ToggleGroup, InputOTP` |
 | US-009 | `feat(react-components): add Tabs, Accordion, Collapsible, Breadcrumb, Pagination` |
-| US-010 | `feat(react-components): add Card, AspectRatio, ScrollArea, Resizable` |
+| US-010 | `feat(react-components): add Card, AspectRatio, ScrollArea, Resizable, FlexGrid` |
 | US-011 | `feat(react-components): add DropdownMenu, ContextMenu, Menubar` |
 | US-012 | `feat(react-components): add Table, Command` |
 | US-013 | `feat(react-components): barrel exports, web-app integration, verification` |
@@ -519,7 +541,7 @@ Each user story produces a conventional commit upon completion:
 ## Success Metrics
 
 - All 14 user stories completed with acceptance criteria checked off
-- ~50 components built with consistent patterns
+- ~50+ components built with consistent patterns (including FlexGrid layout system)
 - Every component has a story and a test
 - Full quality gates pass: `yarn build && yarn lint && yarn test && yarn typecheck`
 - Storybook builds and renders all components
