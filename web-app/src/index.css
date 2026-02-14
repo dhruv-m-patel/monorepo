@@ -14,34 +14,40 @@
   --radius-sm: calc(var(--radius-lg) - 4px);
   --radius-xl: 0.75rem;
 
-  /* Colors - Light mode defaults */
-  --color-background: oklch(1 0 0);
-  --color-foreground: oklch(0.145 0.015 285);
+  /* Colors - Light mode — Orange primary, light-red destructive */
+  --color-background: oklch(0.985 0.002 70);
+  --color-foreground: oklch(0.16 0.015 50);
 
   --color-card: oklch(1 0 0);
-  --color-card-foreground: oklch(0.145 0.015 285);
+  --color-card-foreground: oklch(0.16 0.015 50);
 
   --color-popover: oklch(1 0 0);
-  --color-popover-foreground: oklch(0.145 0.015 285);
+  --color-popover-foreground: oklch(0.16 0.015 50);
 
-  --color-primary: oklch(0.45 0.18 260);
+  /* Primary — Orange */
+  --color-primary: oklch(0.65 0.2 45);
   --color-primary-foreground: oklch(0.985 0 0);
 
-  --color-secondary: oklch(0.965 0.005 285);
-  --color-secondary-foreground: oklch(0.145 0.015 285);
+  /* Secondary — Warm amber */
+  --color-secondary: oklch(0.94 0.03 70);
+  --color-secondary-foreground: oklch(0.16 0.015 50);
 
-  --color-muted: oklch(0.965 0.005 285);
-  --color-muted-foreground: oklch(0.556 0.015 285);
+  /* Muted — Warm gray */
+  --color-muted: oklch(0.96 0.005 60);
+  --color-muted-foreground: oklch(0.52 0.015 50);
 
-  --color-accent: oklch(0.965 0.005 285);
-  --color-accent-foreground: oklch(0.145 0.015 285);
+  /* Accent — Orange-tinted highlight */
+  --color-accent: oklch(0.94 0.04 50);
+  --color-accent-foreground: oklch(0.16 0.015 50);
 
-  --color-destructive: oklch(0.577 0.245 27.33);
+  /* Destructive — Light red / coral */
+  --color-destructive: oklch(0.62 0.2 18);
   --color-destructive-foreground: oklch(0.985 0 0);
 
-  --color-border: oklch(0.905 0.005 285);
-  --color-input: oklch(0.905 0.005 285);
-  --color-ring: oklch(0.45 0.18 260);
+  /* Borders and inputs */
+  --color-border: oklch(0.9 0.01 60);
+  --color-input: oklch(0.9 0.01 60);
+  --color-ring: oklch(0.65 0.2 45);
 }
 
 /*
@@ -49,33 +55,35 @@
  * Tailwind v4 picks up on `@custom-variant dark` for utility classes.
  */
 .dark {
-  --color-background: oklch(0.145 0.015 285);
-  --color-foreground: oklch(0.985 0 0);
+  --color-background: oklch(0.16 0.015 50);
+  --color-foreground: oklch(0.96 0.005 60);
 
-  --color-card: oklch(0.205 0.015 285);
-  --color-card-foreground: oklch(0.985 0 0);
+  --color-card: oklch(0.22 0.015 50);
+  --color-card-foreground: oklch(0.96 0.005 60);
 
-  --color-popover: oklch(0.205 0.015 285);
-  --color-popover-foreground: oklch(0.985 0 0);
+  --color-popover: oklch(0.22 0.015 50);
+  --color-popover-foreground: oklch(0.96 0.005 60);
 
-  --color-primary: oklch(0.62 0.18 260);
-  --color-primary-foreground: oklch(0.145 0.015 285);
+  /* Primary — Brighter orange for dark mode */
+  --color-primary: oklch(0.72 0.19 45);
+  --color-primary-foreground: oklch(0.16 0.015 50);
 
-  --color-secondary: oklch(0.265 0.015 285);
-  --color-secondary-foreground: oklch(0.985 0 0);
+  --color-secondary: oklch(0.28 0.015 50);
+  --color-secondary-foreground: oklch(0.96 0.005 60);
 
-  --color-muted: oklch(0.265 0.015 285);
-  --color-muted-foreground: oklch(0.716 0.015 285);
+  --color-muted: oklch(0.28 0.015 50);
+  --color-muted-foreground: oklch(0.7 0.015 50);
 
-  --color-accent: oklch(0.265 0.015 285);
-  --color-accent-foreground: oklch(0.985 0 0);
+  --color-accent: oklch(0.3 0.04 50);
+  --color-accent-foreground: oklch(0.96 0.005 60);
 
-  --color-destructive: oklch(0.577 0.245 27.33);
+  /* Destructive — Brighter light red for dark mode */
+  --color-destructive: oklch(0.65 0.2 18);
   --color-destructive-foreground: oklch(0.985 0 0);
 
-  --color-border: oklch(0.265 0.015 285);
-  --color-input: oklch(0.265 0.015 285);
-  --color-ring: oklch(0.62 0.18 260);
+  --color-border: oklch(0.3 0.01 50);
+  --color-input: oklch(0.3 0.01 50);
+  --color-ring: oklch(0.72 0.19 45);
 }
 
 /* Base layer styles */
