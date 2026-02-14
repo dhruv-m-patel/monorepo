@@ -1,4 +1,4 @@
-# Turborepo Monorepo
+# Node React Monorepo
 
 A full-stack monorepo with frontend and backend projects managed with **Yarn 3 workspaces** and **Turborepo** task orchestration.
 

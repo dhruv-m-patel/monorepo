@@ -9,7 +9,7 @@ test.describe('Home Page', () => {
 
     // Main heading is visible
     const heading = page.getByRole('heading', {
-      name: /Welcome to Turborepo Monorepo/,
+      name: /Welcome to Monorepo/,
     });
     await expect(heading).toBeVisible();
 
@@ -47,7 +47,7 @@ test.describe('Home Page', () => {
 
     // Header should contain the app name
     const header = page.locator('header');
-    await expect(header.getByText('Turborepo Monorepo')).toBeVisible();
+    await expect(header.getByText('Monorepo')).toBeVisible();
 
     // Dark mode toggle button should be present
     const themeToggle = page.getByRole('button', { name: /Switch to .* mode/ });

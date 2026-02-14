@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { MessageProvider } from './context/MessageContext';
 import {
   ThemeProvider,
@@ -12,7 +12,7 @@ import HomePage from './pages/HomePage';
  * These override the component library's default violet theme
  * to match web-app's index.css color tokens.
  */
-const themeOverrides: Partial<ColorPalette> = {
+export const themeOverrides: Partial<ColorPalette> = {
   primary: 'oklch(0.65 0.2 45)',
   'primary-foreground': 'oklch(0.985 0 0)',
   destructive: 'oklch(0.62 0.2 18)',
@@ -22,18 +22,21 @@ const themeOverrides: Partial<ColorPalette> = {
   ring: 'oklch(0.65 0.2 45)',
 };
 
+/**
+ * Application shell rendered inside a router provider.
+ * The entry points (entry-client / entry-server) wrap this with
+ * BrowserRouter or StaticRouter respectively.
+ */
 export default function App() {
   return (
-    <BrowserRouter>
-      <ThemeProvider defaultTheme="system" overrides={themeOverrides}>
-        <MessageProvider>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-            </Routes>
-          </Layout>
-        </MessageProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+    <ThemeProvider defaultTheme="system" overrides={themeOverrides}>
+      <MessageProvider>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+          </Routes>
+        </Layout>
+      </MessageProvider>
+    </ThemeProvider>
   );
 }

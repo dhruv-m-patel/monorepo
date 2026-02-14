@@ -73,7 +73,7 @@ export default function HomePage() {
     <div className="flex flex-col items-center px-4 py-16 sm:px-6 lg:px-8">
       <div className="max-w-4xl text-center">
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-          Welcome to Turborepo Monorepo
+          Welcome to Monorepo
         </h1>
         <p className="mt-6 text-lg leading-8 text-muted-foreground sm:text-xl">
           Featured with rich support of modern tools to build your Node React

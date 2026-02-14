@@ -10,9 +10,7 @@ describe('HomePage', () => {
         <HomePage />
       </MemoryRouter>
     );
-    expect(
-      screen.getByText(/Welcome to Turborepo Monorepo/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Welcome to Monorepo/)).toBeInTheDocument();
   });
 
   it('should render feature cards', () => {

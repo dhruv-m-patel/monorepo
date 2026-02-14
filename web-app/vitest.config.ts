@@ -20,7 +20,10 @@ export default defineConfig({
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
       exclude: [
-        'src/main.tsx',
+        'src/entry-client.tsx',
+        'src/entry-server.tsx',
+        'src/entry-server-loader.ts',
+        'src/server.ts',
         'src/setupTests.ts',
         'src/**/*.stories.tsx',
         'src/**/*.test.{ts,tsx}',

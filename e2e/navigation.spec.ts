@@ -18,7 +18,7 @@ test.describe('Navigation', () => {
 
     // The app shell (header) should still render
     const header = page.locator('header');
-    await expect(header.getByText('Turborepo Monorepo')).toBeVisible();
+    await expect(header.getByText('Monorepo')).toBeVisible();
 
     // Footer should still render
     const footer = page.locator('footer');
@@ -30,7 +30,7 @@ test.describe('Navigation', () => {
 
     // Verify we are on the home page by checking the main heading
     await expect(
-      page.getByRole('heading', { name: /Welcome to Turborepo Monorepo/ })
+      page.getByRole('heading', { name: /Welcome to Monorepo/ })
     ).toBeVisible();
   });
 

@@ -10,18 +10,11 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  server: {
-    port: 3000,
-    open: true,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:4000',
-        changeOrigin: true,
-      },
-    },
-  },
   build: {
-    outDir: 'dist',
+    outDir: 'dist/client',
     sourcemap: true,
+  },
+  ssr: {
+    noExternal: ['@dhruv-m-patel/react-components'],
   },
 });
