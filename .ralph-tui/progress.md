@@ -22,6 +22,8 @@ after each iteration and it's included in prompts for context.
 - **shadcn/ui with Tailwind v4**: No `tailwind.config.js` needed. Define CSS custom properties (e.g., `--color-primary`, `--color-border`) in `@theme {}` and override in `.dark {}` selector. Components use `cn()` utility from `clsx` + `tailwind-merge`.
 - **jsx-a11y/heading-has-content + forwardRef**: When using `forwardRef` with spread props on heading elements (`<h3 {...props} />`), `jsx-a11y/heading-has-content` can't detect that children are passed via spread. Fix by explicitly destructuring and rendering `{children}`.
 - **Path aliases in Vite + Vitest**: When using `@/` path alias, configure it in BOTH `vite.config.ts` (via `resolve.alias`) AND `vitest.config.ts` (separate alias config) AND `tsconfig.json` (via `baseUrl` + `paths`). Vitest uses its own config, not the main Vite config.
+- **Storybook v8 + Vite + Tailwind CSS v4**: Use `@storybook/react-vite` framework. Import the app's CSS (with `@import 'tailwindcss'` and `@theme {}`) in `preview.ts` so Tailwind styles apply to stories. Configure `@/` path alias in `viteFinal` within `.storybook/main.ts`. Storybook's Vite builder picks up `@tailwindcss/vite` automatically if it's in the app's Vite config dependencies.
+- **Storybook v8 in monorepos with Yarn workspaces**: When old `.storybook/main.js` exists alongside new `main.ts`, Storybook loads `.js` first and ignores `.ts`. Always remove legacy config files when upgrading.
 
 ---
 
@@ -256,4 +258,48 @@ after each iteration and it's included in prompts for context.
   - When using path aliases like `@/` in a Vite + Vitest setup, you need to configure the alias in three places: `vite.config.ts`, `vitest.config.ts`, and `tsconfig.json`. Vitest does NOT inherit the Vite config's resolve aliases when using a separate `vitest.config.ts`.
   - `lucide-react` is a lightweight, tree-shakeable icon library that pairs well with shadcn/ui. Icons like `Moon`, `Sun`, `ExternalLink` are imported individually.
   - Tailwind v4 uses oklch color space by default for its generated colors. Custom theme colors should also use oklch for consistency.
+---
+
+## 2026-02-13 - US-009
+- What was implemented:
+  - Upgraded Storybook to v8.6.15 with `@storybook/react-vite` framework (Vite builder)
+  - Removed old Storybook v6 config files (`main.js`, `preview.js`, `preview-head.html`)
+  - Created new `.storybook/main.ts` with `@storybook/react-vite` framework, `@/` path alias via `viteFinal`
+  - Created new `.storybook/preview.ts` importing Tailwind CSS (`index.css`) for styled stories
+  - Added `storybook` and `build-storybook` scripts to web-app `package.json`
+  - Created CSF3 stories for Button component (10 stories: Default, Destructive, Outline, Secondary, Ghost, Link, Small, Large, Icon, Disabled) with autodocs
+  - Created CSF3 stories for Card component (3 stories: Default, WithFooter, Simple) with autodocs
+  - Created CSF3 stories for Layout component (2 stories: Default, WithContent) with ThemeProvider decorator
+  - Created CSF3 stories for HomePage component (1 story: Default) with autodocs
+  - Installed Storybook v8 packages: storybook, @storybook/react-vite, @storybook/react, @storybook/blocks, @storybook/addon-essentials, @storybook/addon-interactions, @storybook/addon-links, @storybook/test
+  - Updated `tsconfig.json` to include `.storybook` directory
+  - Updated `eslint.config.mjs` to add `storybook-static/` to ignores, and `.storybook/*.ts` to node globals config
+  - Updated `.gitignore` and `.prettierignore` to exclude `storybook-static/`
+  - Tailwind CSS v4 works within Storybook (theme, dark mode variables, utility classes)
+  - shadcn/ui components (Button, Card) render correctly in Storybook with full styling
+  - `yarn storybook` (dev), `yarn build-storybook`, `yarn build`, `yarn lint`, `yarn test`, `yarn typecheck` all pass
+- Files changed:
+  - `web-app/package.json` - added Storybook devDependencies and scripts
+  - `web-app/.storybook/main.ts` (new) - Storybook v8 config with react-vite framework
+  - `web-app/.storybook/preview.ts` (new) - Storybook preview with Tailwind CSS import
+  - `web-app/.storybook/main.js` (deleted) - old v6 config
+  - `web-app/.storybook/preview.js` (deleted) - old v6 config
+  - `web-app/.storybook/preview-head.html` (deleted) - old v6 meta tags
+  - `web-app/src/components/ui/button.stories.tsx` (new) - Button stories in CSF3
+  - `web-app/src/components/ui/card.stories.tsx` (new) - Card stories in CSF3
+  - `web-app/src/components/Layout.stories.tsx` (new) - Layout stories in CSF3
+  - `web-app/src/pages/HomePage.stories.tsx` (new) - HomePage stories in CSF3
+  - `web-app/tsconfig.json` - added `.storybook` to include array
+  - `eslint.config.mjs` - added storybook-static to ignores, .storybook/*.ts to node globals
+  - `.gitignore` - added storybook-static/
+  - `.prettierignore` - added storybook-static
+- **Learnings:**
+  - Storybook v8 with `@storybook/react-vite` uses Vite as its builder natively - no separate `@storybook/builder-vite` package needed. The framework package bundles the builder.
+  - When upgrading from Storybook v6 to v8, old `.storybook/main.js` files conflict with new `main.ts` files. Storybook loads `.js` first and ignores `.ts`, causing "MissingBuilderError". Must delete all legacy config files.
+  - Tailwind CSS v4 works in Storybook by simply importing the app's `index.css` (containing `@import 'tailwindcss'` and `@theme {}`) in `.storybook/preview.ts`. The `@tailwindcss/vite` plugin is automatically available because Storybook's Vite builder resolves it from the project's dependencies.
+  - The `@/` path alias must be configured in `.storybook/main.ts` via `viteFinal` callback, separate from the app's `vite.config.ts`. Storybook doesn't automatically inherit the app's Vite config.
+  - CSF3 format uses `satisfies Meta<typeof Component>` for type-safe meta objects and `StoryObj<typeof meta>` for stories. Stories are plain objects with `args` or `render` functions - no more `Template.bind({})` pattern from CSF2.
+  - Components using React Context (like `Layout` using `ThemeContext`) need decorators in their story meta to wrap stories with the required providers.
+  - `@storybook/addon-a11y` was referenced in old v6 config but was never installed. v8 doesn't include it by default - it's a separate optional addon.
+  - In Yarn 3 monorepos with Storybook, pinning to `^8` is important because the default `latest` tag may resolve to a newer major version (e.g., v10) causing peer dependency mismatches with v8 addons.
 ---

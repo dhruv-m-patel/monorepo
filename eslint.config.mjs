@@ -27,6 +27,7 @@ export default tseslint.config(
       '.turbo/',
       'tasks/',
       'lerna.json',
+      '**/storybook-static/',
     ],
   },
 
@@ -121,9 +122,13 @@ export default tseslint.config(
     },
   },
 
-  // Vite config files for web-app
+  // Vite and Storybook config files for web-app
   {
-    files: ['web-app/vite.config.ts', 'web-app/vitest.config.ts'],
+    files: [
+      'web-app/vite.config.ts',
+      'web-app/vitest.config.ts',
+      'web-app/.storybook/*.ts',
+    ],
     languageOptions: {
       globals: {
         ...globals.node,
