@@ -1,45 +1,75 @@
 # web-app
 
-A web application built with Typescript, React, Material-UI v4 and Redux
+A modern web application built with **React 19**, **Vite 6**, **Tailwind CSS v4**, and **react-router-dom v7**, featuring server-side rendering (SSR) with Express.
 
-## App Structure
+## Tech Stack
 
-The application uses a fairly modern folder structure for project organization that goes into a universal react app.
+- **React 19** with TypeScript
+- **Vite 6** for bundling and dev server with HMR
+- **Tailwind CSS v4** with OKLCH color theme
+- **shadcn/ui** components via `@dhruv-m-patel/react-components`
+- **react-router-dom v7** for client and server routing
+- **Express** SSR server with `@dhruv-m-patel/express-app`
+- **Vitest** + **@testing-library/react** for unit tests
+- **Storybook v8** for component documentation (shared with react-components)
+
+## Architecture
+
+The app uses a **Vite SSR** architecture with dual entry points:
 
 ```
-src               : This is where code for the application goes, along with unit tests for components
-|- client         : All client specific integration code for the react app goes here
-|-- redux         : Everything redux related goes in here
-|--- reducers     : This is where all reducers are defined to listen to event broadcast and handle state management
-|--- actions.ts   : Defines all actions and events that are broadcast by the actions using redux-api-middleware
-|-- index.ts      : Hydrates and renders client side react app with code-splitting support using loadable-components
-|-- renderApp.tsx : The client-side react app
-|- common         : This is where everything shared between the client and server can go e.g. components, constants, contexts etc.
-|-- components    : All react components with related tests and stories are placed in this folder. If a component needs to use multiple (non-reusable) components, then either define them in same component file or place them in separate files within same component folder.
-|-- constants     : All application constants are defined here
-|-- context       : A place to preserve any and all contexts used by the react app that can be integrated with createContext and useContext
-|-- prop-types    : All reusable component prop-types are specified here
-|-- styles        : Style variables are defined here
-|-- router.tsx    : The application router that specifies which routes can be consumer by application
-|- lib/utils      : All common utilities can be found here
-|- server         : All server-side integration code goes into here
-|-- middleware    : Defines middlewares that can be integrated with requests
-|-- models        : Defines different models with their methods to consume APIs
-|-- routes        : All server-side route handlers are defined here to help preload client state and perform necessary server work
-|--- api          : The server-exposed client api route handlers are written here for client app to make XMLHttpRequests to talk to server through redux-api-middleware
-|-- index.ts      : The server side express application is exposed from here
-|-- Server.ts     : Runs the application on server
-tests             : This is where test helpers and tests for utilities and integration can be written
+src/
+  entry-client.tsx    # Client hydration with BrowserRouter
+  entry-server.tsx    # Server render with StaticRouter
+  server.ts           # Express SSR server (dev: Vite middleware, prod: static assets)
+  App.tsx             # Root app component with routes
+  pages/              # Page components (HomePage, etc.)
+  components/         # App-specific components (Layout, ThemeToggle, etc.)
+  context/            # React contexts (ThemeContext for dark mode)
+  lib/                # Utilities (cn helper)
+  styles/             # Global CSS with Tailwind directives
 ```
 
-## Conventions
+### SSR Flow
 
-- If a route needs to preload some state to load page faster with data, then route handlers must be defined for that specific route in `src/server/routes`
+- **Development**: Express server uses Vite in middleware mode for full HMR on both client and server
+- **Production**: Express serves pre-built client assets from `dist/client/` and renders pages via the SSR bundle
 
-- Any APIs needed for client use to make XMLHttpRequests should be defined in `src/server/routes/api`
+## Development
 
-- It is preferred to write a reusable react component in a separate folder within `src/common/components`; however if the component becomes complex and inner components can be extracted which are component-specific then those leaf components should be placed within same component folder.
+```bash
+# From monorepo root
+yarn workspace web-app run dev       # Start dev server with SSR + HMR
 
-- Unit tests must be written using `jest` and `@testing-library/react` for each component to verify its rendering in different states
+# Or start all dev servers
+yarn dev
+```
 
-- It is preferred to keep component separate from consuming redux data directly and instead use the component's index file to inject redux state data and dispatchers
+Access the app at http://localhost:3000
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `yarn dev` | Start Vite dev server with SSR and HMR |
+| `yarn build` | Build client bundle and SSR server bundle |
+| `yarn test` | Run Vitest unit tests |
+| `yarn typecheck` | TypeScript type checking |
+| `yarn lint` | ESLint with flat config |
+| `yarn test:size` | Check bundle size limits with size-limit |
+| `yarn storybook` | Start Storybook dev server |
+| `yarn build-storybook` | Build static Storybook site |
+
+## Styling
+
+- **Tailwind CSS v4** with theme defined in CSS `@theme {}` blocks (no `tailwind.config.js`)
+- **OKLCH color space** for perceptually uniform colors with light/dark mode support
+- **Class-based dark mode** toggled via `ThemeContext` applying `.dark` class to root element
+- **Path alias**: `@/` maps to `src/` (configured in Vite, Vitest, and TypeScript)
+
+## Testing
+
+- **Vitest** with jsdom environment
+- **@testing-library/react** v16 for component testing
+- Explicit imports: `import { describe, it, expect } from 'vitest'`
+- Run tests: `yarn workspace web-app run test`

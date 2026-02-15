@@ -47,12 +47,21 @@ const spanToWidth: Record<ColumnSpan, string> = {
   12: '100%',
 };
 
-const breakpointPrefix: Record<string, string> = {
-  xs: '',
-  sm: 'sm:',
-  md: 'md:',
-  lg: 'lg:',
-  xl: 'xl:',
+/**
+ * Pre-built lookup of responsive width classes for each breakpoint and span.
+ *
+ * Written as **string literals** so Tailwind CSS's JIT scanner can detect
+ * them during source-file scanning.  Dynamic string interpolation
+ * (e.g. `` `${prefix}[--col-width:${pct}]` ``) is invisible to the
+ * scanner and the resulting CSS rules would never be generated.
+ */
+/* prettier-ignore */
+const responsiveWidthClass: Record<string, Record<ColumnSpan, string>> = {
+  xs: { 1: '[--col-width:8.333333%]', 2: '[--col-width:16.666667%]', 3: '[--col-width:25%]', 4: '[--col-width:33.333333%]', 5: '[--col-width:41.666667%]', 6: '[--col-width:50%]', 7: '[--col-width:58.333333%]', 8: '[--col-width:66.666667%]', 9: '[--col-width:75%]', 10: '[--col-width:83.333333%]', 11: '[--col-width:91.666667%]', 12: '[--col-width:100%]' },
+  sm: { 1: 'sm:[--col-width:8.333333%]', 2: 'sm:[--col-width:16.666667%]', 3: 'sm:[--col-width:25%]', 4: 'sm:[--col-width:33.333333%]', 5: 'sm:[--col-width:41.666667%]', 6: 'sm:[--col-width:50%]', 7: 'sm:[--col-width:58.333333%]', 8: 'sm:[--col-width:66.666667%]', 9: 'sm:[--col-width:75%]', 10: 'sm:[--col-width:83.333333%]', 11: 'sm:[--col-width:91.666667%]', 12: 'sm:[--col-width:100%]' },
+  md: { 1: 'md:[--col-width:8.333333%]', 2: 'md:[--col-width:16.666667%]', 3: 'md:[--col-width:25%]', 4: 'md:[--col-width:33.333333%]', 5: 'md:[--col-width:41.666667%]', 6: 'md:[--col-width:50%]', 7: 'md:[--col-width:58.333333%]', 8: 'md:[--col-width:66.666667%]', 9: 'md:[--col-width:75%]', 10: 'md:[--col-width:83.333333%]', 11: 'md:[--col-width:91.666667%]', 12: 'md:[--col-width:100%]' },
+  lg: { 1: 'lg:[--col-width:8.333333%]', 2: 'lg:[--col-width:16.666667%]', 3: 'lg:[--col-width:25%]', 4: 'lg:[--col-width:33.333333%]', 5: 'lg:[--col-width:41.666667%]', 6: 'lg:[--col-width:50%]', 7: 'lg:[--col-width:58.333333%]', 8: 'lg:[--col-width:66.666667%]', 9: 'lg:[--col-width:75%]', 10: 'lg:[--col-width:83.333333%]', 11: 'lg:[--col-width:91.666667%]', 12: 'lg:[--col-width:100%]' },
+  xl: { 1: 'xl:[--col-width:8.333333%]', 2: 'xl:[--col-width:16.666667%]', 3: 'xl:[--col-width:25%]', 4: 'xl:[--col-width:33.333333%]', 5: 'xl:[--col-width:41.666667%]', 6: 'xl:[--col-width:50%]', 7: 'xl:[--col-width:58.333333%]', 8: 'xl:[--col-width:66.666667%]', 9: 'xl:[--col-width:75%]', 10: 'xl:[--col-width:83.333333%]', 11: 'xl:[--col-width:91.666667%]', 12: 'xl:[--col-width:100%]' },
 };
 
 /**
@@ -201,17 +210,12 @@ export interface FlexGridColumnProps
 }
 
 /**
- * Builds a responsive width class using Tailwind's arbitrary property
- * syntax to set --col-width at each breakpoint. The actual `width`
- * is applied via inline style as `var(--col-width)`.
+ * Returns the static responsive width class for a given breakpoint and span.
+ * Uses the pre-built `responsiveWidthClass` lookup so Tailwind JIT can
+ * detect every possible class string.
  */
-function buildResponsiveWidthClasses(
-  breakpoint: string,
-  span: ColumnSpan
-): string {
-  const prefix = breakpointPrefix[breakpoint];
-  const pctWidth = spanToWidth[span];
-  return `${prefix}[--col-width:${pctWidth}]`;
+function getResponsiveWidthClass(breakpoint: string, span: ColumnSpan): string {
+  return responsiveWidthClass[breakpoint]?.[span] ?? '';
 }
 
 const FlexGridColumn = React.forwardRef<HTMLDivElement, FlexGridColumnProps>(
@@ -219,22 +223,22 @@ const FlexGridColumn = React.forwardRef<HTMLDivElement, FlexGridColumnProps>(
     { xs, sm, md, lg, xl, offset, order, className, style, children, ...props },
     ref
   ) => {
-    // Build responsive width classes
+    // Build responsive width classes (static lookup — Tailwind-safe)
     const widthClasses: string[] = [];
-    widthClasses.push(buildResponsiveWidthClasses('xs', xs));
-    if (sm) widthClasses.push(buildResponsiveWidthClasses('sm', sm));
-    if (md) widthClasses.push(buildResponsiveWidthClasses('md', md));
-    if (lg) widthClasses.push(buildResponsiveWidthClasses('lg', lg));
-    if (xl) widthClasses.push(buildResponsiveWidthClasses('xl', xl));
+    widthClasses.push(getResponsiveWidthClass('xs', xs));
+    if (sm) widthClasses.push(getResponsiveWidthClass('sm', sm));
+    if (md) widthClasses.push(getResponsiveWidthClass('md', md));
+    if (lg) widthClasses.push(getResponsiveWidthClass('lg', lg));
+    if (xl) widthClasses.push(getResponsiveWidthClass('xl', xl));
 
     // Build offset classes
     const offsetClasses: string[] = [];
     if (offset) {
       Object.entries(offset).forEach(([breakpoint, span]) => {
         if (span) {
-          const prefix = breakpointPrefix[breakpoint];
+          const bpPrefix = breakpoint === 'xs' ? '' : `${breakpoint}:`;
           offsetClasses.push(
-            `${prefix}ml-[${((span / 12) * 100).toFixed(4)}%]`
+            `${bpPrefix}ml-[${((span / 12) * 100).toFixed(4)}%]`
           );
         }
       });
@@ -245,8 +249,8 @@ const FlexGridColumn = React.forwardRef<HTMLDivElement, FlexGridColumnProps>(
     if (order) {
       Object.entries(order).forEach(([breakpoint, value]) => {
         if (value !== undefined) {
-          const prefix = breakpointPrefix[breakpoint];
-          orderClasses.push(`${prefix}order-${value}`);
+          const bpPrefix = breakpoint === 'xs' ? '' : `${breakpoint}:`;
+          orderClasses.push(`${bpPrefix}order-${value}`);
         }
       });
     }
@@ -263,7 +267,6 @@ const FlexGridColumn = React.forwardRef<HTMLDivElement, FlexGridColumnProps>(
         )}
         style={
           {
-            '--col-width': spanToWidth[xs],
             width: 'var(--col-width)',
             padding: `calc(var(${GUTTER_VAR}, 1rem) / 2)`,
             ...style,

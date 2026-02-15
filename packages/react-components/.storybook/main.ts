@@ -1,5 +1,6 @@
 import type { StorybookConfig } from '@storybook/react-vite';
 import path from 'path';
+import remarkGfm from 'remark-gfm';
 
 const config: StorybookConfig = {
   stories: [
@@ -9,6 +10,16 @@ const config: StorybookConfig = {
   ],
   addons: [
     '@storybook/addon-essentials',
+    {
+      name: '@storybook/addon-docs',
+      options: {
+        mdxPluginOptions: {
+          mdxCompileOptions: {
+            remarkPlugins: [remarkGfm],
+          },
+        },
+      },
+    },
     '@storybook/addon-interactions',
     '@storybook/addon-links',
   ],
@@ -17,6 +28,10 @@ const config: StorybookConfig = {
     options: {},
   },
   viteFinal: async (config) => {
+    const tailwindcss = (await import('@tailwindcss/vite')).default;
+
+    config.plugins = [...(config.plugins || []), tailwindcss()];
+
     config.resolve = config.resolve || {};
     config.resolve.alias = {
       ...config.resolve.alias,

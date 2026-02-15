@@ -55,16 +55,17 @@ describe('FlexGrid', () => {
     expect(centeredGrid).toBeInTheDocument();
   });
 
-  it('applies column span via inline style width', () => {
+  it('applies column span via CSS variable class and inline width', () => {
     const { container } = render(<EqualColumns />);
     const columns = container.querySelectorAll('[data-flex-grid-column]');
     expect(columns.length).toBe(3);
     columns.forEach((column) => {
       const el = column as HTMLElement;
-      // Each column should have width set via CSS variable
+      // Each column should have width set via CSS variable reference
       expect(el.style.getPropertyValue('width')).toBe('var(--col-width)');
-      // Base --col-width should be 33.333333% for xs={4}
-      expect(el.style.getPropertyValue('--col-width')).toBe('33.333333%');
+      // --col-width is set via Tailwind CSS class, not inline style
+      // (inline styles would override responsive breakpoint classes)
+      expect(el.className).toContain('[--col-width:33.333333%]');
     });
   });
 
