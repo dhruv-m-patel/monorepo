@@ -55,28 +55,28 @@ describe('FlexGrid', () => {
     expect(centeredGrid).toBeInTheDocument();
   });
 
-  it('applies column span via CSS variable class and inline width', () => {
+  it('injects scoped <style> with width rules for each column', () => {
     const { container } = render(<EqualColumns />);
-    const columns = container.querySelectorAll('[data-flex-grid-column]');
-    expect(columns.length).toBe(3);
-    columns.forEach((column) => {
-      const el = column as HTMLElement;
-      // Each column should have width set via CSS variable reference
-      expect(el.style.getPropertyValue('width')).toBe('var(--col-width)');
-      // --col-width is set via Tailwind CSS class, not inline style
-      // (inline styles would override responsive breakpoint classes)
-      expect(el.className).toContain('[--col-width:33.333333%]');
+    const styles = container.querySelectorAll('style');
+    expect(styles.length).toBe(3); // 3 columns = 3 style tags
+    // Each style should contain a width rule for 33.333333% (xs={4})
+    styles.forEach((styleEl) => {
+      expect(styleEl.textContent).toContain('width:33.333333%');
     });
   });
 
-  it('applies responsive classes for breakpoints', () => {
+  it('generates responsive @media rules for breakpoints', () => {
     const { container } = render(<ResponsiveLayout />);
-    const columns = container.querySelectorAll('[data-flex-grid-column]');
-    const firstColumn = columns[0];
-    // Should have responsive custom property classes
-    expect(firstColumn?.className).toContain('[--col-width:100%]');
-    expect(firstColumn?.className).toContain('md:[--col-width:50%]');
-    expect(firstColumn?.className).toContain('lg:[--col-width:33.333333%]');
+    const styles = container.querySelectorAll('style');
+    const firstStyle = styles[0]?.textContent ?? '';
+    // xs=12 → base width 100%
+    expect(firstStyle).toContain('width:100%');
+    // md=6 → @media(min-width:768px) with 50%
+    expect(firstStyle).toContain('@media(min-width:768px)');
+    expect(firstStyle).toContain('width:50%');
+    // lg=4 → @media(min-width:1024px) with 33.333333%
+    expect(firstStyle).toContain('@media(min-width:1024px)');
+    expect(firstStyle).toContain('width:33.333333%');
   });
 
   it('applies gutter via CSS custom property on the grid', () => {

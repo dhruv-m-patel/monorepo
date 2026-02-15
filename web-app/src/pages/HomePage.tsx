@@ -34,7 +34,7 @@ const features: FeatureCard[] = [
     title: 'Server Side Rendering',
     description:
       'Write server-rendered React applications with Vite and Express',
-    href: 'https://react.dev/learn/server-side-rendering',
+    href: 'https://vite.dev/guide/ssr',
   },
   {
     title: 'React Router',
