@@ -37,7 +37,8 @@ export default function Layout({ children }: LayoutProps) {
       <main>{children}</main>
       <footer className="border-t border-border py-6">
         <div className="mx-auto max-w-7xl px-4 text-center text-sm text-muted-foreground sm:px-6 lg:px-8">
-          Upgraded using Claude with React 19, Vite, TypeScript &amp; Tailwind CSS
+          Upgraded using Claude with React 19, Vite, TypeScript &amp; Tailwind
+          CSS
         </div>
       </footer>
     </div>

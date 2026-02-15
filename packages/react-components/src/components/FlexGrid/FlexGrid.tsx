@@ -110,13 +110,7 @@ export interface FlexGridProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Flex justify-content value
    */
-  justifyContent?:
-    | 'start'
-    | 'center'
-    | 'end'
-    | 'between'
-    | 'around'
-    | 'evenly';
+  justifyContent?: 'start' | 'center' | 'end' | 'between' | 'around' | 'evenly';
   /**
    * Whether to wrap flex items
    * @default true
@@ -154,17 +148,19 @@ const FlexGridRoot = React.forwardRef<HTMLDivElement, FlexGridProps>(
       <div
         ref={ref}
         className={className}
-        style={{
-          display: 'flex',
-          flexWrap: wrap ? 'wrap' : 'nowrap',
-          ...(alignItems ? { alignItems: alignMap[alignItems] } : {}),
-          ...(justifyContent
-            ? { justifyContent: justifyMap[justifyContent] }
-            : {}),
-          [GUTTER_VAR]: gutterValue,
-          margin: `calc(var(${GUTTER_VAR}) / -2)`,
-          ...style,
-        } as React.CSSProperties}
+        style={
+          {
+            display: 'flex',
+            flexWrap: wrap ? 'wrap' : 'nowrap',
+            ...(alignItems ? { alignItems: alignMap[alignItems] } : {}),
+            ...(justifyContent
+              ? { justifyContent: justifyMap[justifyContent] }
+              : {}),
+            [GUTTER_VAR]: gutterValue,
+            margin: `calc(var(${GUTTER_VAR}) / -2)`,
+            ...style,
+          } as React.CSSProperties
+        }
         data-flex-grid=""
         {...props}
       >
