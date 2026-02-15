@@ -25,7 +25,7 @@ describe('App', () => {
   it('should render the layout footer', () => {
     renderApp();
     expect(
-      screen.getByText(/Built with React 19, Vite, TypeScript/)
+      screen.getByText(/Upgraded using Claude with React 19, Vite, TypeScript/)
     ).toBeInTheDocument();
   });
 });

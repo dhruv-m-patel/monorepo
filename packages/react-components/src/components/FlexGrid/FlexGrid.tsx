@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { cn } from '@ui/lib/utils';
 
 type ColumnSpan = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
@@ -58,6 +57,25 @@ const breakpointPx: Record<string, number> = {
   xl: 1280,
 };
 
+/** Maps align-items prop values to CSS values. */
+const alignMap: Record<string, string> = {
+  start: 'flex-start',
+  center: 'center',
+  end: 'flex-end',
+  stretch: 'stretch',
+  baseline: 'baseline',
+};
+
+/** Maps justify-content prop values to CSS values. */
+const justifyMap: Record<string, string> = {
+  start: 'flex-start',
+  center: 'center',
+  end: 'flex-end',
+  between: 'space-between',
+  around: 'space-around',
+  evenly: 'space-evenly',
+};
+
 /**
  * CSS custom property name used to thread the gutter size from
  * FlexGrid (the row) down to FlexGrid.Column items.
@@ -65,13 +83,11 @@ const breakpointPx: Record<string, number> = {
 const GUTTER_VAR = '--fg-gutter';
 
 /**
- * Context to pass the gutter CSS value from FlexGrid to FlexGrid.Column.
- * The value is a CSS length like "1rem".
+ * Converts React.useId() output (like ":r0:") into a CSS-safe class name.
  */
-const FlexGridContext = React.createContext<string>('1rem');
-
-/** Auto-incrementing counter for unique column class names (SSR-safe). */
-let colIdCounter = 0;
+function cssId(reactId: string): string {
+  return 'fg' + reactId.replace(/:/g, '');
+}
 
 /**
  * FlexGrid component props.
@@ -115,9 +131,8 @@ export interface FlexGridProps extends React.HTMLAttributes<HTMLDivElement> {
  * Material UI) so that percentage-based column widths always add up
  * to exactly 100%, regardless of the gap value.
  *
- * The container applies `margin: -(gap/2)` and each Column applies
- * `padding: gap/2`, giving the visual appearance of gaps between
- * columns without breaking the width maths.
+ * All layout-critical CSS is applied via inline styles so the component
+ * works in any consumer without depending on Tailwind CSS scanning.
  */
 const FlexGridRoot = React.forwardRef<HTMLDivElement, FlexGridProps>(
   (
@@ -134,34 +149,27 @@ const FlexGridRoot = React.forwardRef<HTMLDivElement, FlexGridProps>(
     ref
   ) => {
     const gutterValue = gapTokenToValue[gap] ?? '1rem';
-    const alignClass = alignItems ? `items-${alignItems}` : '';
-    const justifyClass = justifyContent ? `justify-${justifyContent}` : '';
-    const wrapClass = wrap ? 'flex-wrap' : 'flex-nowrap';
 
     return (
-      <FlexGridContext.Provider value={gutterValue}>
-        <div
-          ref={ref}
-          className={cn(
-            'flex',
-            alignClass,
-            justifyClass,
-            wrapClass,
-            className
-          )}
-          style={
-            {
-              [GUTTER_VAR]: gutterValue,
-              margin: `calc(var(${GUTTER_VAR}) / -2)`,
-              ...style,
-            } as React.CSSProperties
-          }
-          data-flex-grid=""
-          {...props}
-        >
-          {children}
-        </div>
-      </FlexGridContext.Provider>
+      <div
+        ref={ref}
+        className={className}
+        style={{
+          display: 'flex',
+          flexWrap: wrap ? 'wrap' : 'nowrap',
+          ...(alignItems ? { alignItems: alignMap[alignItems] } : {}),
+          ...(justifyContent
+            ? { justifyContent: justifyMap[justifyContent] }
+            : {}),
+          [GUTTER_VAR]: gutterValue,
+          margin: `calc(var(${GUTTER_VAR}) / -2)`,
+          ...style,
+        } as React.CSSProperties}
+        data-flex-grid=""
+        {...props}
+      >
+        {children}
+      </div>
     );
   }
 );
@@ -226,9 +234,27 @@ export interface FlexGridColumnProps
  */
 function buildResponsiveCSS(
   selector: string,
-  spans: { xs: ColumnSpan; sm?: ColumnSpan; md?: ColumnSpan; lg?: ColumnSpan; xl?: ColumnSpan },
-  offsetMap?: { xs?: ColumnSpan; sm?: ColumnSpan; md?: ColumnSpan; lg?: ColumnSpan; xl?: ColumnSpan },
-  orderMap?: { xs?: number; sm?: number; md?: number; lg?: number; xl?: number }
+  spans: {
+    xs: ColumnSpan;
+    sm?: ColumnSpan;
+    md?: ColumnSpan;
+    lg?: ColumnSpan;
+    xl?: ColumnSpan;
+  },
+  offsetMap?: {
+    xs?: ColumnSpan;
+    sm?: ColumnSpan;
+    md?: ColumnSpan;
+    lg?: ColumnSpan;
+    xl?: ColumnSpan;
+  },
+  orderMap?: {
+    xs?: number;
+    sm?: number;
+    md?: number;
+    lg?: number;
+    xl?: number;
+  }
 ): string {
   const rules: string[] = [];
 
@@ -251,14 +277,18 @@ function buildResponsiveCSS(
       mediaRules.push(`.${selector}{width:${spanToWidth[spans[bp]!]}}`);
     }
     if (offsetMap?.[bp]) {
-      mediaRules.push(`.${selector}{margin-left:${spanToWidth[offsetMap[bp]!]}}`);
+      mediaRules.push(
+        `.${selector}{margin-left:${spanToWidth[offsetMap[bp]!]}}`
+      );
     }
     if (orderMap?.[bp] !== undefined) {
       mediaRules.push(`.${selector}{order:${orderMap[bp]}}`);
     }
 
     if (mediaRules.length > 0) {
-      rules.push(`@media(min-width:${breakpointPx[bp]}px){${mediaRules.join('')}}`);
+      rules.push(
+        `@media(min-width:${breakpointPx[bp]}px){${mediaRules.join('')}}`
+      );
     }
   }
 
@@ -270,9 +300,8 @@ const FlexGridColumn = React.forwardRef<HTMLDivElement, FlexGridColumnProps>(
     { xs, sm, md, lg, xl, offset, order, className, style, children, ...props },
     ref
   ) => {
-    // Generate a stable unique class name per component instance.
-    // useMemo ensures the ID is stable across re-renders.
-    const colClass = React.useMemo(() => `fg-c${++colIdCounter}`, []);
+    // useId is SSR-safe — produces matching IDs on server and client
+    const colClass = cssId(React.useId());
 
     const cssText = buildResponsiveCSS(
       colClass,
@@ -286,13 +315,13 @@ const FlexGridColumn = React.forwardRef<HTMLDivElement, FlexGridColumnProps>(
         <style dangerouslySetInnerHTML={{ __html: cssText }} />
         <div
           ref={ref}
-          className={cn('flex-shrink-0 box-border', colClass, className)}
-          style={
-            {
-              padding: `calc(var(${GUTTER_VAR}, 1rem) / 2)`,
-              ...style,
-            } as React.CSSProperties
-          }
+          className={className ? `${colClass} ${className}` : colClass}
+          style={{
+            flexShrink: 0,
+            boxSizing: 'border-box',
+            padding: `calc(var(${GUTTER_VAR}, 1rem) / 2)`,
+            ...style,
+          }}
           data-flex-grid-column=""
           {...props}
         >
@@ -311,9 +340,10 @@ FlexGridColumn.displayName = 'FlexGrid.Column';
  * with percentage widths always fit correctly regardless of gap size.
  * Supports responsive column spans via breakpoint props (xs, sm, md, lg, xl).
  *
- * Responsive widths are implemented via scoped `<style>` elements with
- * real CSS `@media` queries — no dependency on the consumer's Tailwind
- * configuration scanning the component library source.
+ * All layout-critical CSS is applied via inline styles and scoped
+ * `<style>` elements with real CSS `@media` queries. This makes the
+ * component fully self-contained — it works in any consuming app
+ * regardless of its CSS tooling configuration.
  *
  * @example
  * <FlexGrid gap="4">

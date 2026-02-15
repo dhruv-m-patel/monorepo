@@ -14,9 +14,11 @@ const {
 describe('FlexGrid', () => {
   it('renders equal columns', () => {
     const { container } = render(<EqualColumns />);
-    const grid = container.querySelector('[data-flex-grid]');
+    const grid = container.querySelector('[data-flex-grid]') as HTMLElement;
     expect(grid).toBeInTheDocument();
-    expect(grid?.className).toContain('flex');
+    // Layout is applied via inline styles, not Tailwind classes
+    expect(grid.style.display).toBe('flex');
+    expect(grid.style.flexWrap).toBe('wrap');
     const columns = container.querySelectorAll('[data-flex-grid-column]');
     expect(columns.length).toBe(3);
   });
@@ -49,8 +51,9 @@ describe('FlexGrid', () => {
     const { container } = render(<WithAlignment />);
     const grids = container.querySelectorAll('[data-flex-grid]');
     expect(grids.length).toBeGreaterThan(0);
-    const centeredGrid = Array.from(grids).find((g) =>
-      g.className.includes('items-center')
+    // alignItems is applied via inline style, not Tailwind class
+    const centeredGrid = Array.from(grids).find(
+      (g) => (g as HTMLElement).style.alignItems === 'center'
     );
     expect(centeredGrid).toBeInTheDocument();
   });
@@ -90,18 +93,22 @@ describe('FlexGrid', () => {
     );
   });
 
-  it('applies padding gutter on columns', () => {
+  it('applies padding gutter and layout styles on columns', () => {
     const { container } = render(<EqualColumns />);
     const columns = container.querySelectorAll('[data-flex-grid-column]');
     const firstCol = columns[0] as HTMLElement;
     expect(firstCol.style.getPropertyValue('padding')).toContain(
       'calc(var(--fg-gutter, 1rem) / 2)'
     );
+    // Layout-critical properties are inline styles, not Tailwind classes
+    expect(firstCol.style.flexShrink).toBe('0');
+    expect(firstCol.style.boxSizing).toBe('border-box');
   });
 
   it('renders with flex-wrap by default', () => {
     const { container } = render(<EqualColumns />);
-    const grid = container.querySelector('[data-flex-grid]');
-    expect(grid?.className).toContain('flex-wrap');
+    const grid = container.querySelector('[data-flex-grid]') as HTMLElement;
+    // flexWrap is applied via inline style
+    expect(grid.style.flexWrap).toBe('wrap');
   });
 });
