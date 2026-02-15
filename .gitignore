@@ -1,7 +1,16 @@
 node_modules
 build/
 build-static/
+dist/
 coverage/
 .env
 .DS_Store
 *.log
+.turbo
+.yarn/cache
+.yarn/install-state.gz
+storybook-static/
+playwright-report/
+test-results/
+perf-results/
+size-report.json

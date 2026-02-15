@@ -1,38 +1,50 @@
-name: build
-on: [push]
+name: CI
+
+on:
+  push:
+    branches: [master]
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
 jobs:
-  build:
+  ci:
+    name: Build, Lint & Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Setup node
-        uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: 'yarn'
 
-      - name: Ensure access
-        run: |
-          npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
-        env:
-          NPM_TOKEN: ${{secrets.npm_token}}
-
-      - name: Install packages
+      - name: Configure npm registry
         run: |
           yarn config set npmScopes.dhruv-m-patel.npmRegistryServer "https://registry.npmjs.org"
           yarn config set npmScopes.dhruv-m-patel.npmAlwaysAuth true
           yarn config set npmScopes.dhruv-m-patel.npmAuthToken $NPM_TOKEN
-          yarn install --frozen-lockfile
-          yarn bootstrap
         env:
-          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Install dependencies
+        run: yarn install --immutable
+        env:
           CI: true
 
-      - name: Verify code standards & formatting
-        run: yarn ci:lint
+      - name: Lint
+        run: yarn lint
 
-      - name: Build app
-        run: yarn ci:build
+      - name: Typecheck
+        run: yarn typecheck
 
-      - name: Run tests
+      - name: Build
+        run: yarn build
+
+      - name: Unit & integration tests
         run: yarn ci:test
+
+      - name: Check bundle sizes
+        run: yarn workspace web-app run test:size

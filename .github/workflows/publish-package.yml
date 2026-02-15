@@ -1,0 +1,123 @@
+name: Publish Package
+
+on:
+  # Trigger via git tags like: express-app@2.1.0
+  push:
+    tags:
+      - '*@*'
+
+  # Manual trigger for any package
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package to publish (directory name under packages/)'
+        required: true
+        type: choice
+        options:
+          - express-app
+          - react-components
+      dry_run:
+        description: 'Dry run (do not actually publish)'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+jobs:
+  publish:
+    name: Publish Package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Determine package to publish
+        id: package_info
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            PACKAGE_DIR="${{ github.event.inputs.package }}"
+            DRY_RUN="${{ github.event.inputs.dry_run }}"
+          else
+            # Extract package name from tag (e.g., express-app@2.1.0 -> express-app)
+            TAG="${GITHUB_REF#refs/tags/}"
+            PACKAGE_DIR="${TAG%%@*}"
+            DRY_RUN="false"
+          fi
+
+          PACKAGE_PATH="packages/${PACKAGE_DIR}"
+
+          if [ ! -d "$PACKAGE_PATH" ]; then
+            echo "Error: Package directory '$PACKAGE_PATH' not found"
+            exit 1
+          fi
+
+          PACKAGE_NAME=$(node -p "require('./${PACKAGE_PATH}/package.json').name")
+          PACKAGE_VERSION=$(node -p "require('./${PACKAGE_PATH}/package.json').version")
+
+          echo "package_dir=$PACKAGE_DIR" >> $GITHUB_OUTPUT
+          echo "package_path=$PACKAGE_PATH" >> $GITHUB_OUTPUT
+          echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
+          echo "package_version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
+          echo "dry_run=$DRY_RUN" >> $GITHUB_OUTPUT
+
+          echo "Publishing $PACKAGE_NAME@$PACKAGE_VERSION from $PACKAGE_PATH"
+
+      - name: Configure npm registry
+        run: |
+          yarn config set npmScopes.dhruv-m-patel.npmRegistryServer "https://registry.npmjs.org"
+          yarn config set npmScopes.dhruv-m-patel.npmAlwaysAuth true
+          yarn config set npmScopes.dhruv-m-patel.npmAuthToken $NPM_TOKEN
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Install dependencies
+        run: yarn install --immutable
+        env:
+          CI: true
+
+      - name: Build package
+        run: turbo run build --filter=./${{ steps.package_info.outputs.package_path }}
+
+      - name: Run package tests
+        run: turbo run test --filter=./${{ steps.package_info.outputs.package_path }}
+
+      - name: Typecheck package
+        run: turbo run typecheck --filter=./${{ steps.package_info.outputs.package_path }}
+
+      - name: Verify package contents
+        working-directory: ${{ steps.package_info.outputs.package_path }}
+        run: npm pack --dry-run
+
+      - name: Publish to npm
+        if: steps.package_info.outputs.dry_run != 'true'
+        working-directory: ${{ steps.package_info.outputs.package_path }}
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish dry run
+        if: steps.package_info.outputs.dry_run == 'true'
+        working-directory: ${{ steps.package_info.outputs.package_path }}
+        run: npm publish --access public --dry-run
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Summary
+        run: |
+          echo "## Package Published" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Package**: ${{ steps.package_info.outputs.package_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ steps.package_info.outputs.package_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Dry Run**: ${{ steps.package_info.outputs.dry_run }}" >> $GITHUB_STEP_SUMMARY

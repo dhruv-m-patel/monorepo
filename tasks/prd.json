@@ -1,0 +1,470 @@
+{
+  "name": "Monorepo Modernization & AI-Assisted Development Framework",
+  "description": "Modernize lerna-monorepo-sample from outdated stack (Node 14, React 16, TS 4.3, Webpack 4, Lerna 6) to modern stack (Node 22, React 19, TS 5.7+, Vite, Turborepo) with full Claude AI development framework",
+  "branchName": "ralph/monorepo-modernization",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Migrate monorepo tooling from Lerna to Turborepo",
+      "description": "As a developer, I want the monorepo to use Turborepo so that builds are faster with intelligent caching and task orchestration.",
+      "acceptanceCriteria": [
+        "Remove Lerna configuration (lerna.json, lerna dependency)",
+        "Add turbo.json with pipeline configuration for build, lint, test, typecheck tasks",
+        "Configure Yarn 4 (Berry) workspaces in root package.json",
+        "Set .yarnrc.yml with nodeLinker: node-modules for compatibility",
+        "All existing packages (service, web-app) are recognized as Turborepo workspaces",
+        "yarn build, yarn lint, yarn test execute across all packages via Turborepo",
+        "Task dependency graph is correct (e.g., packages build before dependents)",
+        ".gitignore updated for .turbo cache directory",
+        "Root package.json scripts updated to use turbo run",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "Phase 1 - must be done first before any other migration work",
+      "dependsOn": []
+    },
+    {
+      "id": "US-002",
+      "title": "Upgrade Node.js and TypeScript",
+      "description": "As a developer, I want the project to use Node 22 LTS and TypeScript 5.7+ so that I have access to modern language features and long-term support.",
+      "acceptanceCriteria": [
+        ".nvmrc updated to Node 22 LTS (specify exact version e.g., 22.x)",
+        "Root package.json engines field updated to >=22",
+        "TypeScript upgraded to 5.7+ across all packages",
+        "tsconfig.json files updated to use modern compiler options (module: nodenext, moduleResolution: nodenext, target: ES2022 or later)",
+        "A shared tsconfig.base.json at root is used by all packages",
+        "All existing code compiles without type errors",
+        "yarn typecheck script added to root and each package",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": "Phase 1 - sequential after US-001",
+      "dependsOn": [
+        "US-001"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-003",
+      "title": "Create local @dhruv-m-patel/express-app package",
+      "description": "As a developer, I want a local monorepo package that replaces the external @dhruv-m-patel/express-app dependency so that we control the code and can evolve it alongside the monorepo.",
+      "acceptanceCriteria": [
+        "New package at packages/express-app with name @dhruv-m-patel/express-app",
+        "Package provides an Express app factory function with middleware setup (error handling, request logging, health check)",
+        "Replicates the API surface of the original external package (study existing usage in service/)",
+        "Written in TypeScript with proper type exports",
+        "Express upgraded to latest stable version (v4.21+ or v5 if stable)",
+        "Has its own package.json, tsconfig.json, build script",
+        "Exports both CJS and ESM formats",
+        "Includes unit tests for the factory function and middleware",
+        "Package is structured so it could be extracted to its own repo with minimal changes",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 3,
+      "passes": true,
+      "notes": "Phase 2 - can run in parallel with US-004 and US-008",
+      "dependsOn": [
+        "US-002"
+      ]
+    },
+    {
+      "id": "US-004",
+      "title": "Create local @dhruv-m-patel/react-components package",
+      "description": "As a developer, I want a local monorepo package for shared React components using shadcn/ui and Tailwind CSS so that the web-app has modern, maintainable UI components.",
+      "acceptanceCriteria": [
+        "New package at packages/react-components with name @dhruv-m-patel/react-components",
+        "Uses shadcn/ui component primitives with Tailwind CSS styling",
+        "Includes equivalent components to what web-app currently uses (Page layout, Header, navigation elements)",
+        "Written in TypeScript with proper type exports",
+        "React 19 as peer dependency",
+        "Has its own package.json, tsconfig.json, Vite library build config",
+        "Includes Tailwind CSS configuration that consumers can extend",
+        "Includes unit tests for each component using Vitest + React Testing Library",
+        "Package is structured so it could be extracted to its own repo with minimal changes",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 3,
+      "passes": true,
+      "notes": "Phase 2 - can run in parallel with US-003 and US-008",
+      "dependsOn": [
+        "US-002"
+      ]
+    },
+    {
+      "id": "US-008",
+      "title": "Upgrade ESLint to v9 with flat config",
+      "description": "As a developer, I want ESLint upgraded to v9 with the new flat config format so that linting follows the latest standards.",
+      "acceptanceCriteria": [
+        "ESLint upgraded to v9+",
+        ".eslintrc.* files replaced with eslint.config.mjs (flat config)",
+        "TypeScript-ESLint v8+ configured",
+        "React-specific lint rules configured (react-hooks, jsx-a11y)",
+        "Shared ESLint config at root, extended by each package",
+        "Prettier integration maintained",
+        "yarn lint passes across all packages with zero errors",
+        "Any auto-fixable issues resolved",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 3,
+      "passes": true,
+      "notes": "Phase 2 - can run in parallel with US-003 and US-004",
+      "dependsOn": [
+        "US-002"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-005",
+      "title": "Migrate service package to modern stack",
+      "description": "As a developer, I want the Express service to use the latest packages and the local @dhruv-m-patel/express-app package so that it demonstrates modern backend patterns.",
+      "acceptanceCriteria": [
+        "service depends on local @dhruv-m-patel/express-app (workspace dependency)",
+        "All dependencies upgraded to latest versions",
+        "TypeScript configuration uses shared tsconfig.base.json",
+        "Build output uses modern module format",
+        "Existing routes and middleware continue to work identically",
+        "Health check endpoint responds correctly",
+        "All existing tests migrated to Vitest and passing",
+        "Dev mode uses tsx or similar for fast TypeScript execution with watch mode",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 4,
+      "passes": true,
+      "notes": "Phase 3 - depends on express-app package and ESLint",
+      "dependsOn": [
+        "US-003",
+        "US-008"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-006",
+      "title": "Migrate web-app to Vite + React 19",
+      "description": "As a developer, I want the web-app to use Vite for bundling and React 19 so that the development experience is fast and the app uses the latest React features.",
+      "acceptanceCriteria": [
+        "Webpack 4 configuration removed entirely",
+        "Vite configuration added (vite.config.ts) with React plugin",
+        "React upgraded to v19 with new JSX transform",
+        "React Router upgraded to v7",
+        "All route definitions migrated to React Router v7 API",
+        "Redux removed; state management replaced with React Context + hooks",
+        "index.html moved to project root (Vite convention)",
+        "Dev server starts and all pages render correctly",
+        "Build produces optimized production bundle",
+        "Hot Module Replacement (HMR) works in development",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 4,
+      "passes": true,
+      "notes": "Phase 3 - can run in parallel with US-005 and US-007",
+      "dependsOn": [
+        "US-004",
+        "US-008"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-007",
+      "title": "Migrate web-app styling to Tailwind CSS + shadcn/ui",
+      "description": "As a developer, I want the web-app to use Tailwind CSS and shadcn/ui instead of Material-UI so that the styling is modern, utility-first, and lightweight.",
+      "acceptanceCriteria": [
+        "Material-UI v4 (@material-ui/*) dependencies removed",
+        "Tailwind CSS v4 installed and configured",
+        "shadcn/ui components initialized",
+        "All existing pages restyled using Tailwind CSS utility classes",
+        "Theme (colors, spacing, typography) configured in Tailwind config",
+        "Responsive design maintained (mobile, tablet, desktop)",
+        "Dark mode support via Tailwind's dark mode utilities",
+        "Visual parity with original app (similar layout, navigation, content structure)",
+        "Uses components from local @dhruv-m-patel/react-components package",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 4,
+      "passes": true,
+      "notes": "Phase 3 - can run in parallel with US-005 and US-006",
+      "dependsOn": [
+        "US-004",
+        "US-008"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-009",
+      "title": "Upgrade Storybook to v8 with Vite",
+      "description": "As a developer, I want Storybook upgraded to v8 using the Vite builder so that component development and documentation uses modern tooling.",
+      "acceptanceCriteria": [
+        "Storybook upgraded to v8 with @storybook/react-vite framework",
+        "All existing stories migrated to CSF3 format",
+        "Storybook uses Vite as its builder (not Webpack)",
+        "Tailwind CSS works within Storybook",
+        "shadcn/ui components render correctly in Storybook",
+        "yarn storybook starts without errors",
+        "Storybook build (yarn build-storybook) succeeds",
+        "Stories exist for components in @dhruv-m-patel/react-components",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 5,
+      "passes": true,
+      "notes": "Phase 4 - depends on web-app styling migration completing",
+      "dependsOn": [
+        "US-007"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-010",
+      "title": "Add Vitest unit and integration testing",
+      "description": "As a developer, I want all tests migrated from Jest to Vitest with expanded coverage so that testing is fast and consistent with the Vite toolchain.",
+      "acceptanceCriteria": [
+        "Jest removed from all packages",
+        "Vitest configured at root with workspace support",
+        "All existing tests migrated to Vitest (API, syntax differences handled)",
+        "React Testing Library configured for component tests",
+        "service has unit tests for routes, middleware, and utilities",
+        "web-app has unit tests for components, hooks, and context providers",
+        "packages/express-app has unit tests",
+        "packages/react-components has unit tests",
+        "Code coverage reporting configured (lcov + text summary)",
+        "yarn test runs all tests via Turborepo",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 5,
+      "passes": true,
+      "notes": "Phase 4 - depends on service and web-app migration completing",
+      "dependsOn": [
+        "US-005",
+        "US-006"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-011",
+      "title": "Add E2E testing with Playwright",
+      "description": "As a developer, I want end-to-end tests using Playwright so that critical user flows are verified in a real browser.",
+      "acceptanceCriteria": [
+        "Playwright installed and configured at root level",
+        "Playwright config set up for the web-app (base URL, browser config)",
+        "E2E test for: home page loads correctly",
+        "E2E test for: navigation between pages works",
+        "E2E test for: API health check endpoint responds",
+        "E2E test for: web-app communicates with service (if applicable)",
+        "yarn test:e2e script runs Playwright tests",
+        "Tests can run in CI (headless Chrome)",
+        "Playwright report generated on failure",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 5,
+      "passes": true,
+      "notes": "Phase 4 - depends on service and web-app migration completing",
+      "dependsOn": [
+        "US-005",
+        "US-006"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-012",
+      "title": "Add API performance testing",
+      "description": "As a developer, I want automated API performance tests so that response time regressions are caught in CI.",
+      "acceptanceCriteria": [
+        "Performance test framework chosen and configured (e.g., autocannon, k6, or custom Vitest bench)",
+        "Performance tests for each API endpoint in service",
+        "Metrics captured: p50, p95, p99 response times",
+        "Baseline thresholds established and documented",
+        "Tests fail if response times exceed thresholds",
+        "yarn test:perf script runs performance tests",
+        "Results output in a CI-parseable format (JSON or JUnit)",
+        "Performance test results reported on PRs",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 6,
+      "passes": true,
+      "notes": "Phase 5 - depends on Vitest and Playwright setup",
+      "dependsOn": [
+        "US-010",
+        "US-011"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-013",
+      "title": "Add bundle size tracking",
+      "description": "As a developer, I want automated bundle size tracking so that bundle bloat is caught before merging.",
+      "acceptanceCriteria": [
+        "Bundle size analysis tool configured (e.g., size-limit or bundlesize)",
+        "Baseline bundle sizes established for web-app production build",
+        "Limits set for: total JS bundle, individual chunks, CSS",
+        "yarn test:size script checks bundle sizes against limits",
+        "Bundle size comparison reported on PRs (shows delta)",
+        "CI fails if bundle size exceeds threshold",
+        "Configuration documented in README or dedicated doc",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 6,
+      "passes": true,
+      "notes": "Phase 5 - can run in parallel with US-012",
+      "dependsOn": [
+        "US-010",
+        "US-011"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-014",
+      "title": "Enhance CI/CD pipeline",
+      "description": "As a developer, I want a comprehensive CI/CD pipeline with PR checks, performance gates, dependency audits, and independent package publishing so that quality is enforced and packages can be released independently.",
+      "acceptanceCriteria": [
+        "GitHub Actions workflows rewritten with modern action versions",
+        "Turborepo remote caching configured (or local CI caching via actions/cache)",
+        "PR check workflow includes: lint, typecheck, build, unit tests, E2E tests",
+        "PR check workflow includes: performance tests with threshold enforcement",
+        "PR check workflow includes: bundle size reporting as PR comment",
+        "PR check workflow includes: dependency audit (yarn audit)",
+        "Independent package publishing workflow (triggered per-package via tags or manual dispatch)",
+        "Each package in packages/ can be published to npm independently",
+        "package.json for publishable packages includes proper files, main, types, exports fields",
+        "CI uses Node 22 and Yarn 4",
+        "Workflow uses Turborepo for task orchestration in CI",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 7,
+      "passes": true,
+      "notes": "Phase 6 - sequential, depends on all testing and perf stories",
+      "dependsOn": [
+        "US-012",
+        "US-013"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-015",
+      "title": "Build Claude AI development framework - Core setup",
+      "description": "As a developer, I want a Claude AI framework with CLAUDE.md, slash commands, and MCP server configs so that AI-assisted development is built into the repo.",
+      "acceptanceCriteria": [
+        "CLAUDE.md at repo root with project context, architecture overview, code conventions, and common tasks",
+        ".claude/commands/ directory with slash commands for common workflows: /build, /test, /lint, /new-package (scaffolds a new workspace package)",
+        ".claude/settings.json or equivalent MCP server configuration",
+        "Commands are documented with descriptions and usage examples",
+        "/new-package command scaffolds a package with correct structure (package.json, tsconfig.json, src/, tests/)",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 8,
+      "passes": true,
+      "notes": "Phase 7 - can run in parallel with US-016, US-017, US-018",
+      "dependsOn": [
+        "US-014"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-016",
+      "title": "Build Claude AI development framework - Custom skills",
+      "description": "As a developer, I want custom Claude skills for domain-specific tasks so that AI agents can perform specialized operations within this monorepo.",
+      "acceptanceCriteria": [
+        ".claude/skills/ directory with skill definitions",
+        "Skill: code-reviewer - reviews code changes for monorepo best practices",
+        "Skill: test-writer - generates Vitest tests for a given module",
+        "Skill: perf-analyzer - analyzes performance test results and suggests improvements",
+        "Skill: component-generator - scaffolds a new React component with shadcn/ui + Tailwind + tests + story",
+        "Each skill has a clear description, trigger conditions, and instructions",
+        "Skills follow a consistent template format",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 8,
+      "passes": true,
+      "notes": "Phase 7 - can run in parallel with US-015, US-017, US-018",
+      "dependsOn": [
+        "US-014"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-017",
+      "title": "Build Claude AI development framework - Agent templates & PRD tools",
+      "description": "As a developer, I want agent templates and PRD tools so that teams can orchestrate complex multi-step tasks with AI agents.",
+      "acceptanceCriteria": [
+        "PRD generator skill/command that creates structured PRDs (ralph-tui compatible format)",
+        "PRD-to-JSON converter skill for ralph-tui execution",
+        "Agent template: feature-implementer - takes a user story and implements it",
+        "Agent template: migration-helper - assists with package upgrades",
+        "Agent template: pr-creator - creates well-structured PRs from completed work",
+        "Templates stored in .claude/agents/ with clear documentation",
+        "Each template defines: purpose, inputs, expected outputs, tool usage",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 8,
+      "passes": true,
+      "notes": "Phase 7 - can run in parallel with US-015, US-016, US-018",
+      "dependsOn": [
+        "US-014"
+      ],
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-018",
+      "title": "Build Claude AI developer guide with architecture docs",
+      "description": "As a developer, I want comprehensive documentation explaining how to create new agents, skills, and slash commands so that any team member can extend the AI framework.",
+      "acceptanceCriteria": [
+        "docs/ directory created at repo root",
+        "docs/ai-framework/getting-started.md - overview and quick start",
+        "docs/ai-framework/creating-skills.md - step-by-step guide with examples",
+        "docs/ai-framework/creating-commands.md - slash command creation guide",
+        "docs/ai-framework/creating-agents.md - agent template creation guide",
+        "docs/ai-framework/architecture.md - architecture overview with diagrams (Mermaid)",
+        "docs/ai-framework/best-practices.md - patterns and anti-patterns",
+        "Architecture diagram showing: skill -> agent -> command -> MCP server relationships",
+        "Each guide includes at least one complete worked example",
+        "Docs reference actual files in the repo (not hypothetical examples)",
+        "yarn build passes",
+        "yarn lint passes",
+        "yarn test passes"
+      ],
+      "priority": 8,
+      "passes": true,
+      "notes": "Phase 7 - can run in parallel with US-015, US-016, US-017",
+      "dependsOn": [
+        "US-014"
+      ],
+      "completionNotes": "Completed by agent"
+    }
+  ],
+  "metadata": {
+    "updatedAt": "2026-02-14T06:34:43.652Z"
+  }
+}

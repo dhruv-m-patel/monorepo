@@ -1,0 +1,166 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Testing" />
+
+# Testing Guide
+
+How to test components in `@dhruv-m-patel/react-components`.
+
+## Test Stack
+
+- **Vitest 3.x** — Test runner (no Jest)
+- **@testing-library/react** — DOM queries and rendering
+- **@storybook/react** — `composeStories` for story-driven testing
+- **jsdom** — Default browser environment
+- **Node** — SSR tests using `renderToString`
+
+## The composeStories Pattern
+
+Tests use `composeStories` from `@storybook/react` to render pre-configured story variants. This ensures tests match exactly what Storybook displays:
+
+```tsx
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { composeStories } from '@storybook/react';
+import * as stories from './Button.stories';
+
+const composed = composeStories(stories);
+
+describe('Button', () => {
+  it('renders default story', () => {
+    render(<composed.Default />);
+    const button = screen.getByRole('button', { name: 'Button' });
+    expect(button).toBeInTheDocument();
+  });
+
+  it('renders destructive variant', () => {
+    render(<composed.Destructive />);
+    const button = screen.getByRole('button', { name: 'Delete' });
+    expect(button).toHaveClass('bg-destructive');
+  });
+
+  it('renders loading state', () => {
+    render(<composed.Loading />);
+    const button = screen.getByRole('button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute('aria-busy', 'true');
+  });
+});
+```
+
+**Benefits**:
+
+- Single source of truth: stories define the component states, tests verify them
+- No duplication of props/args between stories and tests
+- Catches regressions in both Storybook and test output
+
+## Test File Structure
+
+Each component's test file follows this pattern:
+
+```
+src/components/Button/
+├── Button.tsx           # Component
+├── Button.stories.tsx   # Stories
+├── Button.test.tsx      # Tests
+└── index.ts             # Re-export
+```
+
+## What to Test
+
+### For Every Component
+
+1. **Default render** — Verify the default story renders without errors
+2. **Each variant** — Verify CVA variant classes are applied correctly
+3. **Custom className** — Verify `cn()` merges user classes
+4. **Ref forwarding** — Verify `forwardRef` works
+
+### For Interactive Components
+
+5. **User interactions** — Use `userEvent.setup()` for clicks, typing, etc.
+6. **State changes** — Verify open/close, toggle, selection behaviors
+7. **Accessibility** — Use semantic queries (`getByRole`, `getByLabelText`)
+8. **Disabled state** — Verify disabled prop prevents interaction
+
+### For Overlay Components (Dialog, Sheet, etc.)
+
+9. **Trigger opens content** — Click trigger, verify content appears
+10. **Close behavior** — Verify overlay closes on dismiss/escape
+
+## Testing Conventions
+
+### Imports
+
+Always use explicit imports (no globals):
+
+```tsx
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+```
+
+### User Events
+
+Use the `setup()` pattern:
+
+```tsx
+import userEvent from '@testing-library/user-event';
+
+it('handles click', async () => {
+  const user = userEvent.setup();
+  const handleClick = vi.fn();
+  render(<Button onClick={handleClick}>Click</Button>);
+
+  await user.click(screen.getByRole('button'));
+  expect(handleClick).toHaveBeenCalledTimes(1);
+});
+```
+
+### Mocking
+
+Use `vi.fn()` and `vi.spyOn()`:
+
+```tsx
+const handleChange = vi.fn();
+render(<Input onChange={handleChange} />);
+```
+
+## SSR Tests
+
+SSR tests live in `tests/ssr/ssr.test.tsx` and use the `@vitest-environment node` docblock:
+
+```tsx
+// @vitest-environment node
+import { renderToString } from 'react-dom/server';
+import { Button } from '../../src/index';
+
+it('renders Button on server', () => {
+  const html = renderToString(<Button>Click</Button>);
+  expect(html).toContain('Click');
+  expect(html).toContain('button');
+});
+```
+
+SSR tests verify:
+
+- No `window is not defined` errors during import
+- Components render sensible defaults on the server
+- ThemeProvider works without localStorage
+
+## Running Tests
+
+```bash
+# Run all component library tests
+yarn workspace @dhruv-m-patel/react-components run test
+
+# Run with coverage report
+yarn workspace @dhruv-m-patel/react-components run test:ci
+
+# Run in watch mode
+yarn workspace @dhruv-m-patel/react-components run test:watch
+
+# Run a specific test file
+npx vitest run --config packages/react-components/vitest.config.ts src/components/Button/Button.test.tsx
+```
+
+## Coverage Requirements
+
+The library enforces 80% coverage thresholds for statements, branches, functions, and lines. Coverage is measured using the v8 provider and reported in text + lcov formats.

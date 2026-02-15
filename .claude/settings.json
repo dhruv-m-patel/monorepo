@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(nvm use*)",
+      "Bash(yarn build*)",
+      "Bash(yarn test*)",
+      "Bash(yarn lint*)",
+      "Bash(yarn typecheck*)",
+      "Bash(yarn install*)",
+      "Bash(yarn workspace*)",
+      "Bash(yarn prettier*)",
+      "Bash(yarn dev*)",
+      "Bash(yarn storybook*)",
+      "Bash(turbo run*)",
+      "Bash(npx playwright*)",
+      "Bash(eslint*)",
+      "Bash(tsc*)",
+      "Bash(mkdir*)",
+      "Bash(ls*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git branch*)",
+      "Bash(git checkout*)",
+      "Bash(gh *)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)",
+      "Bash(rm -rf /)*",
+      "Bash(yarn publish*)"
+    ]
+  }
+}

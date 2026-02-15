@@ -1,0 +1,14 @@
+{
+  "id": "b522286f-6085-4bec-bdfe-c55d67f4e9f7",
+  "status": "completed",
+  "startedAt": "2026-02-14T06:39:36.078Z",
+  "updatedAt": "2026-02-14T06:40:33.651Z",
+  "agentPlugin": "claude",
+  "trackerPlugin": "json",
+  "currentIteration": 0,
+  "maxIterations": 0,
+  "totalTasks": 0,
+  "tasksCompleted": 0,
+  "cwd": "/Users/dhruvpatel/Projects/lerna-monorepo-sample",
+  "endedAt": "2026-02-14T06:40:33.651Z"
+}

@@ -1,0 +1,166 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Adoption Guide" />
+
+# Adoption Guide
+
+How to migrate an existing React application to use `@dhruv-m-patel/react-components`.
+
+## Strategy: Gradual Adoption
+
+The library is designed for incremental adoption. You can use library components alongside your existing components without conflicts:
+
+1. **Start with ThemeProvider** — Wrap your app root
+2. **Replace one component at a time** — Start with simple components (Button, Card)
+3. **Remove local implementations** — Delete replaced components after migration
+4. **Adopt complex components later** — Dialog, Sheet, Command palette, etc.
+
+## Step-by-Step Migration
+
+### Step 1: Add Dependency
+
+```bash
+# In your app's package.json
+yarn add @dhruv-m-patel/react-components
+
+# Or for monorepo workspace
+# Add "workspace:*" to dependencies
+```
+
+### Step 2: Import Theme CSS
+
+Add the theme stylesheet import at your application entry point:
+
+```tsx
+// main.tsx or index.tsx
+import '@dhruv-m-patel/react-components/styles';
+```
+
+### Step 3: Wrap with ThemeProvider
+
+Replace any existing theme context with the library's `ThemeProvider`:
+
+```tsx
+// Before
+import { ThemeProvider } from './context/ThemeContext';
+
+// After
+import { ThemeProvider } from '@dhruv-m-patel/react-components';
+
+function App() {
+  return (
+    <ThemeProvider defaultTheme="system">
+      <Router>
+        <Layout />
+      </Router>
+    </ThemeProvider>
+  );
+}
+```
+
+**API differences to watch for**:
+
+| Feature       | Common local pattern | Library pattern                        |
+| ------------- | -------------------- | -------------------------------------- |
+| Theme values  | `'light' \| 'dark'`  | `'light' \| 'dark' \| 'system'`        |
+| Current theme | `theme`              | `resolvedTheme` (always light or dark) |
+| Toggle        | Custom function      | `toggleTheme()` from `useTheme()`      |
+| Storage key   | `'theme'`            | `'ui-theme'` (configurable)            |
+
+### Step 4: Replace Components
+
+Replace local component imports with library imports:
+
+```tsx
+// Before
+import { Button } from './components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from './components/ui/card';
+
+// After
+import {
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '@dhruv-m-patel/react-components';
+```
+
+### Step 5: Update Tests
+
+Update test imports to use library components:
+
+```tsx
+// Before
+import { ThemeProvider } from '../context/ThemeContext';
+import { Button } from './button';
+
+// After
+import { ThemeProvider, Button } from '@dhruv-m-patel/react-components';
+```
+
+### Step 6: Remove Local Files
+
+Once all imports are migrated and tests pass, remove the local component files:
+
+```bash
+git rm src/components/ui/button.tsx
+git rm src/components/ui/card.tsx
+git rm src/context/ThemeContext.tsx
+```
+
+## Web-App Integration Example
+
+The `web-app` package in this monorepo demonstrates a complete migration:
+
+- `web-app/src/App.tsx` — Uses library's `ThemeProvider`
+- `web-app/src/components/Layout.tsx` — Uses library's `Button` + `useTheme`
+- `web-app/src/pages/HomePage.tsx` — Uses library's `Card` components
+- Local `button.tsx`, `card.tsx`, `ThemeContext.tsx` were removed after migration
+
+## Handling Breaking Changes
+
+### className Differences
+
+Library components may use slightly different Tailwind classes than your local versions. Check assertions in tests:
+
+```tsx
+// Local card might use rounded-xl
+// Library card uses rounded-lg
+expect(card).toHaveClass('rounded-lg'); // Update assertion
+```
+
+### Theme API Changes
+
+If your app reads `theme` directly for conditional rendering, switch to `resolvedTheme`:
+
+```tsx
+// Before (local ThemeContext)
+const { theme } = useTheme();
+const icon = theme === 'light' ? <Moon /> : <Sun />;
+
+// After (library useTheme)
+const { resolvedTheme } = useTheme();
+const icon = resolvedTheme === 'light' ? <Moon /> : <Sun />;
+```
+
+## Coexistence Strategy
+
+During migration, you can use both local and library components:
+
+```tsx
+// Mix of local and library components is fine
+import { Button } from '@dhruv-m-patel/react-components'; // From library
+import { CustomWidget } from './components/CustomWidget'; // Local
+
+function Page() {
+  return (
+    <div>
+      <Button>Library Button</Button>
+      <CustomWidget /> {/* Still local */}
+    </div>
+  );
+}
+```
+
+The library's CSS custom properties won't conflict with your existing styles as long as you don't manually override the same `--color-*` variables.

@@ -1,8 +1,17 @@
 build
 build-static
+dist
 node_modules
 coverage
 .env
 .env.example
 package-lock.json
 readme.md
+.ralph-tui
+.turbo
+tasks
+storybook-static
+playwright-report
+test-results
+perf-results
+size-report.json

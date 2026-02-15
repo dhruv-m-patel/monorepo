@@ -1,60 +1,63 @@
 {
-  "name": "lerna-monorepo-sample",
+  "name": "monorepo",
   "private": true,
   "engines": {
-    "node": ">= 14.17.0"
+    "node": ">= 22"
   },
   "workspaces": [
+    "packages/*",
     "service",
     "web-app"
   ],
   "devDependencies": {
     "@apidevtools/swagger-cli": "^4.0.4",
-    "@types/node": "^18.14.0",
-    "@typescript-eslint/eslint-plugin": "^5.53.0",
-    "@typescript-eslint/parser": "^5.53.0",
+    "@eslint/js": "^9",
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^22.13.0",
     "cli-glob": "^0.1.0",
     "dotenv": "^16.0.3",
-    "eslint": "^8.34.0",
-    "eslint-config-prettier": "^8.6.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jest": "^27.2.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.2.0",
-    "eslint-plugin-standard": "^5.0.0",
+    "eslint": "^9",
+    "eslint-config-prettier": "^10",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^17.3.0",
     "husky": "^8.0.3",
-    "lerna": "^6.5.1",
     "lint-staged": "^13.1.2",
     "prettier": "^2.8.4",
-    "typescript": "4.3.4"
+    "turbo": "^2.8.8",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8"
   },
   "lint-staged": {
     "**/*": [
-      "prettier --write --ignore-unknown",
-      "eslint ."
+      "prettier --write --ignore-unknown"
+    ],
+    "**/*.{ts,tsx,js,mjs}": [
+      "eslint --no-warn-ignored"
     ]
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "build": "lerna run build --stream",
-    "bundle:api": "lerna run bundle:api",
-    "ci:build": "lerna run build --stream",
-    "ci:test": "lerna run test:ci --stream",
+    "build": "turbo run build",
+    "bundle:api": "turbo run bundle:api",
+    "ci:build": "turbo run build",
+    "ci:test": "turbo run test:ci",
     "ci:lint": "eslint . && yarn run lint:spec && yarn prettier:verify",
-    "clean": "lerna clean -y",
-    "diff": "lerna diff",
-    "start": "lerna run start --stream",
-    "start:prod": "lerna run start --stream -- -- dotenv_config_path=../../.env",
-    "dev": "lerna run dev --stream -- -- dotenv_config_path=../../.env",
-    "test": "lerna run test --stream",
+    "clean": "turbo run clean",
+    "start": "turbo run start",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
     "lint": "eslint . && yarn run lint:spec && yarn prettier:verify",
     "lint:spec": "glob '**/src/**/api-spec.yaml' | xargs -n1 npx swagger-cli validate",
-    "lint:fix": "lerna run lint:fix --stream",
-    "pretest": "jest --clearCache",
+    "lint:fix": "eslint . --fix",
     "prettier:format": "prettier --write .",
     "prettier:verify": "prettier --check .",
-    "storybook": "lerna run storybook --stream",
-    "build-storybook": "lerna run build-storybook --stream",
-    "version": "lerna version --yes"
-  }
+    "storybook": "turbo run storybook",
+    "build-storybook": "turbo run build-storybook",
+    "test:e2e": "playwright test",
+    "test:perf": "yarn workspace service run bundle:api && yarn workspace service run test:perf",
+    "test:size": "yarn workspace web-app run build && yarn workspace web-app run test:size",
+    "typecheck": "turbo run typecheck"
+  },
+  "packageManager": "yarn@3.2.3"
 }

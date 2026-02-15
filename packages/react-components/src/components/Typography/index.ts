@@ -1,0 +1,26 @@
+export {
+  H1,
+  H2,
+  H3,
+  H4,
+  P,
+  Lead,
+  Large,
+  Small,
+  Muted,
+  InlineCode,
+  Blockquote,
+} from './Typography';
+export type {
+  H1Props,
+  H2Props,
+  H3Props,
+  H4Props,
+  PProps,
+  LeadProps,
+  LargeProps,
+  SmallProps,
+  MutedProps,
+  InlineCodeProps,
+  BlockquoteProps,
+} from './Typography';
